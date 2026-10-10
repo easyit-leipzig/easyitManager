@@ -1,0 +1,22 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fails=[];$passes=[];
+$check=function(bool $ok,string $label)use(&$fails,&$passes){if($ok)$passes[]=$label;else$fails[]=$label;};
+$check(is_file($root.'/admin/index.php'),'admin/index.php vorhanden');
+$check(is_file($root.'/src/Admin/AdminApp.php'),'AdminApp vorhanden');
+$check(is_file($root.'/src/Admin/AdminAuth.php'),'AdminAuth vorhanden');
+$m=(string)file_get_contents($root.'/src/Database/MigrationRunner.php');
+$check(str_contains($m,'CREATE TABLE IF NOT EXISTS admin_users'),'admin_users Migration vorhanden');
+$app=(string)file_get_contents($root.'/src/Admin/AdminApp.php');
+foreach(['max_dataforms','license_dataform_usage','license_dataform_capabilities','LICENSE_KEY_ROTATED'] as $needle)$check(str_contains($app,$needle),'Admin-Funktion '.$needle.' vorhanden');
+$lifecycle=(string)@file_get_contents($root.'/src/Service/InstallationLifecycleService.php');$check(str_contains($app,'InstallationLifecycleService')&&str_contains($lifecycle,'INSTALLATION_STATUS_CHANGED'),'Admin-Funktion INSTALLATION_STATUS_CHANGED vorhanden');
+foreach(['dataset.create','dataset.update','dataset.delete'] as $needle)$check(str_contains($m,$needle),'Capability '.$needle.' registriert');
+$auth=(string)file_get_contents($root.'/src/Admin/AdminAuth.php');
+foreach(['password_hash','password_verify','session_regenerate_id','admin_csrf','samesite','locked_until'] as $needle)$check(str_contains($auth,$needle),'Admin-Sicherheit '.$needle.' vorhanden');
+$ht=(string)file_get_contents($root.'/.htaccess');$check(str_contains($ht,'secure|storage'),'secure/storage per HTTP gesperrt');
+$check(str_contains($auth,'ensureSetupToken')&&str_contains($auth,'random_bytes(32)')&&str_contains($auth,'fopen($file,\'x\')'),'einmaliges Setup-Token wird lokal und exklusiv erzeugt');
+$token=$root.'/secure/admin-setup.token';$check(!is_file($token),'kein Setup-Geheimnis im Releasebaum ausgeliefert');
+$privateCandidates=glob($root.'/secure/keys/*private*')?:[];$check(count($privateCandidates)===0,'kein privater Server-Key ausgeliefert');
+foreach($passes as $p)echo "PASS  $p\n";
+foreach($fails as $f)echo "FAIL  $f\n";
+echo $fails?"FINAL STATUS: FAILED\n":"FINAL STATUS: PASSED\n";exit($fails?1:0);

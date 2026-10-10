@@ -1,0 +1,46 @@
+HF108 – Lizenzerweiterung
+Datum: 2026-09-25
+
+Fehlerbild
+----------
+Die vorhandene Kundenmaske besaß zwar serverseitig bereits einen request_type=extension,
+war für eine reale Erweiterung aber unzureichend:
+- der Absende-Button lag erst unter allen Capability-/Domain-Feldern,
+- bestehende Kontingente wurden nicht als Ausgangswerte vorbelegt,
+- bestehende Module/Capabilities waren nicht vollständig als Bestand geschützt,
+- eine als Erweiterung genehmigte Anfrage konnte durch Admin-Auswahl theoretisch
+  vorhandene Freigaben reduzieren,
+- die Laufzeit wurde vom aktuellen Datum statt vom bestehenden Lizenzende berechnet,
+- die Option „Zusätzliche Lizenz“ suggerierte einen Mehrlizenzfluss, den der aktuelle
+  Account-Bindungsmechanismus nicht vollständig unterstützt.
+
+HF108-Vertrag
+--------------
+1. „Lizenz erweitern“ ist für lizenzierte Kunden Standard.
+2. Ein Absende-Button ist sofort im oberen sichtbaren Formularbereich vorhanden.
+3. Aktuelle Max.-Installationen und Max.-DataForms werden vorbelegt.
+4. Bereits aktive Module und Capabilities werden vorbelegt.
+5. request_type=extension ist serverseitig additiv und darf Bestand nicht reduzieren.
+6. Superadmin-Freigabe verwendet enableModules/extendPolicy statt Ersatzlogik.
+7. Zeitliche Verlängerung wird auf das bestehende Ablaufdatum aufgeschlagen.
+8. Unbefristete Lizenzen bleiben bei Erweiterung unbefristet.
+9. Die irreführende „Zusätzliche Lizenz“-Option ist bei aktiver Lizenz entfernt.
+10. HF106 Auto-Key-Bootstrap bleibt kumulativ enthalten.
+
+Prüfungen
+---------
+Enterprise-Manager PHP-Syntax: 909/909 PASS
+Lizenzserver PHP-Syntax:       75/75 PASS
+HF105 Calendar/DataForm Gate:  16/16 PASS
+HF107 Admin-DB Gate:           10/10 PASS
+HF87 Request Regression Gate:  PASS (Manager + Server)
+HF108 Manager Gate:             9/9 PASS
+HF108 Server Gate:             10/10 PASS
+HF106 Key-Bootstrap Runtime:   PASS
+
+Hinweis
+-------
+Ein echter SQL-End-to-End-Lauf gegen MySQL/PostgreSQL war in der Build-Umgebung nicht
+möglich, weil PHP dort nur PDO Core, aber keinen PDO-Datenbanktreiber bereitstellt.
+Die Request-/Freigabelogik wurde deshalb statisch, syntaktisch und über die bestehenden
+Regression-Gates geprüft; der Ed25519-Key-Bootstrap wurde zusätzlich real ausgeführt.

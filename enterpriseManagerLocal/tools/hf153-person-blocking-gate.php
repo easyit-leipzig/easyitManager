@@ -1,0 +1,20 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$checks=[];$read=static fn(string $p):string=>(string)@file_get_contents($root.'/'.$p);
+$runtime=$read('products/calendar/api/runtime.php');
+$bridge=$read('products/calendar/system/CalendarDataFormBridge.php');
+$handler=$read('products/calendar/api/calendar_handler.php');
+$js=$read('products/calendar/assets/js/calendar.js');
+$index=$read('products/calendar/index.php');
+$stand=$read('system/app/calendar_runtime/api.php');
+$standIndex=$read('system/app/calendar_runtime/index.php');
+$api=$read('system/app/calendar_runtime/api-v1.php');
+$checks['SCHEMA_PERSON_ID']=str_contains($runtime,"'person_id'")&&str_contains($runtime,'HF153: Blockierungen können optional einer Person zugeordnet werden');
+$checks['DATAFORM_LOOKUP']=str_contains($bridge,"'person_id'=>['label'=>'Person','type'=>'lookup'")&&str_contains($bridge,'calendar_block_person');
+$checks['DIALOG_PERSON']=str_contains($index,'id="blockPerson"')&&str_contains($index,'Alle Personen')&&str_contains($standIndex,'id="blockPerson"');
+$checks['HANDLER_SCOPE']=str_contains($handler,'$blockPerson===0||in_array($blockPerson,$personIds,true)')&&str_contains($handler,"'person_id'=>\$v['person_id']>0?\$v['person_id']:null");
+$checks['BLOCK_CONFLICT_SCOPE']=str_contains($handler,'$sameScope=$v[\'person_id\']===0||$otherPerson===0||$otherPerson===$v[\'person_id\']');
+$checks['JS_PERSON_SCOPE']=str_contains($js,'blockPersons: []')&&str_contains($js,'isSlotBlockedForLesson')&&str_contains($js,'person-blocked');
+$checks['STANDALONE']=str_contains($stand,"'block_persons'=>\$blockPersons")&&str_contains($stand,"\$data['person_id']=\$personId>0?(string)\$personId:''");
+$checks['PUBLIC_API']=str_contains($api,"'person_id'=>\$person>0?(string)\$person:''")&&str_contains($api,'api_overlap_block(string $s,string $e,array $personIds=[]');
+$ok=!in_array(false,$checks,true);foreach($checks as $n=>$v)echo $n.' '.($v?'PASS':'FAIL').PHP_EOL;echo 'SUMMARY '.($ok?'PASS':'FAIL').' '.count(array_filter($checks)).'/'.count($checks).PHP_EOL;exit($ok?0:1);

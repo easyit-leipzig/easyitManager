@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);
+return ['id'=>'admin.projects','title'=>'Projektverwaltung','contexts'=>['/admin/projects','/admin/projects/*'],'short'=>'Hier verwalten Sie Projekte und wählen die jeweils zu bearbeitende Projektdatenbank aus.','steps'=>['Projekt registrieren oder ein bestehendes Projekt auswählen.','Datenquelle und Verbindung prüfen.','Projekt öffnen; über „Zurück“ gelangen Sie wieder zur Grundadministration.'],'expert'=>'Die Projektverwaltung trennt Administrationsdaten und Projektdaten. Jedes Projekt referenziert eine Verbindung aus dem DatabaseManager; produktbezogene Daten gehören nicht in die Administrationsdatenbank.','examples'=>['project_name'=>'Musterprojekt','driver'=>'csv','database_path'=>'projects/Musterprojekt/database/csv']];

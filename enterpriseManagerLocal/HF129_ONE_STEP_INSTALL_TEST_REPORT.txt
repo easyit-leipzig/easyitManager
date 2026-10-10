@@ -1,0 +1,17 @@
+HF129 ONE-STEP INSTALLATION - STATIC VALIDATION
+Date: 2026-10-01
+
+PASS - setup.php PHP syntax
+PASS - LicenseApiClient.php PHP syntax
+PASS - app/licensing/remote.php PHP syntax
+PASS - automatic local license-server discovery exists
+PASS - signed health/trust verification exists before trust persistence
+PASS - manager client calls /api/v1/bootstrap/local-activate
+PASS - first superadmin is loaded into the active setup session
+PASS - setup redirects directly to app/dashboard.php after activation
+PASS - manual activation UI is marked Recovery-only
+PASS - HF116 manager bootstrap regression gate 4/4
+PASS - HF127 Calendar drag repair remains in this manager base package
+
+Integration note:
+A live Apache/PDO/MySQL round-trip cannot be executed in this build container. The paired license-server HF129 package must be deployed before running the manager setup so the new loopback-only endpoint is available.

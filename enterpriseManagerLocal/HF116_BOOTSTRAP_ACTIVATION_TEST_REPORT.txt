@@ -1,0 +1,28 @@
+HF116 – Bootstrap-Aktivierung ohne Kundenkonto
+Datum: 2026-09-25
+
+Ziel
+- Superadmin bleibt technischer Administrator und benötigt kein Kundenkonto.
+- Superadmin kann einen einmaligen Bootstrap-Aktivierungsschlüssel erzeugen.
+- Bootstrap aktiviert ausschließlich die Enterprise-Manager-Installation.
+- Bootstrap vergibt keine Kunden-, Produkt-, Modul- oder DataForm-Rechte.
+- Nach erfolgreicher Erstaktivierung wird der Bootstrap-Schlüssel serverseitig entwertet.
+- Bei späterer Anmeldung eines Kunden mit aktiver Lizenz wird eine noch bootstrap-gebundene Installation an genau diese Kundenlizenz gebunden.
+- Eine Installation mit bereits echter anderer Lizenz wird niemals automatisch umgebunden.
+- Das Installationskontingent der Ziel-Lizenz wird bei der Bindung geprüft.
+
+Prüfungen
+Server PHP-Syntax: 85/85 PASS
+Enterprise-Manager PHP-Syntax: 913/913 PASS
+HF116 Server-Gate: 12/12 PASS
+HF116 Manager-Gate: 4/4 PASS
+HF115 Shared-Control-Plane: 16/16 PASS
+HF114 Setup-Database-Rebuild: 12/12 PASS
+HF113 Full-Schema-Setup: 10/10 PASS
+HF110 Datasource-Setup: 10/10 PASS
+HF109 Database-Bootstrap: PASS
+HF108 License-Extension: PASS
+HF105 Calendar/DataForm: 16/16 PASS
+
+Hinweis
+Ein echter DB-End-to-End-Test konnte in der Build-Umgebung nicht gegen MySQL/PostgreSQL/SQLite ausgeführt werden, weil PHP dort nur PDO-Core, aber keinen PDO-Datenbanktreiber bereitstellt. Die PHP-Syntax-, Vertrags- und statischen Integrationsgates sind vollständig durchgelaufen.

@@ -1,0 +1,16 @@
+HF145 – Schülerfarbe an Terminen
+Datum: 2026-10-07
+
+PASS  PHP syntax: products/calendar/api/runtime.php
+PASS  PHP syntax: products/calendar/system/CalendarDataFormBridge.php
+PASS  PHP syntax: products/calendar/api/calendar_handler.php
+PASS  PHP syntax: system/app/calendar_runtime/api.php
+PASS  JavaScript syntax: products/calendar/assets/js/calendar.js
+PASS  JavaScript syntax: products/calendar/assets/js/bootstrap.js
+PASS  HF145 student-calendar-color gate
+PASS  HF105 Calendar/DataForm integration gate (16/16)
+PASS  HF121 Dynamic Calendar Mapping gate (12/12)
+
+Hinweis zu vorhandenen Alt-Gates:
+HF123 meldet ausschließlich den historischen, fest verdrahteten Cache-Buster 20260926-123 als FAIL; der aktuelle Build verwendet bewusst 20261007-145.
+HF124 enthält in seinem isolierten Test-Fixture keine dataforms-Konfiguration und meldet dadurch zwei Standalone-Fixture-Prüfungen als FAIL. Der reale Exporter übernimmt dataforms bereits in projectCfg. Diese beiden Alt-Gate-Befunde wurden durch HF145 nicht verursacht.

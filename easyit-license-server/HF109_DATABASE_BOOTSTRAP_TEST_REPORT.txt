@@ -1,0 +1,31 @@
+HF109 – DATABASE BOOTSTRAP TEST REPORT
+======================================
+
+Ziel
+----
+Eine fehlende Lizenzserver-Datenbank easyit_license darf bei einer frischen lokalen Installation nicht mehr zu PDO #1049 / Unknown database führen.
+
+Implementiert
+-------------
+- MySQL/MariaDB: Fehler 1049 / "Unknown database" wird erkannt.
+- Verbindung wird einmal ohne dbname aufgebaut.
+- Die konfigurierte Datenbank wird mit CREATE DATABASE IF NOT EXISTS erzeugt.
+- MySQL/MariaDB-Datenbank wird mit utf8mb4 / utf8mb4_unicode_ci angelegt.
+- Anschließend wird die normale Verbindung erneut aufgebaut.
+- Die vorhandene MigrationRunner-Logik erzeugt bzw. aktualisiert die Tabellen.
+- PostgreSQL: fehlende konfigurierte Datenbank wird analog über die Maintenance-DB postgres erzeugt.
+- Bestehende Datenbanken werden niemals gelöscht oder neu erstellt.
+- Fehlt CREATE-DATABASE-Berechtigung, wird ein verständlicher 503-Hinweis statt des ungefangenen Admin-PDO-Fatal-Errors ausgegeben.
+- HF108-Lizenzerweiterung und HF106-Key-Bootstrap bleiben im kumulativen Update enthalten.
+
+Prüfungen
+---------
+PHP-Lint Lizenzserver: 76/76 PASS
+HF109_DATABASE_BOOTSTRAP_STATIC_GATE: 9/9 PASS
+HF108_LICENSE_EXTENSION_STATIC_GATE: PASS
+HF94_ADMIN_AUTH_RECURSION_GATE: PASS
+ADMIN_WEB_STATIC_GATE: PASS
+
+Hinweis zum Laufzeittest
+------------------------
+Die Build-Umgebung besitzt keinen laufenden lokalen XAMPP/MySQL-Server. Der reale #1049 -> CREATE DATABASE -> Reconnect-Pfad wurde deshalb statisch und syntaktisch geprüft, nicht gegen die MySQL-Instanz des Anwenders ausgeführt.

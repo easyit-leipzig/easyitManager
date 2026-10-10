@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);
+return ['id'=>'core.database','title'=>'Datenbankverbindung','contexts'=>['/admin/database','/admin/database/*'],'short'=>'Hier konfigurieren und testen Sie die Datenquelle eines Projekts.','steps'=>['Treiber auswählen.','Verbindungsdaten oder den CSV-/SQLite-Speicherpfad eintragen.','Verbindung testen und anschließend speichern.'],'expert'=>'Alle Treiber werden über DatabaseFactory und DatabaseInterface angesprochen. CSV-n:m-Beziehungen verwenden verwaltete Pivot-Tabellen mit eigenen IDs.','examples'=>['mysql'=>'host=127.0.0.1; port=3306; database=muster_projekt','pgsql'=>'host=127.0.0.1; port=5432; database=muster_projekt','sqlite'=>'storage/project-sqlite/muster_projekt.sqlite','csv'=>'projects/Musterprojekt/database/csv']];

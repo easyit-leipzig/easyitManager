@@ -1,0 +1,22 @@
+HF122 – Relation Key / Lookup Test Report
+=========================================
+
+HF122 gate: 11/11 PASS
+HF121 Dynamic Calendar Mapping: 12/12 PASS
+HF120 Calendar Event/Place: 12/12 PASS
+HF119 Calendar Embedded DataForm / CSV Wildcard: 9/9 PASS
+HF118 CSV Relations: 10/10 PASS
+PHP syntax: 919/919 PASS
+
+Geprüfte HF122-Verträge:
+- Zielschlüssel im Beziehungsdesigner als Tabelle → Feld auswählbar
+- technische Tabellen-ID explizit auswählbar
+- abhängiges Ausgangs-/Terminfeld konfigurierbar
+- Lookup-Darstellung pro n:1-Beziehung konfigurierbar
+- Zielschlüsselfeld wird persistiert
+- Lookup-Optionen verwenden den gewählten Schlüsselwert
+- Anzeigefeld bleibt unabhängig vom Schlüsselwert
+- Lookup-Wertvalidierung für benutzerdefinierte Schlüssel
+- Lookup-Caption-Auflösung
+- Relations-Health mit explizitem Zielschlüssel
+- Calendar-Ortsrelation bleibt kompatibel

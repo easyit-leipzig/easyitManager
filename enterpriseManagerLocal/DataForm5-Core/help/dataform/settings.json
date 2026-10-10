@@ -1,0 +1,29 @@
+{
+  "id": "dataform.settings",
+  "title": "DataForm-Einstellungen",
+  "short": {
+    "text": "In den DataForm-Einstellungen werden Runtime-Eigenschaften des gesamten DataForms festgelegt. Volltextsuche und Filter sind voneinander unabhängige Ja/Nein-Eigenschaften."
+  },
+  "steps": [
+    "DataForm auswählen und den Bereich Einstellungen öffnen.",
+    "Unter Darstellung „Volltextsuche“ auf Ja oder Nein setzen.",
+    "Unter Darstellung „Filter“ unabhängig davon auf Ja oder Nein setzen.",
+    "DataForm-Einstellungen speichern.",
+    "Das Ergebnis in Datensätze oder Realvorschau prüfen."
+  ],
+  "expert": {
+    "text": "Die bestehende Metadatenspalte show_search ist aus Abwärtskompatibilitätsgründen der persistente Schalter für die Volltextsuche. show_filter steuert Feldfilter und gespeicherte Filter. Deaktivierte Funktionen werden nicht nur ausgeblendet: entsprechende q- bzw. filter-Requestparameter werden in der Runtime ignoriert.",
+    "rules": [
+      "Volltextsuche und Filter sind unabhängig.",
+      "Standardwert beider Eigenschaften ist Ja.",
+      "Volltextsuche=Nein ignoriert q-Parameter.",
+      "Filter=Nein ignoriert filter- und saved_filter-Parameter.",
+      "Filter=Nein verhindert auch das Anlegen und Löschen gespeicherter Filter.",
+      "Exportierte Anwendungen übernehmen beide Eigenschaften."
+    ]
+  },
+  "document": {
+    "path": "docs/dataform/settings.html",
+    "anchor": "search-filter"
+  }
+}

@@ -1,0 +1,7 @@
+PASS - READY payload is required
+PASS - setup required message
+PASS - preflight before manager install
+PASS - status card
+PASS - setup link
+PASS - install button locked until ready
+PHP lint: PASS (980 files)

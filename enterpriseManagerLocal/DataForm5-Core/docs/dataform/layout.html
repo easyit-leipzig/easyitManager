@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DataForm 5 – Hilfe: Layout</title>
+<style>
+:root {
+  --bg:#f5f7fa; --panel:#fff; --text:#1f2937; --muted:#667085;
+  --border:#d8dee8; --accent:#244d76; --soft:#eef4fa; --code:#101820;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.62 "Segoe UI",Arial,sans-serif}
+header{background:#183f63;color:white;padding:30px 38px}
+header h1{margin:0 0 6px}
+header p{margin:0;max-width:1000px;color:#edf5fb}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1450px;margin:auto}
+nav{position:sticky;top:0;height:100vh;overflow:auto;padding:22px 16px;background:#eef2f6;border-right:1px solid var(--border)}
+nav a{display:block;padding:5px 7px;color:#263f55;text-decoration:none;border-radius:4px}
+nav a:hover{background:#dfe8f0}
+main{padding:28px 38px 60px;min-width:0}
+section{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:26px 29px;margin:0 0 20px;scroll-margin-top:16px}
+h2{margin-top:0;color:#183f63;border-bottom:1px solid var(--border);padding-bottom:8px}
+h3{color:#285c84;margin-top:24px}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--border);padding:9px 11px;vertical-align:top;text-align:left}
+th{background:#edf3f8}
+.note,.expert{padding:13px 15px;border-left:5px solid #4d7fad;background:var(--soft);margin:15px 0}
+.expert{border-color:#5d6670;background:#f4f5f7}
+pre{overflow:auto;background:var(--code);color:#eef5fa;padding:16px 18px;border-radius:7px}
+code{font-family:Consolas,"Courier New",monospace}
+.flow{font-size:16px;line-height:1.8}
+@media(max-width:900px){.layout{display:block}nav{position:relative;height:auto;border-right:0}main{padding:18px 12px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DataForm 5 – Layout</h1>
+  <p>Auf dieser Seite wird die visuelle Struktur einer DataForm aufgebaut. Layoutobjekte strukturieren die Oberfläche, ohne das zugrunde liegende Datenmodell zu verändern.</p>
+</header>
+<div class="layout">
+<nav>
+  <strong>Inhalt</strong>
+  <a href="#layout">1. Zweck</a>
+  <a href="#zusammenhang">2. Zusammenhang</a>
+  <a href="#schritte">3. Schritt für Schritt</a>
+  <a href="#elementtypen">4. Elementtypen</a>
+  <a href="#struktur">5. Layoutstruktur</a>
+  <a href="#beispiele">6. Beispiele</a>
+  <a href="#fehler">7. Typische Fehler</a>
+  <a href="#workflow">8. Workflow</a>
+  <a href="#experte">9. Expertenmodus</a>
+  <a href="#integration">10. Help-Integration</a>
+</nav>
+<main>
+<section id="layout">
+<h2>1. Zweck der Layout-Seite</h2>
+<p>Mit Layoutobjekten strukturieren Sie die Oberfläche einer DataForm. Sie können Seiten, Gruppen und Registergruppen anlegen und damit Felder später übersichtlich anordnen. Das Layout verändert nicht die Tabellen-, Feld- oder Relationsdefinitionen.</p>
+<div class="note">
+<strong>Wichtig:</strong> Die Layout-Seite verändert die Darstellung und Strukturierung einer DataForm, nicht das Datenmodell.
+</div>
+</section>
+
+<section id="zusammenhang">
+<h2>2. Layout im Zusammenhang</h2>
+<table>
+<thead><tr><th>Help-ID</th><th>Bereich</th><th>Aufgabe</th></tr></thead>
+<tbody>
+<tr>
+<td><code>dataform.settings</code></td>
+<td><strong>Einstellungen</strong></td>
+<td>Standardansicht, Dialoggröße und AddCSS werden in den Einstellungen gepflegt.</td>
+</tr>
+<tr>
+<td><code>dataform.form</code></td>
+<td><strong>Formular</strong></td>
+<td>Feldbreiten und die konkrete Formularanordnung werden im Formular-Designer bearbeitet.</td>
+</tr>
+<tr>
+<td><code>dataform.preview</code></td>
+<td><strong>Realvorschau</strong></td>
+<td>Das fertige Layout wird mit echten Datensätzen in der Realvorschau geprüft.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="schritte">
+<h2>3. Schritt-für-Schritt-Assistent</h2>
+<ol>
+<li><strong>Elementtyp auswählen</strong><br>Wählen Sie unter „Elementtyp“ das gewünschte Layoutobjekt aus. Für den ersten Aufbau ist normalerweise eine Seite ein sinnvoller Einstieg.</li>
+<li><strong>Titel vergeben</strong><br>Tragen Sie einen aussagekräftigen Titel ein, zum Beispiel „Persönliche Daten“, „Adresse“ oder „Zusatzinformationen“.</li>
+<li><strong>Layoutobjekt hinzufügen</strong><br>Betätigen Sie den zentral registrierten Hinzufügen-Button. Das neue Layoutobjekt erscheint anschließend in der Layoutstruktur.</li>
+<li><strong>Struktur aufbauen</strong><br>Ergänzen Sie weitere Seiten, Gruppen oder Registergruppen und ordnen Sie diese hierarchisch entsprechend der gewünschten Benutzeroberfläche an.</li>
+<li><strong>Formularfelder zuordnen</strong><br>Wechseln Sie anschließend in den Formular-Designer und ordnen Sie die eigentlichen DataForm-Felder den vorgesehenen Layoutbereichen zu.</li>
+<li><strong>Darstellung prüfen</strong><br>Kontrollieren Sie das Ergebnis in der Realvorschau mit echten Datensätzen. Prüfen Sie insbesondere Reihenfolge, Gruppierung, Feldbreiten und Bedienbarkeit.</li>
+</ol>
+</section>
+
+<section id="elementtypen">
+<h2>4. Elementtypen</h2>
+<table>
+<thead><tr><th>Technischer Typ</th><th>Bezeichnung</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><strong>Seite</strong></td>
+<td>Eine Seite bildet einen größeren eigenständigen Bereich der DataForm. Sie eignet sich als oberste Ebene für umfangreiche Formulare.</td>
+<td>Persönliche Daten</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td><strong>Gruppe</strong></td>
+<td>Eine Gruppe fasst fachlich zusammengehörige Felder innerhalb einer Seite oder eines anderen geeigneten Layoutcontainers zusammen.</td>
+<td>Anschrift</td>
+</tr>
+<tr>
+<td><code>tabgroup</code></td>
+<td><strong>Registergruppe</strong></td>
+<td>Eine Registergruppe stellt mehrere Inhaltsbereiche platzsparend als Register beziehungsweise Tabs bereit.</td>
+<td>Stammdaten | Kontakt | Zusatzdaten</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="struktur">
+<h2>5. Layoutstruktur</h2>
+<p>Die Layoutstruktur zeigt alle bereits angelegten Layoutobjekte in ihrer hierarchischen Anordnung. Hier wird sichtbar, welche Bereiche über- oder untergeordnet sind.</p>
+<div class="note">
+<strong>Noch keine Layoutobjekte</strong><br>
+Beginnen Sie mit einer Seite, Gruppe oder Registergruppe.
+</div>
+</section>
+
+<section id="beispiele">
+<h2>6. Anwendungsbeispiele</h2>
+
+<h3>Einfaches Formular</h3>
+<pre><code>Seite: Persönliche Daten
+  Gruppe: Name
+  Gruppe: Anschrift
+  Gruppe: Kontakt</code></pre>
+
+<h3>Formular mit Registergruppe</h3>
+<pre><code>Seite: Person
+  Registergruppe: Personendaten
+    Register: Stammdaten
+    Register: Kontakt
+    Register: Zusatzinformationen</code></pre>
+
+<h3>Mehrseitige DataForm</h3>
+<pre><code>Seite: Stammdaten
+Seite: Beziehungen
+Seite: Dokumentation
+Seite: Historie</code></pre>
+
+</section>
+
+<section id="fehler">
+<h2>7. Typische Fehler</h2>
+<table>
+<thead><tr><th>Problem</th><th>Lösung</th></tr></thead>
+<tbody>
+<tr>
+<td>Es wurden noch keine Layoutobjekte angelegt.</td>
+<td>Wählen Sie einen Elementtyp, vergeben Sie einen Titel und fügen Sie das erste Layoutobjekt hinzu.</td>
+</tr>
+<tr>
+<td>Felder werden im Layout-Designer gesucht.</td>
+<td>Der Layout-Designer erzeugt nur Strukturcontainer. Die Feldanordnung erfolgt anschließend im Formular-Designer.</td>
+</tr>
+<tr>
+<td>Die Darstellung in der Laufzeit stimmt nicht mit der Erwartung überein.</td>
+<td>Prüfen Sie Standardansicht und Dialoggröße in den Einstellungen, die Feldanordnung im Formular-Designer und anschließend die Realvorschau.</td>
+</tr>
+<tr>
+<td>Layout und Datenstruktur werden miteinander verwechselt.</td>
+<td>Änderungen an Tabellen, Feldern oder Relationen werden nicht hier, sondern in den dafür vorgesehenen Datenmodell- beziehungsweise Recordset-Bereichen vorgenommen.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="workflow">
+<h2>8. Empfohlener Workflow</h2>
+<ol>
+<li>Datenmodell und Recordsets definieren.</li>
+<li>DataForm-Grundeinstellungen festlegen.</li>
+<li>Layoutstruktur erstellen.</li>
+<li>Formularfelder im Formular-Designer zuordnen.</li>
+<li>Feldbreiten und Reihenfolge optimieren.</li>
+<li>Realvorschau mit echten Datensätzen prüfen.</li>
+<li>Bei Bedarf Layout nachjustieren.</li>
+</ol>
+</section>
+
+<section id="experte">
+<h2>9. Expertenmodus</h2>
+<p>Layoutobjekte gehören ausschließlich zur Präsentations- und Strukturierungsebene einer DataForm. Sie dürfen keine Tabellen-, Feld-, Schlüssel- oder Relationsdefinitionen verändern. Die fachlichen Daten bleiben im Recordset beziehungsweise Datenmodell verankert. Das Layout beschreibt lediglich, wie diese Datenbereiche in der Oberfläche organisiert und später im Formular-Designer mit konkreten Feldern belegt werden.</p>
+<div class="expert">
+<ul>
+<li>Layoutdefinition und Datenmodell strikt trennen.</li>
+<li>Eine Layoutänderung darf keine Datenmigration auslösen.</li>
+<li>Feldzuordnungen werden im Formular-Designer gepflegt, nicht im Layout-Designer.</li>
+<li>Standardansicht, Dialoggröße und AddCSS gehören in die DataForm-Einstellungen.</li>
+<li>Die Realvorschau dient der Prüfung mit tatsächlichen Datensätzen.</li>
+<li>Aktionsbuttons verwenden die zentrale Button-Registry; lokale farbige oder verlaufende CSS-Buttons sind nicht vorgesehen.</li>
+<li>Titel und aria-label von registrierten Aktionsbuttons stammen aus der zentralen Button-Registry.</li>
+<li>Leere Layoutobjekte sind technisch möglich, sollten aber nur bewusst als vorbereitete Struktur verwendet werden.</li>
+</ul>
+</div>
+</section>
+
+<section id="integration">
+<h2>10. Aufruf über das zentrale Help-System</h2>
+<p>Die Layout-Hilfe wird nicht über einen hart codierten Dateipfad aufgerufen, sondern über die zentrale Help-ID <code>dataform.layout</code>.</p>
+
+<h3>Permanentes Hilfefenster</h3>
+<pre><code>DataFormHelp.show(
+    "dataform.layout",
+    "#dataform-help-panel"
+);</code></pre>
+
+<h3>Vollständige Dokumentation</h3>
+<pre><code>DataFormHelp.open(
+    "dataform.layout"
+);</code></pre>
+
+<h3>Kontextwechsel zur Layout-Seite</h3>
+<pre><code>document.addEventListener(
+    "dataform:pagechange",
+    event =&gt; {
+        if (event.detail?.page === "layout") {
+            DataFormHelp.show(
+                "dataform.layout",
+                "#dataform-help-panel"
+            );
+        }
+    }
+);</code></pre>
+</section>
+</main>
+</div>
+</body>
+</html>

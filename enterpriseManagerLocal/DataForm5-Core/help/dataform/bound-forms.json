@@ -1,0 +1,33 @@
+{
+  "id": "dataform.boundForm",
+  "title": "Gebundene Formulare",
+  "short": {
+    "text": "Bei einer Parent→Child-Bindung muss die Neuanlagezeile das gebundene Kindfeld sofort mit der ID des aktuellen Hauptdatensatzes belegen. Ein Platzhalter wie „Eltern-Datensatz wählen“ ist bei vorhandenem Hauptdatensatz falsch. Das Feld ist standardmäßig schreibgeschützt. Die Paginierung wird immer unterhalb der Datensätze angezeigt."
+  },
+  "steps": [
+    "Parent-Recordset und Hauptfeld festlegen.",
+    "Child-Recordset und gebundenes Kindfeld festlegen.",
+    "Der Hauptwert wird bei neuen Kinddatensätzen automatisch übernommen.",
+    "„Gebundenes Feld schreibgeschützt“ ist standardmäßig aktiviert.",
+    "Bei deaktiviertem Read-only bleibt der Hauptwert die Anfangsbelegung, kann aber bewusst geändert werden.",
+    "Ohne gespeicherten Hauptschlüssel bleibt das Anlegen eines Kinddatensatzes gesperrt."
+  ],
+  "expert": {
+    "text": "Read-only-Bindungen werden sowohl im Client als auch serverseitig erzwungen. Der Browserwert gilt nicht als Sicherheitsgrenze. Bei einer editierbaren Bindung dient der Parent-Wert nur als Default. Nach einer bewussten Umordnung kann der Datensatz aus der aktuell gefilterten Kindansicht verschwinden."
+  },
+  "rules": [
+    "inheritParentValue ist für echte Bindungen immer true.",
+    "In der neuen Kindzeile steht unmittelbar parent[parentField] in child[childField].",
+    "Bei Parent-ID 9201 muss das Feld sichtbar #9201 anzeigen; kein Eltern-Auswahl-Platzhalter.",
+    "boundFieldReadonly hat den Default true.",
+    "Read-only true: Server überschreibt manipulierte Request-Werte mit dem Parent-Wert.",
+    "Read-only false: Der Parent-Wert ist Anfangsbelegung und darf bewusst geändert werden.",
+    "Ohne Parent-ID darf kein persistenter Child-Datensatz angelegt werden.",
+    "Bei Parent-Navigation werden Filter, New-Record-Defaults und sichtbare New-Zeile aktualisiert.",
+    "Die Paginierung steht immer unterhalb der Datensätze und außerhalb des horizontalen Scrollcontainers."
+  ],
+  "document": {
+    "path": "docs/dataform/bound-forms.html",
+    "anchor": "bound-forms"
+  }
+}

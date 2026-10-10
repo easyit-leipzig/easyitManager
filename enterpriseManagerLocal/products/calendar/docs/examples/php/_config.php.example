@@ -1,0 +1,5 @@
+<?php
+return [
+    'base_url' => 'https://example.org/easyITCalendar/api-v1.php',
+    'token' => 'cal_HIER_TOKEN_EINTRAGEN',
+];

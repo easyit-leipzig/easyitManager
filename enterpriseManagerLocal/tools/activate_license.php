@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);
+$root=null;$license=null;foreach(array_slice($argv,1)as$a){if(str_starts_with($a,'--root='))$root=substr($a,7);elseif(str_starts_with($a,'--license='))$license=substr($a,10);}if(!$root||!$license){fwrite(STDERR,"Usage: php activate_license.php --root=D:\\xampp\\htdocs\\enterpriseManager --license=LIC-...secret\n");exit(2);}require rtrim($root,'/\\').'/system/licensing/Autoload.php';require_once rtrim($root,'/\\').'/system/licensing/LicenseConfigStore.php';$cfg=EnterpriseLicenseConfigStore::load($root);$c=new \EasyIT\Enterprise\Licensing\LicenseApiClient($cfg);$p=$c->activate($license,'DataForm5');echo "ACTIVATION_OK\n".json_encode($p,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n";

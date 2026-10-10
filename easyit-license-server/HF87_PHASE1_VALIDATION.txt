@@ -1,0 +1,37 @@
+HF87 PHASE 1 – SELBSTREGISTRIERUNG / E-MAIL-KUNDENSCHLÜSSEL / DEMO-MODUS
+
+Basisdateien:
+- easyit-license-server(2).zip
+- enterpriseManager(6).zip
+Basisversion: RC1.8-FC1-HF86-PHASE12-FINAL-RC
+Neue Version: RC1.8-FC1-HF87-PHASE1-SELFREG-DEMO
+
+Umgesetzt:
+- Selbstregistrierung direkt am Enterprise-Manager
+- E-Mail normalisiert als eindeutiger customer_key
+- interne customer_id/customer_number nur technische Kompatibilität
+- sofort aktives Konto ohne automatisch erzeugte Lizenz
+- Login ohne gültige Lizenz => manager_mode=demo
+- Login mit gültiger Lizenz => manager_mode=licensed
+- abgelaufene/gesperrte Lizenz => Demo-Fallback
+- automatische Demo->Licensed-Umschaltung bei späterer gültiger Lizenz
+- Demo serverseitig auf Dashboard + Mein Konto begrenzt
+- keine produktiven Projekte/DataForms/DF-Tokens/Designer/Export/API im Demo-Modus
+- Kundenschlüssel im Self-Service nicht veränderbar
+- zentrale Kundenschlüsseländerung synchronisiert primären Kundenlogin
+- zentrale Registrierung/Buttons in bestehende Registry integriert
+- Migration customers.customer_key + Unique Index + Dubletten-Gate
+
+Validierung in der Build-Umgebung:
+- Lizenzserver PHP-Lint: 66 Dateien, 0 Fehler
+- Enterprise PHP-Lint: 857 Dateien, 0 Fehler
+- Lizenzserver Static Gates: 20/20 PASS
+- HF85 Phase 3 Crypto Gate: PASS
+- HF86 Phase 11 Crypto Gate: PASS
+- Runtime Unit Gate: PASS
+- Enterprise HF86 Final Static Gate: PASS
+- Enterprise HF87 Phase 1 Gate: PASS
+- HF87 real DB gate: vorhanden und PHP-Lint PASS
+
+Real-DB-Hinweis:
+Der HF87-DB-Gate wurde in dieser Build-Umgebung nicht gegen MariaDB/PostgreSQL ausgeführt. PHP meldet hier keine installierten PDO-Datenbanktreiber ([]), und es wurde kein externer DB-DSN bereitgestellt. Der Gate beendet sich ohne DSN kontrolliert mit RC=2; dies wird ausdrücklich NICHT als DB-PASS gewertet.

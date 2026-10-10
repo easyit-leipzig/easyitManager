@@ -1,0 +1,5 @@
+<?php
+declare(strict_types=1);
+$kernel=require __DIR__.'/DataForm5-Core/bootstrap/app.php';
+$app=$kernel->container()->get(\DataForm5\Console\Core\ConsoleApplication::class);
+exit($app->run($_SERVER['argv']??[]));

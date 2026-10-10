@@ -1,0 +1,10 @@
+{
+  "name": "Designer",
+  "version": "1.0.0",
+  "enabled": true,
+  "description": "easyIT DataForm Modul Designer",
+  "key": "designer",
+  "category": "Kern",
+  "required": true,
+  "dependencies": []
+}

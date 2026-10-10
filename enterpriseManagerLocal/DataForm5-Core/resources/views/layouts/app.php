@@ -1,0 +1,1 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?= $view->e($title ?? 'DataForm5') ?></title><link rel="stylesheet" href="<?= $view->e($asset('app.css')) ?>"></head><body><main><?= $view->section('content') ?></main></body></html>

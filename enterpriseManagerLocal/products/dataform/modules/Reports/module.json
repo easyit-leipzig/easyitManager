@@ -1,0 +1,12 @@
+{
+  "name": "Reports",
+  "version": "1.0.0",
+  "enabled": false,
+  "description": "easyIT DataForm Modul Reports",
+  "key": "reports",
+  "category": "Ausgabe",
+  "required": false,
+  "dependencies": [
+    "designer"
+  ]
+}

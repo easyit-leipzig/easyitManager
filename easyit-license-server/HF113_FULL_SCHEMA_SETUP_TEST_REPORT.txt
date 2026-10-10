@@ -1,0 +1,46 @@
+easyIT License Server – HF113 FULL SCHEMA SETUP TEST REPORT
+===========================================================
+
+Basis: HF110 – definierbare Datenquelle
+Ziel: Beim Setup müssen alle Tabellen des Lizenzservers vollständig angelegt und real verifiziert werden.
+
+Implementierung
+---------------
+- Zentraler Tabellenvertrag: MigrationRunner::REQUIRED_TABLES
+- Pflichttabellen: 39
+- Vollständigkeitsprüfung gegen realen DB-Bestand nach Provisionierung
+- Setup-Abbruch bei fehlenden Tabellen mit LICENSE_SCHEMA_INCOMPLETE
+- Setup-Lock erst nach bestandenem Vollständigkeits-Gate
+- Idempotente lokale Reparatur bestehender Installationen über /setup/
+- Kein DROP TABLE / DROP DATABASE
+- Schema-Marker: HF113_FULL_SCHEMA_V1
+- CLI-Migration meldet Tabellenstatus
+
+Prüfungen
+---------
+PHP Syntax: 80/80 PASS
+HF108 License Extension Gate: PASS
+HF109 Database Bootstrap Gate: PASS
+HF110 DataSource Setup Gate: 10/10 PASS
+HF113 Full Schema Setup Gate: 10/10 PASS
+Admin Web Static Gate: PASS
+License Policy Static Gate: PASS
+
+HF113 Gate Details
+------------------
+1. 39 Pflichttabellen im zentralen Schema-Vertrag: PASS
+2. REQUIRED_TABLES = exakt alle CREATE TABLE Definitionen: PASS
+3. Reales schemaStatus/Vollständigkeits-Gate: PASS
+4. HF113 Schema-Migrationsmarker: PASS
+5. Setup-Lock erst nach vollständiger Provisionierung: PASS
+6. Idempotente Reparatur bestehender Installation: PASS
+7. Setup-Oberfläche enthält Tabellen-Prüfung/Reparatur: PASS
+8. Setup zeigt Tabellenstatus: PASS
+9. CLI meldet vollständigen Schema-Status: PASS
+10. Keine destruktiven DROP-Operationen: PASS
+
+Hinweis zur Laufzeitumgebung
+----------------------------
+In der Build-Umgebung ist PDO vorhanden, aber kein PDO-Datenbanktreiber installiert. Daher wurde kein echter MySQL/PostgreSQL/SQLite-Lauf ausgeführt. Die DB-spezifischen HF109/HF110-Verträge und sämtliche statischen/semantischen Gates sind bestanden. Der reale Setup-Lauf erfolgt auf dem Zielsystem mit dessen installiertem PDO-Treiber.
+
+FINAL STATUS: PASSED

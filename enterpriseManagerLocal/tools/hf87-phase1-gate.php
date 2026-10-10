@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=0;
+$check=function(string $name,bool $ok,string $detail='')use(&$fail):void{echo($ok?'PASS ':'FAIL ').$name.($detail!==''?' - '.$detail:'').PHP_EOL;if(!$ok)$fail++;};
+$file=function(string $rel)use($root):string{$v=@file_get_contents($root.'/'.$rel);return $v===false?'':$v;};
+$login=$file('login.php');
+$client=$file('system/licensing/LicenseApiClient.php');
+$boot=$file('system/app/bootstrap.php');
+$dash=$file('app/dashboard.php');
+$account=$file('app/account.php');
+$buttons=$file('system/ui/ButtonRegistry.php');
+$v=trim($file('VERSION'));$check('version HF87 phase1 baseline retained',$v==='RC1.8-FC1-HF87-PHASE1-SELFREG-DEMO'||str_starts_with($v,'RC1.8-FC1-HF87-PHASE2-')||str_starts_with($v,'RC1.8-FC1-HF87-PHASE3-')||str_starts_with($v,'RC1.8-FC1-HF87-PHASE4-')||str_starts_with($v,'RC1.8-FC1-HF87-PHASE5-'));
+$check('registration on login page',str_contains($login,'action" value="register')&&str_contains($login,'Registrieren und Demo öffnen'));
+$check('email described as customer key',str_contains($login,'Kundenschlüssel')&&str_contains($login,'register_email'));
+$check('registration API client',str_contains($client,'registerAccount')&&str_contains($client,'/api/v1/account/register'));
+$check('demo payload accepted',str_contains($login,"\$mode==='demo'")&&str_contains($login,"'manager_mode'=>\$mode"));
+$check('profile refresh supports demo',str_contains($boot,"\$mode==='demo'")&&str_contains($boot,'enterprise_refresh_customer_license'));
+$check('demo has no permissions',str_contains($boot,"\$user['permissions']=\$mode==='demo'?[]"));
+$check('central demo path guard',str_contains($boot,"'/app/dashboard.php','/app/account.php'")&&str_contains($boot,'http_response_code(403)'));
+$check('demo dashboard isolated',str_contains($dash,'Demo-Version')&&(str_contains($dash,'produktive Projekte')||str_contains($dash,'Produktive Inhalte'))&&str_contains($dash,'enterprise_is_demo'));
+$check('demo account limited',str_contains($account,'ACCOUNT_LICENSE_REQUIRED')&&str_contains($account,'if(!$isDemo)'));
+$check('register button centrally registered',str_contains($buttons,"'registrieren' =>")&&str_contains($login,"easyit_button_attributes('registrieren')"));
+exit($fail===0?0:1);

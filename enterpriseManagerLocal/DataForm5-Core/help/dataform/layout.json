@@ -1,0 +1,188 @@
+{
+  "id": "dataform.layout",
+  "title": "Layout",
+  "page": {
+    "name": "Layout",
+    "context": "DataForm-Designer",
+    "description": "Auf dieser Seite wird die visuelle Struktur einer DataForm aufgebaut. Layoutobjekte strukturieren die Oberfläche, ohne das zugrunde liegende Datenmodell zu verändern."
+  },
+  "short": {
+    "title": "Kurzhilfe",
+    "text": "Mit Layoutobjekten strukturieren Sie die Oberfläche einer DataForm. Sie können Seiten, Gruppen und Registergruppen anlegen und damit Felder später übersichtlich anordnen. Das Layout verändert nicht die Tabellen-, Feld- oder Relationsdefinitionen."
+  },
+  "contextLinks": [
+    {
+      "id": "dataform.settings",
+      "label": "Einstellungen",
+      "description": "Standardansicht, Dialoggröße und AddCSS werden in den Einstellungen gepflegt."
+    },
+    {
+      "id": "dataform.form",
+      "label": "Formular",
+      "description": "Feldbreiten und die konkrete Formularanordnung werden im Formular-Designer bearbeitet."
+    },
+    {
+      "id": "dataform.preview",
+      "label": "Realvorschau",
+      "description": "Das fertige Layout wird mit echten Datensätzen in der Realvorschau geprüft."
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "title": "Elementtyp auswählen",
+      "text": "Wählen Sie unter „Elementtyp“ das gewünschte Layoutobjekt aus. Für den ersten Aufbau ist normalerweise eine Seite ein sinnvoller Einstieg."
+    },
+    {
+      "step": 2,
+      "title": "Titel vergeben",
+      "text": "Tragen Sie einen aussagekräftigen Titel ein, zum Beispiel „Persönliche Daten“, „Adresse“ oder „Zusatzinformationen“."
+    },
+    {
+      "step": 3,
+      "title": "Layoutobjekt hinzufügen",
+      "text": "Betätigen Sie den zentral registrierten Hinzufügen-Button. Das neue Layoutobjekt erscheint anschließend in der Layoutstruktur."
+    },
+    {
+      "step": 4,
+      "title": "Struktur aufbauen",
+      "text": "Ergänzen Sie weitere Seiten, Gruppen oder Registergruppen und ordnen Sie diese hierarchisch entsprechend der gewünschten Benutzeroberfläche an."
+    },
+    {
+      "step": 5,
+      "title": "Formularfelder zuordnen",
+      "text": "Wechseln Sie anschließend in den Formular-Designer und ordnen Sie die eigentlichen DataForm-Felder den vorgesehenen Layoutbereichen zu."
+    },
+    {
+      "step": 6,
+      "title": "Darstellung prüfen",
+      "text": "Kontrollieren Sie das Ergebnis in der Realvorschau mit echten Datensätzen. Prüfen Sie insbesondere Reihenfolge, Gruppierung, Feldbreiten und Bedienbarkeit."
+    }
+  ],
+  "elementTypes": [
+    {
+      "type": "page",
+      "label": "Seite",
+      "description": "Eine Seite bildet einen größeren eigenständigen Bereich der DataForm. Sie eignet sich als oberste Ebene für umfangreiche Formulare.",
+      "example": "Persönliche Daten"
+    },
+    {
+      "type": "group",
+      "label": "Gruppe",
+      "description": "Eine Gruppe fasst fachlich zusammengehörige Felder innerhalb einer Seite oder eines anderen geeigneten Layoutcontainers zusammen.",
+      "example": "Anschrift"
+    },
+    {
+      "type": "tabgroup",
+      "label": "Registergruppe",
+      "description": "Eine Registergruppe stellt mehrere Inhaltsbereiche platzsparend als Register beziehungsweise Tabs bereit.",
+      "example": "Stammdaten | Kontakt | Zusatzdaten"
+    }
+  ],
+  "fields": [
+    {
+      "name": "elementType",
+      "label": "Elementtyp",
+      "type": "select",
+      "required": true,
+      "description": "Bestimmt, welcher Layoutbaustein erzeugt wird."
+    },
+    {
+      "name": "title",
+      "label": "Titel",
+      "type": "text",
+      "required": true,
+      "description": "Sichtbare beziehungsweise fachliche Bezeichnung des Layoutobjekts.",
+      "example": "Persönliche Daten"
+    }
+  ],
+  "layoutStructure": {
+    "title": "Layoutstruktur",
+    "emptyState": {
+      "headline": "Noch keine Layoutobjekte",
+      "text": "Beginnen Sie mit einer Seite, Gruppe oder Registergruppe."
+    },
+    "description": "Die Layoutstruktur zeigt alle bereits angelegten Layoutobjekte in ihrer hierarchischen Anordnung. Hier wird sichtbar, welche Bereiche über- oder untergeordnet sind."
+  },
+  "expert": {
+    "title": "Expertenmodus",
+    "text": "Layoutobjekte gehören ausschließlich zur Präsentations- und Strukturierungsebene einer DataForm. Sie dürfen keine Tabellen-, Feld-, Schlüssel- oder Relationsdefinitionen verändern. Die fachlichen Daten bleiben im Recordset beziehungsweise Datenmodell verankert. Das Layout beschreibt lediglich, wie diese Datenbereiche in der Oberfläche organisiert und später im Formular-Designer mit konkreten Feldern belegt werden.",
+    "rules": [
+      "Layoutdefinition und Datenmodell strikt trennen.",
+      "Eine Layoutänderung darf keine Datenmigration auslösen.",
+      "Feldzuordnungen werden im Formular-Designer gepflegt, nicht im Layout-Designer.",
+      "Standardansicht, Dialoggröße und AddCSS gehören in die DataForm-Einstellungen.",
+      "Die Realvorschau dient der Prüfung mit tatsächlichen Datensätzen.",
+      "Aktionsbuttons verwenden die zentrale Button-Registry; lokale farbige oder verlaufende CSS-Buttons sind nicht vorgesehen.",
+      "Titel und aria-label von registrierten Aktionsbuttons stammen aus der zentralen Button-Registry.",
+      "Leere Layoutobjekte sind technisch möglich, sollten aber nur bewusst als vorbereitete Struktur verwendet werden."
+    ]
+  },
+  "examples": [
+    {
+      "title": "Einfaches Formular",
+      "structure": [
+        "Seite: Persönliche Daten",
+        "  Gruppe: Name",
+        "  Gruppe: Anschrift",
+        "  Gruppe: Kontakt"
+      ]
+    },
+    {
+      "title": "Formular mit Registergruppe",
+      "structure": [
+        "Seite: Person",
+        "  Registergruppe: Personendaten",
+        "    Register: Stammdaten",
+        "    Register: Kontakt",
+        "    Register: Zusatzinformationen"
+      ]
+    },
+    {
+      "title": "Mehrseitige DataForm",
+      "structure": [
+        "Seite: Stammdaten",
+        "Seite: Beziehungen",
+        "Seite: Dokumentation",
+        "Seite: Historie"
+      ]
+    }
+  ],
+  "typicalErrors": [
+    {
+      "problem": "Es wurden noch keine Layoutobjekte angelegt.",
+      "solution": "Wählen Sie einen Elementtyp, vergeben Sie einen Titel und fügen Sie das erste Layoutobjekt hinzu."
+    },
+    {
+      "problem": "Felder werden im Layout-Designer gesucht.",
+      "solution": "Der Layout-Designer erzeugt nur Strukturcontainer. Die Feldanordnung erfolgt anschließend im Formular-Designer."
+    },
+    {
+      "problem": "Die Darstellung in der Laufzeit stimmt nicht mit der Erwartung überein.",
+      "solution": "Prüfen Sie Standardansicht und Dialoggröße in den Einstellungen, die Feldanordnung im Formular-Designer und anschließend die Realvorschau."
+    },
+    {
+      "problem": "Layout und Datenstruktur werden miteinander verwechselt.",
+      "solution": "Änderungen an Tabellen, Feldern oder Relationen werden nicht hier, sondern in den dafür vorgesehenen Datenmodell- beziehungsweise Recordset-Bereichen vorgenommen."
+    }
+  ],
+  "recommendedWorkflow": [
+    "Datenmodell und Recordsets definieren.",
+    "DataForm-Grundeinstellungen festlegen.",
+    "Layoutstruktur erstellen.",
+    "Formularfelder im Formular-Designer zuordnen.",
+    "Feldbreiten und Reihenfolge optimieren.",
+    "Realvorschau mit echten Datensätzen prüfen.",
+    "Bei Bedarf Layout nachjustieren."
+  ],
+  "helpIds": {
+    "settings": "dataform.settings",
+    "form": "dataform.form",
+    "preview": "dataform.preview",
+    "layout": "dataform.layout"
+  },
+  "document": {
+    "path": "docs/dataform/layout.html",
+    "anchor": "layout"
+  }
+}

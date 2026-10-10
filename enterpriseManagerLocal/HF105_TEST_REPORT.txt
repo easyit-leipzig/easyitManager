@@ -1,0 +1,19 @@
+HF105 Calendar + DataForm Full Integration
+Date: 2026-09-25
+
+PASS: PHP syntax – Calendar product
+PASS: PHP syntax – modified DataForm/core integration files
+PASS: JavaScript syntax – calendar.js / bootstrap.js
+PASS: HF105 Calendar/DataForm integration gate (16 checks)
+PASS: HF89 Phase 8 Calendar gate
+PASS: HF90 Phase 9 Calendar setup gate
+PASS: HF91 Phase 10 Calendar runtime gate (HF105 successor path accepted)
+PASS: HF92 Phase 11 Calendar maintenance gate
+PASS: CSV functional integration test
+      - 7 DataForm bindings created
+      - DataFormRecordStore create/find successful
+      - 6 Calendar/DataForm relations created
+      - no integration warnings
+
+Environment limitation:
+The container PHP runtime has no pdo_sqlite extension, therefore a live SQLite integration test could not be executed here. SQLite/PgSQL/MySQL/MSSQL portability remains routed through the existing Enterprise project-store/DataForm compatibility layers and all relevant PHP syntax/static gates passed.

@@ -1,0 +1,17 @@
+HF129 ONE-STEP INSTALLATION - STATIC VALIDATION
+Date: 2026-10-01
+
+PASS - Application.php PHP syntax
+PASS - AdminApp.php PHP syntax
+PASS - BootstrapActivationService.php PHP syntax
+PASS - ActivationService.php PHP syntax
+PASS - /api/v1/bootstrap/local-activate endpoint exists
+PASS - endpoint rejects non-loopback REMOTE_ADDR
+PASS - bootstrap secret is generated only inside the license-server process
+PASS - secret is passed directly to existing ActivationService
+PASS - successful bootstrap activation consumes/invalidates the secret
+PASS - existing manual bootstrap generation remains available as Recovery
+PASS - HF116 bootstrap regression gate 12/12
+
+Integration note:
+A live Apache/PDO/MySQL round-trip cannot be executed in this build container. Deploy this server package before the paired Enterprise Manager HF129 package.

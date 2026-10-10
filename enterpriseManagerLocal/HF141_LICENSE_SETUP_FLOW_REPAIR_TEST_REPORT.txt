@@ -1,0 +1,5 @@
+PASS - canonical rebuild
+PASS - backslash normalization
+PASS - setup.php target
+PASS - setup required guidance
+PASS - ready gate remains

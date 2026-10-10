@@ -1,0 +1,38 @@
+HF111 – License Server Trust Repair
+===================================
+
+Build:
+RC1.8-FC1-HF111-LICENSE-SERVER-TRUST-REPAIR
+
+Problem reproduced conceptually:
+A manager with an already pinned Ed25519 server key rejects responses from a reinstalled license server that signs with a different key, even when the reused key ID is identical. This is intentionally secure behavior but previously lacked an explicit repair workflow.
+
+HF111 changes:
+- Health discovery verifies the Health response with the public key advertised by the server trust bundle.
+- A changed trust anchor is never silently accepted.
+- Local administration can probe the current server key and display old/new SHA-256 fingerprints.
+- Re-pairing requires the exact confirmation text: NEU KOPPELN.
+- The server is queried again before replacement; the fingerprint must still match the probed fingerprint.
+- Static trust is replaced only after explicit confirmation.
+- Dynamic/revoked server trust cache is reset to the confirmed anchor.
+- Installation ID, installation key pair and activation state are preserved.
+- Trust repairs are recorded locally as fingerprint history.
+- Login errors SERVER_SIGNATURE_UNTRUSTED / SERVER_SIGNATURE_INVALID link directly to local administration.
+
+Regression gates:
+HF105 Calendar/DataForm integration: 16/16 PASS
+HF107 easyit_license admin DB gate: 10/10 PASS
+HF108 license extension gate: 9/9 PASS
+HF87 differentiated license request gate: 7/7 PASS
+HF111 server trust repair gate: 10/10 PASS
+
+Syntax:
+910 PHP files checked
+910 PASS
+0 FAIL
+
+Cryptographic compatibility check:
+HF110 ServerSigner generated a fresh Ed25519 pair, signed a Health-compatible JSON response, and the signature verified with the corresponding published public key: PASS.
+
+Limitations of this build environment:
+No browser/XAMPP instance from the user's machine is available here, so the final HTTP round trip against the user's local localhost installation must be verified after deployment. The repair flow itself is guarded by the checks above.

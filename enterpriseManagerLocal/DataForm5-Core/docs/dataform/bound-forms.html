@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataForm 5 – Gebundene Formulare</title>
+<style>
+body{font:15px/1.6 "Segoe UI",Arial,sans-serif;margin:0;background:#f5f7fa;color:#1f2937}
+main{max-width:1100px;margin:auto;padding:30px}
+section{background:#fff;border:1px solid #d8dee8;border-radius:10px;padding:25px 28px;margin-bottom:20px}
+h1,h2{color:#183f63}code{font-family:Consolas,monospace}
+pre{overflow:auto;background:#101820;color:#edf5fa;padding:16px;border-radius:7px}
+table{width:100%;border-collapse:collapse}th,td{padding:9px;border:1px solid #d8dee8;text-align:left;vertical-align:top}th{background:#edf3f8}
+.note{border-left:5px solid #3978ad;background:#eef6fc;padding:12px 14px}
+</style>
+</head>
+<body>
+<main>
+<section id="bound-forms">
+<h1>Gebundene Formulare</h1>
+<p>Ein gebundenes Formular stellt Kinddatensätze zu einem aktuellen Hauptdatensatz dar. Der Schlüssel des Hauptdatensatzes wird bei einem neuen Kinddatensatz automatisch in das gebundene Kindfeld übernommen.</p>
+
+<div class="note">
+<strong>Standard:</strong> Das gebundene Kindfeld ist schreibgeschützt. Die Einstellung <code>boundFieldReadonly</code> hat deshalb den Vorgabewert <code>true</code>.
+</div>
+
+<h2>Beispiel</h2>
+<pre><code>ed_ev.id = 9201
+        ↓
+ed_ev_info.to_ev_id = 9201</code></pre>
+
+<p>Beim neuen Kinddatensatz darf nicht „Eltern-Datensatz wählen“ erscheinen. Der Wert ist bereits durch den aktuellen Hauptdatensatz bestimmt.</p>
+</section>
+
+<section>
+<h2>Designer-Einstellungen</h2>
+<table>
+<thead><tr><th>Einstellung</th><th>Default</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td><code>inheritParentValue</code></td><td><code>true</code></td><td>Verbindlich. Der Parent-Wert wird als Child-Wert übernommen.</td></tr>
+<tr><td><code>boundFieldReadonly</code></td><td><code>true</code></td><td>Bestimmt, ob der vorbelegte Child-Wert vom Benutzer geändert werden darf.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>Read-only = true</h2>
+<pre><code>Parent-ID:        9201
+Child to_ev_id:   9201
+Änderbar:         nein</code></pre>
+<p>Der Server erzwingt den Wert erneut. Selbst ein manipulierter Browser-Request kann dadurch keinen abweichenden Fremdschlüssel speichern.</p>
+</section>
+
+<section>
+<h2>Read-only = false</h2>
+<pre><code>Parent-ID:        9201
+Initialwert:      9201
+Änderbar:         ja</code></pre>
+<p>Der Benutzer darf den Datensatz bewusst einem anderen Parent zuordnen. Nach dem Speichern kann er deshalb aus der aktuellen, auf <code>9201</code> gefilterten Kindansicht verschwinden.</p>
+</section>
+
+<section>
+<h2>Noch nicht gespeicherter Parent</h2>
+<p>Besitzt der Hauptdatensatz noch keine ID, darf kein persistenter Kinddatensatz angelegt werden. Der New-Record-Button des Child-Recordsets wird deaktiviert und erhält den Hinweis „Hauptdatensatz zuerst speichern“.</p>
+</section>
+
+<section>
+<h2>dataformContext</h2>
+<pre><code>{
+  "relations": {
+    "parent": {
+      "recordsetId": "rs_ed_ev",
+      "keyField": "id",
+      "keyValue": 9201,
+      "childRecordsetId": "rs_ed_ev_info",
+      "childField": "to_ev_id",
+      "binding": {
+        "inherited": true,
+        "readonly": true
+      }
+    }
+  }
+}</code></pre>
+</section>
+</main>
+</body>
+</html>

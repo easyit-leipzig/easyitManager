@@ -1,0 +1,12 @@
+{
+  "name": "Themes",
+  "version": "1.0.0",
+  "enabled": false,
+  "description": "easyIT DataForm Modul Themes",
+  "key": "themes",
+  "category": "Darstellung",
+  "required": false,
+  "dependencies": [
+    "designer"
+  ]
+}

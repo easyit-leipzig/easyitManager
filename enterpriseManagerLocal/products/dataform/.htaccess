@@ -1,0 +1,14 @@
+# HF26 – DataForm unique runtime entry
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^index\.php$ runtime.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+Header set X-EasyIT-DataForm-Apache-Route "HF26"
+</IfModule>
+
+# HF76 – allow OpenAPI-friendly REST paths after api-runtime.php
+<Files "api-runtime.php">
+    AcceptPathInfo On
+</Files>

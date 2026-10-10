@@ -1,0 +1,20 @@
+{
+  "id": "recordset",
+  "title": "Recordset-Callbacks",
+  "short": {
+    "text": "Recordset-Callbacks reagieren auf Lifecycle-Ereignisse wie Öffnen, Speichern, Löschen und Navigation. Jeder Callback erhält dataformContext als einziges Übergabeobjekt."
+  },
+  "steps": [
+    "Gewünschtes Lifecycle-Feld auswählen.",
+    "Benannten Callback eintragen, z. B. afterSave(dataformContext).",
+    "Funktion in der zentralen Callback-Registry registrieren.",
+    "Datensatzaktion ausführen und Ergebnis im dataformContext prüfen."
+  ],
+  "expert": {
+    "text": "Callback-Konfigurationen werden sicher aufgelöst und nicht mit eval() ausgeführt. before*-Callbacks können die Aktion kontrolliert abbrechen. after*-Callbacks reagieren auf das abgeschlossene Operationsergebnis."
+  },
+  "document": {
+    "path": "docs/dataform/dataformContext.html",
+    "anchor": "callbacks"
+  }
+}

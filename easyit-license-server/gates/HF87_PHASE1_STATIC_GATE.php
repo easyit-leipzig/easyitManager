@@ -1,0 +1,24 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=0;
+$check=function(string $name,bool $ok,string $detail='')use(&$fail):void{echo($ok?'PASS ':'FAIL ').$name.($detail!==''?' - '.$detail:'').PHP_EOL;if(!$ok)$fail++;};
+$file=function(string $rel)use($root):string{$v=@file_get_contents($root.'/'.$rel);return $v===false?'':$v;};
+$account=$file('src/Service/AccountService.php');
+$app=$file('src/App/Application.php');
+$migration=$file('src/Database/MigrationRunner.php');
+$admin=$file('src/Admin/AdminApp.php');
+$check('version HF87 phase1',trim($file('VERSION'))==='RC1.8-FC1-HF87-PHASE1-SELFREG-DEMO'||str_starts_with(trim($file('VERSION')),'RC1.8-FC1-HF87-PHASE2-')||str_starts_with(trim($file('VERSION')),'RC1.8-FC1-HF87-PHASE3-')||str_starts_with(trim($file('VERSION')),'RC1.8-FC1-HF87-PHASE4-')||str_starts_with(trim($file('VERSION')),'RC1.8-FC1-HF87-PHASE5-'));
+$check('register endpoint',str_contains($app,'/api/v1/account/register'));
+$check('request compatibility alias',str_contains($account,'return $this->register($data,$requestId);'));
+$check('email normalized customer key',str_contains($account,'normalizeEmail')&&str_contains($account,"'customer_key'=>\$email"));
+$check('customer key schema',str_contains($migration,'customer_key VARCHAR(255)')&&str_contains($migration,'ux_customers_customer_key'));
+$check('duplicate customer keys blocked',str_contains($migration,'CUSTOMER_KEY_DUPLICATE'));
+$check('registration active account',str_contains($account,"'customer_admin',\$now,\$now"));
+$check('demo login permitted',str_contains($account,"\$mode='demo'")&&str_contains($account,"'license'=>\$lic===null?null"));
+$check('licensed login permitted',str_contains($account,"\$mode='licensed'"));
+$check('demo profile',str_contains($account,"'manager_mode'=>'demo'")&&str_contains($account,"'productive_resources'=>false"));
+$check('licensed actions require license',str_contains($account,'ACCOUNT_LICENSE_REQUIRED'));
+$check('late license resolution',str_contains($account,'resolveUsableLicense')&&str_contains($account,'UPDATE customer_users SET license_id=?'));
+$check('new license binds unassigned users',str_contains($admin,'UPDATE customer_users SET license_id=?')&&str_contains($admin,"license_id IS NULL OR license_id=''"));
+$check('customer ui uses customer key',str_contains($admin,'customer_key')&&str_contains($admin,'Kundenschlüssel'));
+exit($fail===0?0:1);

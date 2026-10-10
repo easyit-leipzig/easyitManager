@@ -1,0 +1,16 @@
+HF134 Calendar PHP-API Export – Testbericht
+
+PASS – Root-bootstrap.php ist Bestandteil der Standalone-Pflichtprüfung.
+PASS – src/Calendar.php, BaseRepository.php, EventRepository.php, PlaceRepository.php und CategoryRepository.php liegen in der Manager-Runtime.
+PASS – Exporter übernimmt easyITCalendar/src vollständig.
+PASS – Exporter übernimmt easyITCalendar/examples vollständig.
+PASS – Exporter übernimmt easyITCalendar/config vollständig.
+PASS – Exporter übernimmt easyITCalendar/public vollständig.
+PASS – docs/PHP-API.md wird über den bestehenden docs-Baum exportiert.
+PASS – PHP-Lint aller neuen PHP-Dateien erfolgreich.
+PASS – Delivery-Manifest des neu erzeugten Calendar-Pakets meldet Runtime HF134.
+
+Zielaufruf nach Export:
+require_once __DIR__ . '/../easyITCalendar/bootstrap.php';
+$calendar = new Calendar();
+$calendar->render();

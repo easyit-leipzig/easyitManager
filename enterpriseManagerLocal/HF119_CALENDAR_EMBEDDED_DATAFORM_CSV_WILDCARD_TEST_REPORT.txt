@@ -1,0 +1,30 @@
+HF119 – Calendar Embedded DataForm / CSV Wildcard Repair
+Build: RC1.8-FC1-HF119-CALENDAR-EMBEDDED-DATAFORM-CSV-WILDCARD
+
+Konkrete Fehler aus dem reproduzierten Calendar-CSV-Projekt:
+- Ungültiger CSV-SQL-Bezeichner: *                         BEHOBEN
+- Calendar-DataForms: LICENSE_NOT_ACTIVATED                BEHOBEN
+- bestehender status=registration_error                    -> embedded_calendar
+
+HF119 Gate
+- Buildkennung                                               PASS
+- CSV emuliert DataForm-Binding-JOIN                         PASS
+- Alias-Wildcards b.* / d.*                                  PASS
+- Calendar markiert interne DataForms                        PASS
+- zentrale DF-Registrierung überspringt Calendar intern      PASS
+- Calendar-Workspace fordert keine Einzel-DF-Lizenz          PASS
+- Binding-JOIN mit WHERE und b.*                             PASS
+- SELECT d.*                                                 PASS
+- registration_error -> embedded_calendar                    PASS
+Ergebnis: 9/9 PASS
+
+Regression
+- HF118 CSV Relations / Expressions                          10/10 PASS
+- HF117 Audit Actor FK                                       8/8 PASS
+- HF112 Installer Admin Schema                              10/10 PASS
+- HF111 License Server Trust                                10/10 PASS
+- HF107 Admin DB easyit_license                             10/10 PASS
+- HF105 Calendar/DataForm                                    16/16 PASS
+
+PHP-Syntax
+- 916/916 PHP-Dateien ohne Syntaxfehler                      PASS

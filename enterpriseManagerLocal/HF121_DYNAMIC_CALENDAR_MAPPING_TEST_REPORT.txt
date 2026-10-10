@@ -1,0 +1,119 @@
+HF121 Dynamic Calendar Mapping Test Report
+Generated: 2026-09-25
+
+PASS - HF121 Buildkennung
+PASS - Default-Mapping enthält erweiterbare Lookup-Zuordnungen
+PASS - Calendar-Konfiguration ist auf Version 4 angehoben
+PASS - Calendar-Zuordnungsoberfläche ist dynamisch erweiterbar
+PASS - Admin-API validiert dynamische Felder und Lookup-Ziele
+PASS - Gespeicherte Quelltabelle wird zur aktiven Calendar-Eventtabelle
+PASS - Runtime besitzt normalisierten dynamischen Mapping-Vertrag
+PASS - Calendar-Handler verwendet Zuordnungen statt feste Kernfeldnamen
+PASS - Neue Projekte erhalten Ort/Ressource als Lookup-Mapping
+PASS - Explizite benutzerdefinierte Zuordnungen werden vollständig erhalten
+PASS - Entfernte optionale Standardzuordnungen werden nicht automatisch wieder hinzugefügt
+PASS - Legacy-Mapping bleibt lesbar
+HF121 Dynamic Calendar Mapping gate: PASS (12/12)
+
+PASS - HF120 Buildkennung
+PASS - Calendar-Konfiguration führt places als achten eingebetteten Datenbereich
+PASS - Neue Calendar-Schemata enthalten places und numerische events.location
+PASS - Calendar/DataForm-Bridge provisioniert Orts-DataForm, Lookup und Legacy-Migration
+PASS - Calendar-Setup bietet Orte-Datenpflege und acht Bindings
+PASS - CSV-Schema erzeugt die Tabelle places mit Namensfeld
+PASS - Acht Calendar-DataForms werden auf CSV fehlerfrei provisioniert
+PASS - calendar_event_place ist n:1 von events auf places
+PASS - events.location ist das Lookup-Feld; places.name ist die Anzeige
+PASS - Legacy-Freitextort wird als places-Datensatz übernommen und events.location auf die ID migriert
+PASS - Calendar – Orte ist Calendar-intern lizenziert
+PASS - Ortsrelation ist laut RelationManager gesund
+HF120 Calendar event/place gate: PASS (12/12)
+
+PASS - HF119 Buildkennung
+PASS - CSV emuliert DataForm-Binding-JOIN
+PASS - Alias-Wildcards wie b.* sind im CSV-SELECT erlaubt
+PASS - Calendar markiert interne DataForms als eingebettet
+PASS - Zentrale DataForm-Registrierung überspringt Calendar-interne DataForms
+PASS - Calendar-Workspace fordert keine Einzel-DataForm-Lizenz mehr an
+PASS - CSV-Binding-JOIN funktioniert mit WHERE und b.*
+PASS - CSV SELECT d.* liefert Datensatz ohne Identifier-Fehler
+PASS - Bestehender registration_error wird zu embedded_calendar migriert
+HF119 Gate: PASS (9/9)
+
+PASS - information_schema.TABLES liefert echte CSV-Tabellennamen
+PASS - information_schema.TABLES liefert niemals den Pseudo-Bezeichner 0
+PASS - TABLE_NAME/TABLE_ROWS-Metadaten werden emuliert
+PASS - table_type-Abfrage funktioniert für CSV
+PASS - COALESCE(MAX(position),0)+10 liefert 30
+PASS - COALESCE/MAX auf leerer Feldmenge liefert 10
+PASS - DataForm-Synchronisierung erzeugt keine CSV-Identifier-/Positionswarnung
+PASS - Relationsdesigner erkennt events als CSV-Basistabelle
+PASS - Relationsdesigner kann CSV-Basistabellenspalten lesen
+PASS - ungültiger Introspektionswert 0 wird als nicht vorhandene Tabelle behandelt
+HF118 CSV relations gate: PASS (10/10)
+
+PASS - HF117 Buildkennung
+PASS - Zentraler Audit-Aktor-Resolver vorhanden
+PASS - Kundenkonto wird vom lokalen Benutzer-FK getrennt
+PASS - Remote Kunden-Aktor bleibt im Audit-Kontext nachvollziehbar
+PASS - Lokaler Audit-Benutzer wird vor FK-Nutzung verifiziert
+PASS - Veraltete lokale Benutzer-ID wird FK-sicher zu NULL
+PASS - audit_log.user_id ist nullable und FK-kompatibel
+PASS - Projekt-Provisionierung nutzt den zentral reparierten Auditpfad
+RESULT 8/8 PASS
+
+PASS - Pflichttabellen sind explizit definiert
+PASS - Realer Tabellenzustand wird geprüft
+PASS - Gezielte Basisreparatur ist vorhanden
+PASS - Gemeinsames Gate ist nicht an MySQL-information_schema gebunden
+PASS - Schritt 6 lädt das Admin-Schema-Gate
+PASS - Schritt 6 validiert das reale Schema vor Fortsetzung
+PASS - Schritt 7 lädt dasselbe Gate
+PASS - Schritt 7 kann abgebrochene Basisschemata reparieren
+PASS - MySQL-spezifische lokale tableExists-Prüfung wurde entfernt
+PASS - HF112-Version gesetzt
+RESULT 10/10 PASS
+
+PASS - HF111 Buildkennung
+PASS - Health-Antwort wird gegen publizierten Ed25519-Key geprüft
+PASS - Explizite Prüfen-/Neu-Koppeln-Aktionen vorhanden
+PASS - Explizite Admin-Bestätigung erforderlich
+PASS - Fingerprint wird vor Austausch erneut gebunden geprüft
+PASS - Stiller Trust-Austausch blockiert
+PASS - Neu-Kopplung wird lokal protokolliert
+PASS - Dynamischer Trust-Cache wird kontrolliert zurückgesetzt
+PASS - Login verweist bei Trust-Fehler auf lokale Administration
+PASS - Bestehende lokale Lizenz-Storage-Identität wird weiterverwendet
+
+PASS - HF107 Buildkennung / Nachfolgestand
+PASS - Runtime kanonisiert Legacy-Admin-DB auf easyit_license
+PASS - Bestehende .env wird gezielt repariert
+PASS - MySQL/MariaDB verwendet kanonischen Datenbanknamen
+PASS - MSSQL verwendet kanonischen Datenbanknamen
+PASS - Setup-Default ist easyit_license
+PASS - DB-Name und PostgreSQL-Schema sind getrennt
+PASS - Datenbank-Assistent verwendet easyit_license als Fallback
+PASS - Ausgeliefertes Grundprofil verwendet easyit_license
+PASS - Kein produktiver Runtime-Fallback auf easyit_admin
+RESULT 10/10 PASS
+
+PASS Calendar-DataForm-Bridge nutzt Manager, RecordStore und Relationen
+PASS Calendar-Datenbereiche einschließlich Orte werden als DataForms provisioniert
+PASS Basisrelationen werden provisioniert
+PASS Terminbasis enthält Ganztägig, Ort-, Ressourcen- und Kategorie-Lookups
+PASS Neue Calendar-Projekte provisionieren DataForm automatisch
+PASS Calendar-Projektkonfiguration v3/v4 enthält DataForm- und Orts-Gates
+PASS Calendar-Auslieferung enthält die verbindliche DataForm-Schicht
+PASS Setup besitzt keine eigene Calendar-CRUD-Datenpflege mehr
+PASS Setup führt Datenpflege, Konfiguration und Relationen über DataForm
+PASS Fest codierter Calendar-Termindialog ist entfernt
+PASS Calendar öffnet DataForm-Termindialog und verarbeitet den echten DataForm-Save-Event
+PASS Calendar-API nutzt RecordStore statt eigener SQL-CRUD-Schicht
+PASS Legacy-Maintenance delegiert vollständig an DataForm
+PASS DataForm-Record-Runtime unterstützt Calendar intern und Dialog-Defaults
+PASS DataForm-Konfiguration akzeptiert Calendar-Projekte vollständig
+PASS DataForm-Relationen akzeptieren Calendar-Projekte
+HF105 Calendar/DataForm Gate: PASS (16 checks)
+
+PHP syntax: 918/918 PASS
+JavaScript syntax (products/calendar/admin.php): PASS

@@ -1,0 +1,25 @@
+{
+  "id": "dataformContext",
+  "title": "dataformContext",
+  "short": {
+    "text": "dataformContext ist das zentrale, JSON-kompatible Übergabeobjekt für DataForm-Aktionen und Recordset-Callbacks. Es enthält den aktuellen DataForm-, Recordset-, Datensatz-, Werte-, Relations-, Status-, Validierungs- und Ergebniszustand."
+  },
+  "steps": [
+    "JavaScript-Callback als benannte Funktion implementieren.",
+    "Callback zentral registrieren.",
+    "Im Recordset-Ereignis z. B. afterSave(dataformContext) eintragen.",
+    "Im Callback ausschließlich den übergebenen dataformContext auswerten.",
+    "Für Folgeaktionen DataFormRuntime bzw. die zentrale DataForm-API verwenden."
+  ],
+  "expert": {
+    "text": "Der Kontext ist ein Snapshot zum Lifecycle-Zeitpunkt und wird zentral im DataForm-Kern aufgebaut. values.original, values.current und values.changed sind getrennt. afterSave enthält zusätzlich result mit operation, recordId, affectedRows und Fehlerstatus. DOM-Knoten, DB-Zugangsdaten und ausführbare Funktionen gehören nicht in den Kontext."
+  },
+  "document": {
+    "path": "docs/dataform/dataformContext.html",
+    "anchor": "struktur"
+  },
+  "examples": {
+    "path": "docs/dataform/dataformContext.html",
+    "anchor": "praxis-js"
+  }
+}

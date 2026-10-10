@@ -1,0 +1,206 @@
+/* easyIT Enterprise HF76-FIX7 – canonical image buttons
+ *
+ * The supplied PNG buttonset is the only visual source for action buttons.
+ * Keine farbigen/gradienten Button-Hintergründe mehr.
+ * Historical filename retained for compatibility with existing layouts.
+ */
+:root{
+  --easyit-image-button-size:46px;
+  --easyit-record-pointer-size:34px;
+}
+[data-button="neu"]{--easyit-button-image:url("../img/neu.png")}
+[data-button="bearbeiten"]{--easyit-button-image:url("../img/bearbeiten.png")}
+[data-button="loeschen"]{--easyit-button-image:url("../img/loeschen.png")}
+[data-button="speichern"]{--easyit-button-image:url("../img/speichern.png")}
+[data-button="abbrechen"]{--easyit-button-image:url("../img/abbrechen.png")}
+[data-button="anzeigen"]{--easyit-button-image:url("../img/anzeigen.png")}
+[data-button="kopieren"]{--easyit-button-image:url("../img/kopieren.png")}
+[data-button="duplizieren"]{--easyit-button-image:url("../img/duplizieren.png")}
+[data-button="schliessen"]{--easyit-button-image:url("../img/schliessen.png")}
+[data-button="mehr"]{--easyit-button-image:url("../img/mehr.png")}
+[data-button="suchen"]{--easyit-button-image:url("../img/suchen.png")}
+[data-button="filter"]{--easyit-button-image:url("../img/filter.png")}
+[data-button="filter_loeschen"]{--easyit-button-image:url("../img/filter_loeschen.png")}
+[data-button="aktualisieren"]{--easyit-button-image:url("../img/aktualisieren.png")}
+[data-button="sortieren_auf"]{--easyit-button-image:url("../img/sortieren_auf.png")}
+[data-button="sortieren_ab"]{--easyit-button-image:url("../img/sortieren_ab.png")}
+[data-button="spalten"]{--easyit-button-image:url("../img/spalten.png")}
+[data-button="tabelle"]{--easyit-button-image:url("../img/tabelle.png")}
+[data-button="formular"]{--easyit-button-image:url("../img/formular.png")}
+[data-button="importieren"]{--easyit-button-image:url("../img/importieren.png")}
+[data-button="exportieren"]{--easyit-button-image:url("../img/exportieren.png")}
+[data-button="hochladen"]{--easyit-button-image:url("../img/hochladen.png")}
+[data-button="herunterladen"]{--easyit-button-image:url("../img/herunterladen.png")}
+[data-button="drucken"]{--easyit-button-image:url("../img/drucken.png")}
+[data-button="erster_ds"]{--easyit-button-image:url("../img/erster_ds.png")}
+[data-button="vorheriger_ds"]{--easyit-button-image:url("../img/vorheriger_ds.png")}
+[data-button="aktueller_ds"]{--easyit-button-image:url("../img/aktueller_ds.png")}
+[data-button="naechster_ds"]{--easyit-button-image:url("../img/naechster_ds.png")}
+[data-button="letzter_ds"]{--easyit-button-image:url("../img/letzter_ds.png")}
+[data-button="neuer_ds"]{--easyit-button-image:url("../img/neuer_ds.png")}
+[data-button="normaler_ds"]{--easyit-button-image:url("../img/normaler_ds.png")}
+[data-button="auswaehlen"]{--easyit-button-image:url("../img/auswaehlen.png")}
+[data-button="beziehung"]{--easyit-button-image:url("../img/beziehung.png")}
+[data-button="beziehung_neu"]{--easyit-button-image:url("../img/beziehung_neu.png")}
+[data-button="beziehung_loeschen"]{--easyit-button-image:url("../img/beziehung_loeschen.png")}
+[data-button="lookup"]{--easyit-button-image:url("../img/lookup.png")}
+[data-button="backup"]{--easyit-button-image:url("../img/backup.png")}
+[data-button="restore"]{--easyit-button-image:url("../img/restore.png")}
+[data-button="archivieren"]{--easyit-button-image:url("../img/archivieren.png")}
+[data-button="wiederherstellen"]{--easyit-button-image:url("../img/wiederherstellen.png")}
+[data-button="sperren"]{--easyit-button-image:url("../img/sperren.png")}
+[data-button="entsperren"]{--easyit-button-image:url("../img/entsperren.png")}
+[data-button="einstellungen"]{--easyit-button-image:url("../img/einstellungen.png")}
+[data-button="hilfe"]{--easyit-button-image:url("../img/hilfe.png")}
+[data-button="info"]{--easyit-button-image:url("../img/info.png")}
+[data-button="warnung"]{--easyit-button-image:url("../img/warnung.png")}
+[data-button="bestaetigen"]{--easyit-button-image:url("../img/bestaetigen.png")}
+[data-button="start"]{--easyit-button-image:url("../img/start.png")}
+[data-button="anmelden"]{--easyit-button-image:url("../img/anmelden.png")}
+[data-button="abmelden"]{--easyit-button-image:url("../img/abmelden.png")}
+[data-button="verlauf"]{--easyit-button-image:url("../img/verlauf.png")}
+[data-button="favorit"]{--easyit-button-image:url("../img/favorit.png")}
+
+/* HF76-FIX5 – HARD IMAGE RENDERING LAYER */
+/* HF76-FIX6 – ABSOLUTE BUTTONSET RESET */
+
+/* Project-wide pre-decoration reset: action controls never paint a legacy colour,
+   even during the short interval before the registry adapter decorates them. */
+html body button:not([data-button-skip]),
+html body a.button,
+html body input[type="submit"],
+html body input[type="button"],
+html body input[type="reset"]{
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+/* Canonical action container: never paints a semantic colour. */
+html body button[data-button],
+html body a[data-button],
+html body input[data-button],
+html body [role="button"][data-button],
+html body .easyit-image-button{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:var(--easyit-image-button-size)!important;
+  min-width:var(--easyit-image-button-size)!important;
+  max-width:var(--easyit-image-button-size)!important;
+  height:var(--easyit-image-button-size)!important;
+  min-height:var(--easyit-image-button-size)!important;
+  max-height:var(--easyit-image-button-size)!important;
+  padding:0!important;
+  margin:.12rem!important;
+  border:0!important;
+  border-radius:0!important;
+  outline-offset:2px!important;
+  background:none!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  color:transparent!important;
+  font-size:0!important;
+  line-height:0!important;
+  text-indent:0!important;
+  text-decoration:none!important;
+  overflow:visible!important;
+  cursor:pointer!important;
+}
+html body button[data-button]::before,
+html body button[data-button]::after,
+html body a[data-button]::before,
+html body a[data-button]::after,
+html body [role="button"][data-button]::before,
+html body [role="button"][data-button]::after,
+html body .easyit-image-button::before,
+html body .easyit-image-button::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+html body button[data-button] > :not(img.easyit-button-image),
+html body a[data-button] > :not(img.easyit-button-image),
+html body [role="button"][data-button] > :not(img.easyit-button-image){
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  margin:-1px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+html body img.easyit-button-image{
+  display:block!important;
+  position:static!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  object-fit:contain!important;
+  pointer-events:none!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+/* INPUT controls cannot contain IMG children; only the canonical PNG is used. */
+html body input.easyit-image-button[data-button],
+html body input.easyit-image-button-input[data-button]{
+  display:inline-block!important;
+  background-color:transparent!important;
+  background-image:var(--easyit-button-image)!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+}
+/* Real DS graphics are reserved for record navigation. */
+html body .df-record-pointer[data-button],
+html body .df-pagination-record-jump[data-button]{
+  width:var(--easyit-record-pointer-size)!important;
+  min-width:var(--easyit-record-pointer-size)!important;
+  max-width:var(--easyit-record-pointer-size)!important;
+  height:var(--easyit-record-pointer-size)!important;
+  min-height:var(--easyit-record-pointer-size)!important;
+  max-height:var(--easyit-record-pointer-size)!important;
+}
+html body [data-button]:hover{filter:brightness(1.06)!important;transform:translateY(-1px)!important}
+html body [data-button]:active{filter:brightness(.98)!important;transform:translateY(1px)!important}
+html body [data-button]:focus-visible{outline:3px solid currentColor!important}
+html body [data-button]:disabled,
+html body [data-button][aria-disabled="true"]{opacity:.42!important;filter:grayscale(.45)!important;cursor:not-allowed!important;transform:none!important}
+/* Unresolved controls are deliberately detectable during development; no fake icon is assigned. */
+[data-button-unresolved="1"]{--easyit-button-unresolved:1}
+/* RC1.8 publication extension: newly canonical standard-action images. */
+[data-button="rueckgaengig"]{--easyit-button-image:url("../img/rueckgaengig.png")}
+[data-button="wiederholen"]{--easyit-button-image:url("../img/wiederholen.png")}
+[data-button="zurueck"]{--easyit-button-image:url("../img/zurueck.png")}
+[data-button="weiter"]{--easyit-button-image:url("../img/weiter.png")}
+
+/* HF76-PUBLISH2 – eindeutige semantische Buttonbelegungen */
+[data-button="projekt_registrieren"]{--easyit-button-image:url("../img/projekt_registrieren.png")}
+[data-button="setup"]{--easyit-button-image:url("../img/setup.png")}
+[data-button="datenbank_assistent"]{--easyit-button-image:url("../img/datenbank_assistent.png")}
+[data-button="security_benutzer"]{--easyit-button-image:url("../img/security_benutzer.png")}
+[data-button="security_rollen"]{--easyit-button-image:url("../img/security_rollen.png")}
+[data-button="security_capabilities"]{--easyit-button-image:url("../img/security_capabilities.png")}
+[data-button="system_reparieren"]{--easyit-button-image:url("../img/system_reparieren.png")}
+[data-button="auswahl_alle"]{--easyit-button-image:url("../img/auswahl_alle.png")}
+[data-button="auswahl_keine"]{--easyit-button-image:url("../img/auswahl_keine.png")}
+[data-button="export_csv"]{--easyit-button-image:url("../img/export_csv.png")}
+[data-button="export_word"]{--easyit-button-image:url("../img/export_word.png")}
+[data-button="export_html"]{--easyit-button-image:url("../img/export_html.png")}
+[data-button="export_json"]{--easyit-button-image:url("../img/export_json.png")}

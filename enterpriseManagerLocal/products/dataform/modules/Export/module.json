@@ -1,0 +1,12 @@
+{
+  "name": "Export",
+  "version": "1.0.0",
+  "enabled": true,
+  "description": "easyIT DataForm Modul Export",
+  "key": "export",
+  "category": "Daten",
+  "required": false,
+  "dependencies": [
+    "security"
+  ]
+}

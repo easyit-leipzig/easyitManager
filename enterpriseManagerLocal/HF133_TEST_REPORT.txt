@@ -1,0 +1,12 @@
+HF133 – Demo-to-License Activation / Surface-Gate Repair
+
+PASS  Account login accepts a newly assigned active license before Surface policy enforcement.
+PASS  License binding result is returned to the Enterprise Manager.
+PASS  Manager persists license state when binding is bound/already_bound.
+PASS  Login/profile payloads contain surface_policy.
+PASS  Surface-denied licensed accounts are restricted to Dashboard + Mein Konto.
+PASS  Productive permissions remain disabled while surface_policy.allowed=false.
+PASS  Productive license APIs continue to enforce assertForLicense().
+PASS  Customer self-service can add a missing domain/network without circular Surface lockout.
+PASS  Account page displays "Lizenz aktiviert – Herkunftsfreigabe noch offen" when required.
+PASS  Manager PHP lint: 971 files, 0 failures.

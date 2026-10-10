@@ -1,0 +1,4 @@
+/* HF68 – central easyIT DataForm branding, left aligned */
+.easyit-dataform-branding{display:flex;align-items:center;justify-content:flex-start;width:100%;padding:.7rem 1rem;background:#fff;border-bottom:1px solid #d7dee9}
+.easyit-dataform-branding__logo{display:block;width:min(360px,72vw);max-height:118px;height:auto;object-fit:contain}
+@media(max-width:720px){.easyit-dataform-branding{padding:.5rem .75rem}.easyit-dataform-branding__logo{width:min(300px,82vw);max-height:98px}}

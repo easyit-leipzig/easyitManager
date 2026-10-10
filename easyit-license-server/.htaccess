@@ -1,0 +1,15 @@
+DirectoryIndex index.php
+RewriteEngine On
+
+# Geschützte Serverbereiche dürfen niemals direkt über HTTP ausgeliefert werden.
+RewriteRule ^(?:src|config|bin|gates|docs|secure|storage)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:bootstrap\.php|README(?:_[A-Za-z0-9_-]+)?\.md|VERSION|\.gitignore)$ - [F,L,NC]
+
+# Der bisherige /public-Pfad bleibt absichtlich gesperrt. Der Web-Einstieg liegt
+# bei Shared Hosting ab HF79 direkt im Serverwurzelordner.
+RewriteRule ^public(?:/|$) - [F,L,NC]
+
+# Alle API-Routen gehen durch den Front Controller.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

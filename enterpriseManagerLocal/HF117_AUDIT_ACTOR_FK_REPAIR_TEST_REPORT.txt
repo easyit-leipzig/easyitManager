@@ -1,0 +1,33 @@
+HF117 – Audit Actor / Foreign-Key Repair
+========================================
+
+Build:
+RC1.8-FC1-HF117-AUDIT-ACTOR-FK-REPAIR
+
+Ausgangsfehler:
+SQLSTATE[23000]: Integrity constraint violation: 1452
+CONSTRAINT `fk_audit_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+
+Ursache:
+Ein zentral angemeldetes Kundenkonto verwendet als Session-ID die customer_user_id des Lizenzservers.
+Diese Remote-ID wurde beim Projekt-Provisioning ungeprüft in easyit_license.audit_log.user_id geschrieben.
+audit_log.user_id referenziert jedoch ausschließlich die lokale Tabelle users.id.
+
+Reparatur:
+- Zentraler Resolver enterprise_audit_local_user_id().
+- Kundenkonto: audit_log.user_id = NULL; Remote-ID in context_json._actor.remote_user_id.
+- Lokaler Admin/Superadmin: ID wird gegen users.id verifiziert.
+- Veraltete/unauflösbare lokale ID: audit_log.user_id = NULL; ID bleibt im Audit-Kontext dokumentiert.
+- Projekt-Provisioning verwendet unverändert enterprise_audit() und profitiert damit automatisch von der Reparatur.
+
+Prüfungen:
+- PHP-Syntax: 914/914 PASS
+- HF117 Audit Actor Gate: 8/8 PASS
+- HF107 Admin-DB Gate: 10/10 PASS
+- HF111 Trust-Repair Gate: 10/10 PASS
+- HF112 Installer Admin-Schema Gate: 10/10 PASS
+- HF116 Bootstrap Manager Gate: 4/4 PASS
+- HF105 Calendar/DataForm Integration Gate: 16/16 PASS
+
+Hinweis:
+Ein echter MySQL/MariaDB-End-to-End-Test war in der Build-Umgebung nicht möglich, weil dort kein PDO-Datenbanktreiber installiert ist. Der konkret fehlerauslösende FK-Pfad wurde zentral korrigiert und statisch/regressiv geprüft.

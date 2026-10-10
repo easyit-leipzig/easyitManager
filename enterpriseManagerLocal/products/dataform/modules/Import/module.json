@@ -1,0 +1,12 @@
+{
+  "name": "Import",
+  "version": "1.0.0",
+  "enabled": true,
+  "description": "easyIT DataForm Modul Import",
+  "key": "import",
+  "category": "Daten",
+  "required": false,
+  "dependencies": [
+    "security"
+  ]
+}

@@ -1,0 +1,78 @@
+PASS request extension accepted
+PASS extension preserves installation limit
+PASS extension preserves modules
+PASS extension preserves capabilities
+PASS admin extension path explicit
+PASS admin uses additive modules
+PASS admin uses additive policy
+PASS extension expiry based on current expiry
+PASS unlimited license preserved
+PASS HF106 key bootstrap retained
+PASS - missing DB detector
+PASS - mysql bootstrap
+PASS - utf8mb4 collation
+PASS - postgres bootstrap
+PASS - no drop database
+PASS - retry normal connection
+PASS - clear permission error
+PASS - admin catches bootstrap errors
+PASS - installation doc auto bootstrap
+HF109_DATABASE_BOOTSTRAP_GATE_OK
+PASS - Nur installierte PDO-Treiber werden angeboten
+PASS - MySQL/PostgreSQL/SQLite sind als unterstützte Datenquellen definiert
+PASS - Setup besitzt Test- und Initialisierungsaktion
+PASS - Lokale Datenquellenkonfiguration wird gespeichert und geladen
+PASS - MySQL/MariaDB verwendet utf8mb4_unicode_ci
+PASS - PostgreSQL-Schema wird unterstützt
+PASS - SQLite-Datenquelle wird unterstützt
+PASS - Unkonfigurierter Server führt zur Einrichtung
+PASS - Frischpaket enthält keine fest verdrahtete Datenbank
+PASS - Abgeschlossene Einrichtung wird gesperrt
+HF110_CHECKS=10
+HF110_DATASOURCE_SETUP_OK\nPASS - Mindestens die 39 ursprünglichen Lizenzserver-Pflichttabellen bleiben im zentralen Schema-Vertrag enthalten
+PASS - REQUIRED_TABLES entspricht exakt allen CREATE-TABLE-Definitionen
+PASS - MigrationRunner besitzt reales Vollständigkeits-Gate
+PASS - Schema-Migration wird revisionssicher markiert
+PASS - Setup sperrt erst nach vollständiger Schema-Provisionierung
+PASS - Bestehende Installation kann idempotent und nicht-destruktiv repariert werden
+PASS - Setup bietet lokale Schema-Reparatur an
+PASS - Setup zeigt Schema-Gate/Tabellenstatus an
+PASS - CLI-Migration meldet vollständigen Schema-Status
+PASS - Reparatur bleibt vom destruktiven Setup-Neuaufbau getrennt
+HF113_CHECKS=10
+HF113_FULL_SCHEMA_SETUP_OK
+PASS - Der bisherige Lizenzserver-Vollschema-Vertrag bleibt erhalten und darf erweitert werden
+PASS - MigrationRunner besitzt expliziten Setup-Neuaufbau
+PASS - MySQL/MariaDB löscht alle vorhandenen Benutzertabellen vor Neuaufbau
+PASS - PostgreSQL löscht alle Tabellen des konfigurierten Schemas vor Neuaufbau
+PASS - SQLite löscht alle nicht-internen Tabellen vor Neuaufbau
+PASS - Setup erzwingt DB-Anlage und vollständigen Neuaufbau
+PASS - Reparatur bleibt nicht-destruktiv und getrennt vom Setup
+PASS - Fehlende CREATE-DATABASE-Rechte erzeugen klare Setup-Meldung
+PASS - Verbindungstest prüft die Zieldatenbank separat
+PASS - DB-/Schema-Anlage ist im Setup nicht mehr optional abschaltbar
+PASS - Setup-Oberfläche weist eindeutig auf den destruktiven Neuaufbau hin
+PASS - Konfiguration und Setup-Lock werden erst nach erfolgreichem Neuaufbau finalisiert
+HF114_CHECKS=12
+HF114_SETUP_DATABASE_REBUILD_OK
+PASS - 39 Lizenzserver-Pflichttabellen bleiben vollständig erhalten
+PASS - 13 Enterprise-Control-Plane-Tabellen sind Teil des gemeinsamen Schemas
+PASS - Gemeinsamer Tabellenvertrag umfasst 52 Pflichttabellen
+PASS - Pflichttabelle projects wird zentral provisioniert
+PASS - Pflichttabelle users wird zentral provisioniert
+PASS - Pflichttabelle roles wird zentral provisioniert
+PASS - Pflichttabelle user_roles wird zentral provisioniert
+PASS - Pflichttabelle audit_log wird zentral provisioniert
+PASS - Pflichttabelle enterprise_licenses wird zentral provisioniert
+PASS - MigrationRunner provisioniert die Enterprise-Control-Plane
+PASS - 52-Tabellen-Gate läuft erst nach beiden Schemafamilien
+PASS - projects enthält die vom Manager erwarteten Kernspalten
+PASS - Enterprise-Rollen werden initialisiert
+PASS - Control-Plane-DDL existiert für MySQL, PostgreSQL und SQLite
+PASS - Nicht-destruktive Reparatur ergänzt fehlende gemeinsame Tabellen
+PASS - Neuaufbau besitzt eigene HF115-Schemarevision
+HF115_CHECKS=16
+HF115_SHARED_CONTROL_PLANE_OK
+
+PHP_SYNTAX_TOTAL=83
+PHP_SYNTAX_FAILED=0

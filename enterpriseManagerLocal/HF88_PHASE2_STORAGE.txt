@@ -1,0 +1,6 @@
+HF88 Storage Phase 2
+- project-aware CSV/SQLite runtime paths
+- new projects use storage/projects/<storage_key>/csv and sqlite/database.sqlite
+- legacy fallback for existing projects
+- CLI migration tool with integrity verification
+- project provisioning status before local store creation

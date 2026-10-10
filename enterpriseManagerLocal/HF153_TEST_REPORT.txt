@@ -1,0 +1,21 @@
+HF153 – Personenbezogene Zeitblockierung
+
+SCHEMA_PERSON_ID PASS
+DATAFORM_LOOKUP PASS
+DIALOG_PERSON PASS
+HANDLER_SCOPE PASS
+BLOCK_CONFLICT_SCOPE PASS
+JS_PERSON_SCOPE PASS
+STANDALONE PASS
+PUBLIC_API PASS
+SUMMARY PASS 8/8
+
+Zusätzliche Syntaxprüfungen:
+- products/calendar/api/runtime.php PASS
+- products/calendar/system/CalendarDataFormBridge.php PASS
+- products/calendar/api/calendar_handler.php PASS
+- products/calendar/index.php PASS
+- system/app/calendar_runtime/api.php PASS
+- system/app/calendar_runtime/api-v1.php PASS
+- system/app/calendar_runtime/index.php PASS
+- products/calendar/assets/js/calendar.js PASS (node --check)

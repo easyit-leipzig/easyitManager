@@ -1,0 +1,13 @@
+{
+  "name": "Workflow",
+  "version": "1.0.0",
+  "enabled": true,
+  "description": "easyIT DataForm Modul Workflow",
+  "key": "workflow",
+  "category": "Prozess",
+  "required": false,
+  "dependencies": [
+    "designer",
+    "security"
+  ]
+}

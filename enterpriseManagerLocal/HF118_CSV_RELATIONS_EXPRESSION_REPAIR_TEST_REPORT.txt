@@ -1,0 +1,45 @@
+HF118 – CSV Relations / SQL Expression Repair
+=============================================
+
+Build:
+RC1.8-FC1-HF118-CSV-RELATIONS-EXPRESSION-REPAIR
+
+Ausgangsfehler
+--------------
+- Ungültiger CSV-SQL-Bezeichner: 0
+- Ungültiger CSV-SQL-Bezeichner: COALESCE(MAX(position),0)+10
+
+Reparatur
+---------
+1. information_schema.TABLES wird im CSV-Backend nicht mehr pauschal als COUNT(*) beantwortet.
+2. TABLE_NAME, TABLE_TYPE, TABLE_ROWS sowie die im Workspace verwendeten Aliase werden korrekt emuliert.
+3. Numerische/ungültige Introspektionswerte wie "0" werden als nicht vorhandene Tabelle behandelt und nicht als SQL-Identifier geparst.
+4. COALESCE(MAX(spalte),default)+increment unterstützt numerische Defaults und Inkremente, insbesondere +10.
+5. Der Relationsdesigner kann CSV-Basistabellen und deren Spalten wieder lesen.
+
+Gates
+-----
+HF105 Calendar/DataForm Integration       16/16 PASS
+HF107 Admin DB                            10/10 PASS
+HF111 License Server Trust                10/10 PASS
+HF112 Installer Admin Schema              10/10 PASS
+HF116 Bootstrap Manager                    4/4 PASS
+HF117 Audit Actor                          8/8 PASS
+HF118 CSV Relations / Expressions         10/10 PASS
+
+PHP-Syntax
+----------
+915/915 PHP-Dateien ohne Syntaxfehler.
+
+HF118-Funktionstest
+-------------------
+PASS information_schema.TABLES liefert echte CSV-Tabellennamen
+PASS kein Pseudo-Bezeichner 0
+PASS TABLE_NAME/TABLE_ROWS-Metadaten
+PASS table_type-Abfrage
+PASS COALESCE(MAX(position),0)+10 bei vorhandenen Werten
+PASS COALESCE/MAX bei leerer Feldmenge
+PASS keine CSV-Identifier-/Positionswarnung im DataForm-Sync
+PASS Relationsdesigner erkennt events als CSV-Basistabelle
+PASS Relationsdesigner liest CSV-Basistabellenspalten
+PASS ungültiger Introspektionswert 0 wird als nicht vorhanden behandelt

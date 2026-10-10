@@ -1,0 +1,24 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=[];$pass=[];
+$check=function(bool $ok,string $label)use(&$fail,&$pass):void{if($ok)$pass[]=$label;else $fail[]=$label;echo ($ok?'PASS ':'FAIL ').$label."\n";};
+$read=fn(string $f)=>(string)file_get_contents($root.'/'.$f);
+$bridge=$read('products/calendar/system/CalendarDataFormBridge.php');
+$setup=$read('products/calendar/setup.php');$index=$read('products/calendar/index.php');$js=$read('products/calendar/assets/js/calendar.js');$handler=$read('products/calendar/api/calendar_handler.php');$maintenance=$read('products/calendar/maintenance.php');$create=$read('app/projects/create.php');$records=$read('products/dataform/records.php');$runtime=$read('products/dataform/runtime.php');$relations=$read('products/dataform/relations.php');$cfg=$read('system/app/calendar_project.php');
+$check(str_contains($bridge,'DataFormManager.php')&&str_contains($bridge,'DataFormRecordStore.php')&&str_contains($bridge,'RelationManager.php'),'Calendar-DataForm-Bridge nutzt Manager, RecordStore und Relationen');
+$check(str_contains($bridge,"'events'=>")&&str_contains($bridge,"'participants'=>")&&str_contains($bridge,"'attachments'=>")&&str_contains($bridge,"'roles'=>")&&str_contains($bridge,"'places'=>"),'Calendar-Datenbereiche einschließlich Orte werden als DataForms provisioniert');
+$check(str_contains($bridge,'calendar_event_participants')&&str_contains($bridge,'calendar_participant_person')&&str_contains($bridge,'calendar_participant_role'),'Basisrelationen werden provisioniert');
+$check(str_contains($bridge,"'all_day'=>")&&str_contains($bridge,"'location'=>")&&str_contains($bridge,'calendar_event_resource')&&str_contains($bridge,'calendar_event_category')&&str_contains($bridge,'calendar_event_place'),'Terminbasis enthält Ganztägig, Ort-, Ressourcen- und Kategorie-Lookups');
+$check(str_contains($create,'easyit_calendar_dataform_install')&&str_contains($create,"CALENDAR + DATAFORM INTEGRATION READY"),'Neue Calendar-Projekte provisionieren DataForm automatisch');
+$check((str_contains($cfg,"'version'=>3")||str_contains($cfg,"'version'=>4"))&&str_contains($cfg,"'dataforms'=>")&&str_contains($cfg,"'term_dataform'"),'Calendar-Projektkonfiguration v3/v4 enthält DataForm- und Orts-Gates');
+$check(str_contains($cfg,"'dependencies'=>['dataform-core']")&&str_contains($cfg,"/products/dataform"),'Calendar-Auslieferung enthält die verbindliche DataForm-Schicht');
+$check(!str_contains($setup,'maintenance_save')&&!str_contains($setup,'easyit_calendar_maintenance_save'),'Setup besitzt keine eigene Calendar-CRUD-Datenpflege mehr');
+$check(str_contains($setup,'../dataform/records.php')&&str_contains($setup,'../dataform/runtime.php')&&str_contains($setup,'../dataform/relations.php'),'Setup führt Datenpflege, Konfiguration und Relationen über DataForm');
+$check(!str_contains($index,'id="lessonDialog"')&&str_contains($index,'CalendarDataFormBridge.php'),'Fest codierter Calendar-Termindialog ist entfernt');
+$check(str_contains($js,"easyit-dataform-dialog-saved")&&str_contains($js,"default_'+k")&&str_contains($js,'beginValue'),'Calendar öffnet DataForm-Termindialog und verarbeitet den echten DataForm-Save-Event');
+$check(str_contains($handler,'DataFormRecordStore::all')&&str_contains($handler,'DataFormRecordStore::update')&&!preg_match('/\b(?:INSERT|UPDATE|DELETE)\s+(?:INTO|FROM|`)/i',$handler),'Calendar-API nutzt RecordStore statt eigener SQL-CRUD-Schicht');
+$check(str_contains($maintenance,'../dataform/records.php')&&!str_contains($maintenance,'<form'),'Legacy-Maintenance delegiert vollständig an DataForm');
+$check(str_contains($records,"\$preProduct==='calendar'")&&str_contains($records,"'calendar-internal'")&&str_contains($records,"array_replace(\$values,\$inlineCreateValues)"),'DataForm-Record-Runtime unterstützt Calendar intern und Dialog-Defaults');
+$check(str_contains($runtime,'$isCalendarDataAdmin')&&str_contains($runtime,'$licenseDesignerAccess=true')&&str_contains($runtime,"?'calendar':'dataform'"),'DataForm-Konfiguration akzeptiert Calendar-Projekte vollständig');
+$check(str_contains($relations,'$isCalendarRelations')&&str_contains($relations,"?'calendar':'dataform'"),'DataForm-Relationen akzeptieren Calendar-Projekte');
+if($fail){fwrite(STDERR,"HF105 Calendar/DataForm Gate: FAIL (".count($fail).")\n");exit(1);}echo "HF105 Calendar/DataForm Gate: PASS (".count($pass)." checks)\n";

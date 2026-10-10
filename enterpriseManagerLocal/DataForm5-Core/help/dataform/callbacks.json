@@ -1,0 +1,20 @@
+{
+  "id": "callbacks",
+  "title": "DataForm-Callback-System",
+  "short": {
+    "text": "DataForm 5 verwendet registrierte JavaScript-Callbacks mit dataformContext. Die Recordset-Konfiguration enthält nur den deklarativen Callback-Aufruf."
+  },
+  "steps": [
+    "Funktion implementieren.",
+    "Mit DataFormCallbacks.register(name, fn) registrieren.",
+    "Im Recordset den Callback-Namen mit dataformContext eintragen.",
+    "Kein eval() und keine freien JavaScript-Ausdrücke in der Konfiguration verwenden."
+  ],
+  "expert": {
+    "text": "Die Registry validiert Callback-Namen und löst ausschließlich bekannte Funktionen auf. Das hält die Ausführung kontrollierbar, testbar und CSP-freundlicher."
+  },
+  "document": {
+    "path": "docs/dataform/dataformContext.html",
+    "anchor": "callbacks"
+  }
+}

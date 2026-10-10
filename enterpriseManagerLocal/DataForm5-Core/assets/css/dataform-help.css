@@ -1,0 +1,53 @@
+.df-help {
+    border: 1px solid #cfd8e3;
+    border-radius: 8px;
+    background: #fff;
+    padding: 14px;
+    font: 14px/1.5 "Segoe UI", Arial, sans-serif;
+}
+
+.df-help-title {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+.df-help-tabs,
+.df-help-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 12px;
+}
+
+.df-help-tab,
+.df-help-action {
+    border: 1px solid #aab7c4;
+    border-radius: 5px;
+    background: #f4f6f8;
+    padding: 6px 9px;
+    cursor: pointer;
+}
+
+.df-help-tab.is-active {
+    background: #e3ebf3;
+    font-weight: 600;
+}
+
+.df-help-content {
+    min-height: 95px;
+}
+
+.df-help-content p,
+.df-help-content ol {
+    margin-top: 0;
+}
+
+.df-help-loading {
+    padding: 12px;
+}
+
+.df-help-error {
+    padding: 12px;
+    border-left: 4px solid #9b1c1c;
+    background: #fff2f2;
+}

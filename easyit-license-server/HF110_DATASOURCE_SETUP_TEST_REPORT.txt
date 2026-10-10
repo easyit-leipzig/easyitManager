@@ -1,0 +1,40 @@
+HF110 – DATASOURCE SETUP TEST REPORT
+====================================
+
+Ziel
+----
+Die zentrale Datenquelle des easyIT Lizenzservers ist bei der Ersteinrichtung definierbar. Es gibt keinen fest verdrahteten MySQL-/MariaDB-Zwang mehr.
+
+Umgesetzt
+---------
+- Einrichtungsassistent unter /setup/
+- Auswahl ausschließlich aus tatsächlich installierten, unterstützten PDO-Treibern
+- MySQL / MariaDB: Host, Port, Datenbank, Benutzer, Kennwort, automatisches DB-Anlegen
+- PostgreSQL: Host, Port, Datenbank, Schema, Benutzer, Kennwort, automatisches DB-/Schema-Anlegen
+- SQLite: frei definierbarer Dateipfad
+- Verbindungstest vor Installation
+- persistente lokale Konfiguration in config/database.local.php
+- atomisches Schreiben der lokalen DB-Konfiguration
+- automatische Migration nach erfolgreicher Verbindung
+- automatischer Ed25519-Key-Bootstrap bleibt aktiv
+- Setup-Sperre in secure/license-server-setup.lock
+- API/Admin/Customer-Runtime startet ohne Datenquellenkonfiguration nicht
+- bestehende Installationen werden vom Update nicht überschrieben
+- MySQL/MariaDB-Kollation utf8mb4_unicode_ci bleibt verbindlich
+
+Prüfungen
+---------
+PHP Syntax: 79/79 PASS
+ADMIN_WEB_STATIC_GATE: PASS
+HF108_LICENSE_EXTENSION_STATIC_GATE: PASS
+HF109_DATABASE_BOOTSTRAP_STATIC_GATE: PASS
+HF110_DATASOURCE_SETUP_STATIC_GATE: 10/10 PASS
+Setup-Rendering ohne PDO-Treiber: PASS (Assistent meldet fehlenden Treiber korrekt)
+
+Hinweis zur Testumgebung
+------------------------
+Die Build-Umgebung enthält aktuell keine PDO-Datenbanktreiber. Deshalb konnte kein echter MySQL/PostgreSQL/SQLite-Verbindungsaufbau ausgeführt werden. Der Setup-Assistent erkennt genau diesen Zustand und bietet dann keine nicht verfügbaren Datenquellen an. Auf XAMPP werden die dort aktivierten PDO-Treiber angezeigt.
+
+Release
+-------
+RC1.8-FC1-HF110-DATASOURCE-SETUP

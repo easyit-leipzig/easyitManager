@@ -1,0 +1,70 @@
+{
+  "format": "easyit-migration-manifest/1",
+  "release": "RC1.8",
+  "groups": {
+    "admin": [
+      {
+        "file": "001_migrations.php",
+        "sha256": "a27150a2e6c38c4a36f87029838b2a5ab3a0069926ce4f90b0e6e2f6b3b1bf03",
+        "size": 1013
+      },
+      {
+        "file": "002_identity.php",
+        "sha256": "daee66658726d8aba5f507c60c0215ac56cce41c825ca6e59afe57afe1355ff3",
+        "size": 2625
+      },
+      {
+        "file": "003_projects_audit.php",
+        "sha256": "503e2115983c6893220c45910857c6e0ab3ddf8ceb3f58303accd330101b1cbc",
+        "size": 1923
+      },
+      {
+        "file": "004_licensing.php",
+        "sha256": "30cd809bd89caf912e123e8efe548de0085781d9fb245be662d857d675a8f91b",
+        "size": 1686
+      },
+      {
+        "file": "005_superadmin.php",
+        "sha256": "4c04eca2db01d81d10f8c54b6ec12bd84b492f57e4e5c2355c188303ea3b27dd",
+        "size": 1297
+      }
+    ],
+    "project": [
+      {
+        "file": "001_migrations.php",
+        "sha256": "24ce08176038d85b8131b9ecfeda437847288c1243c524d3df0da178a831c1ed",
+        "size": 1005
+      },
+      {
+        "file": "002_dataforms.php",
+        "sha256": "99614c8779b212ce317e1048837c2d8b0756f6fa1a9b6936bd596e992e218d9d",
+        "size": 2144
+      },
+      {
+        "file": "003_data_sources.php",
+        "sha256": "81feb6afcabf518e0dbc3875f19c9b9cec079f7abf7a9dd407d6142b371e02c0",
+        "size": 1664
+      },
+      {
+        "file": "004_table_workspace.php",
+        "sha256": "3ae9e411e4ea403ab1e062151eb572447be322a7ae231dc0915a18eb933155ff",
+        "size": 702
+      },
+      {
+        "file": "005_dataform_table_bindings.php",
+        "sha256": "cd03414f2b64b73f32ca91adef27416c768956a0ad4ab62d4fc220f3a0410b9d",
+        "size": 1341
+      },
+      {
+        "file": "006_dataform_runtime_options.php",
+        "sha256": "484b04a86423e411dc035cf60c49b298a54f7bcc89bcec6f78d261c29fc1b0a7",
+        "size": 1921
+      },
+      {
+        "file": "007_dataform_search_filter_options.php",
+        "sha256": "77ea494642e05575726508da90bff9aa6e69760351790bff337c2306cf3fb8ac",
+        "size": 1068
+      }
+    ]
+  }
+}

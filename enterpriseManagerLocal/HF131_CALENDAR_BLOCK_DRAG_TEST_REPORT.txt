@@ -1,0 +1,14 @@
+HF131 CALENDAR BLOCK DRAG + CACHE REPAIR TEST REPORT
+Date: 2026-10-03
+
+[PASS] Calendar product uses native capture-phase pointerdown on #calendarGrid.
+[PASS] Pointer move/up handlers are document-level and non-passive.
+[PASS] Slot hit testing uses elementsFromPoint().
+[PASS] Geometric slot fallback via getBoundingClientRect() is present.
+[PASS] Block mode disables touch gestures/text selection on Calendar grid.
+[PASS] Manager Calendar index cache-busts bootstrap.js/calendar.css/nojquery assets with HF131 version.
+[PASS] bootstrap.js loads calendar.js with HF131 version.
+[PASS] Standalone runtime index uses HF131 cache versions.
+[PASS] Standalone export manifest identifies runtime HF131.
+[PASS] JavaScript syntax check passed for product calendar.js.
+[PASS] PHP syntax checks passed for modified PHP files.

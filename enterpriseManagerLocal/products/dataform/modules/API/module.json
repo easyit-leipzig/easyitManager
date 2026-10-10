@@ -1,0 +1,12 @@
+{
+  "name": "API",
+  "version": "1.0.0",
+  "enabled": false,
+  "description": "easyIT DataForm Modul API",
+  "key": "api",
+  "category": "Integration",
+  "required": false,
+  "dependencies": [
+    "security"
+  ]
+}

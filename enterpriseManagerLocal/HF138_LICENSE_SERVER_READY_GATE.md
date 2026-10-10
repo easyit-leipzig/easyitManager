@@ -1,0 +1,3 @@
+# HF138 – License Server READY Gate
+
+Der Enterprise Manager richtet den Lizenzserver nicht mehr selbst ein. Vor einer Erstinstallation wird der lokale Lizenzserver über `/api/v1/health` geprüft. Nur `payload.status=ready` und `payload.ready=true` erlauben die Manager-Installation. Bei `setup_required` verweist die Setup-Seite direkt auf die Ein-Seiten-Einrichtung des Lizenzservers. Die Prüfung erfolgt vor dem Anlegen oder Verändern der Manager-Datenbanken, sodass kein halbfertiger Installationszustand entsteht. Nach READY wird weiterhin der signierte Vertrauensanker geprüft, gespeichert und anschließend die Bootstrap-Aktivierung durchgeführt.

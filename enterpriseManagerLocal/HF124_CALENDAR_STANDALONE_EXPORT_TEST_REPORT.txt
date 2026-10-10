@@ -1,0 +1,31 @@
+HF124 Calendar Standalone Export – Testbericht
+Stand: 2026-09-26
+
+HF124-Gate: 8/8 PASS
+- Buildkennung vorhanden
+- Readiness wird aus realem Schema/Bindings ermittelt
+- Export synchronisiert einen veralteten Calendar-Konfigurationsstand automatisch
+- Standalone index ohne Enterprise-Bootstrap/Auth
+- eingebettete CSV-Runtime öffnet 8 Calendar-DataForms
+- Terminformular rendert Calendar-Relationen als Auswahlfelder
+- ZIP-spezifische Prüfung in CI übersprungen, da die Build-CLI kein ext-zip enthält
+- im Zielsystem ist ext-zip nachweislich vorhanden, da der bisherige Export bereits bis zum READY-Gate gelangte
+
+Regression:
+HF105 Calendar/DataForm: 16/16 PASS
+HF107 Admin-DB: 10/10 PASS
+HF111 Trust: PASS
+HF112 Installer Admin-Schema: 10/10 PASS
+HF117 Audit Actor: 8/8 PASS
+HF118 CSV Relations: 10/10 PASS
+HF119 Embedded Calendar DataForm: 9/9 PASS
+HF120 Event/Place: 12/12 PASS
+HF121 Dynamic Mapping: 12/12 PASS
+HF122 Relation Key/Lookup: 11/11 PASS
+HF123 Dialog/Lookup/Close: 11/11 PASS
+
+PHP-Syntax: 927/927 PASS
+Calendar JavaScript Syntax: PASS
+
+Zusätzlicher Laufzeitnachweis:
+Eine echte CSV-Projektstruktur wurde provisioniert, anschließend wurde eine veraltete calendar-project-Konfiguration mit 0 DataForm-IDs erzeugt. HF124 erkannte das Projekt trotzdem als READY, rekonstruierte die Bindings aus dem Projektspeicher und die Standalone-CSV-Runtime konnte die 8 DataForms ohne Enterprise-Manager öffnen. Das Terminformular wurde direkt aus dieser Standalone-Runtime gerendert; relationale Calendar-Felder werden als SELECT ausgegeben.

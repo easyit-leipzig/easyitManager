@@ -1,0 +1,15 @@
+<?php
+declare(strict_types=1);
+namespace EasyIT\Enterprise\Licensing;
+final class Transport
+{
+ public static function post(string $url,string $body,array $headers,int $timeout,bool $verifyTls):array{
+  if(function_exists('curl_init')){$ch=curl_init($url);curl_setopt_array($ch,[CURLOPT_POST=>true,CURLOPT_RETURNTRANSFER=>true,CURLOPT_HTTPHEADER=>$headers,CURLOPT_POSTFIELDS=>$body,CURLOPT_CONNECTTIMEOUT=>min(10,$timeout),CURLOPT_TIMEOUT=>$timeout,CURLOPT_SSL_VERIFYPEER=>$verifyTls,CURLOPT_SSL_VERIFYHOST=>$verifyTls?2:0,CURLOPT_HEADER=>true]);$raw=curl_exec($ch);if($raw===false){$e=curl_error($ch);curl_close($ch);throw new \RuntimeException('SERVER_UNAVAILABLE: '.$e);} $status=(int)curl_getinfo($ch,CURLINFO_HTTP_CODE);$hs=(int)curl_getinfo($ch,CURLINFO_HEADER_SIZE);curl_close($ch);$head=substr($raw,0,$hs);$resp=substr($raw,$hs);return [$status,self::parseHeaders($head),$resp];}
+  $opts=['http'=>['method'=>'POST','header'=>implode("\r\n",$headers), 'content'=>$body,'timeout'=>$timeout,'ignore_errors'=>true],'ssl'=>['verify_peer'=>$verifyTls,'verify_peer_name'=>$verifyTls]];$ctx=stream_context_create($opts);$resp=@file_get_contents($url,false,$ctx);if($resp===false)throw new \RuntimeException('SERVER_UNAVAILABLE');$status=0;$h=[];foreach($http_response_header??[] as $line){if(preg_match('#HTTP/\S+\s+(\d+)#',$line,$m))$status=(int)$m[1];elseif(str_contains($line,':')){[$k,$v]=explode(':',$line,2);$h[strtolower(trim($k))]=trim($v);}}return[$status,$h,$resp];
+ }
+ public static function get(string $url,array $headers,int $timeout,bool $verifyTls):array{
+  if(function_exists('curl_init')){$ch=curl_init($url);curl_setopt_array($ch,[CURLOPT_HTTPGET=>true,CURLOPT_RETURNTRANSFER=>true,CURLOPT_HTTPHEADER=>$headers,CURLOPT_CONNECTTIMEOUT=>min(10,$timeout),CURLOPT_TIMEOUT=>$timeout,CURLOPT_SSL_VERIFYPEER=>$verifyTls,CURLOPT_SSL_VERIFYHOST=>$verifyTls?2:0,CURLOPT_HEADER=>true]);$raw=curl_exec($ch);if($raw===false){$e=curl_error($ch);curl_close($ch);throw new \RuntimeException('SERVER_UNAVAILABLE: '.$e);} $status=(int)curl_getinfo($ch,CURLINFO_HTTP_CODE);$hs=(int)curl_getinfo($ch,CURLINFO_HEADER_SIZE);curl_close($ch);$head=substr($raw,0,$hs);$resp=substr($raw,$hs);return [$status,self::parseHeaders($head),$resp];}
+  $opts=['http'=>['method'=>'GET','header'=>implode("\r\n",$headers),'timeout'=>$timeout,'ignore_errors'=>true],'ssl'=>['verify_peer'=>$verifyTls,'verify_peer_name'=>$verifyTls]];$ctx=stream_context_create($opts);$resp=@file_get_contents($url,false,$ctx);if($resp===false)throw new \RuntimeException('SERVER_UNAVAILABLE');$status=0;$h=[];foreach($http_response_header??[] as $line){if(preg_match('#HTTP/\S+\s+(\d+)#',$line,$m))$status=(int)$m[1];elseif(str_contains($line,':')){[$k,$v]=explode(':',$line,2);$h[strtolower(trim($k))]=trim($v);}}return[$status,$h,$resp];
+ }
+ private static function parseHeaders(string $raw):array{$h=[];foreach(preg_split('/\r?\n/',$raw) as $line){if(str_contains($line,':')){[$k,$v]=explode(':',$line,2);$h[strtolower(trim($k))]=trim($v);}}return$h;}
+}

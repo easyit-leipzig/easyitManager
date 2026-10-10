@@ -1,0 +1,8 @@
+HF133 – Demo-to-License Activation / Surface-Gate Repair
+
+PASS  login() resolves active license before Surface enforcement.
+PASS  login() binds bootstrap installation to customer license before Surface restriction.
+PASS  login()/profile() return surface_policy instead of throwing on a Surface mismatch.
+PASS  SurfacePolicyService::assertForLicense() remains strict for productive API calls.
+PASS  domain/add and network/add can resolve a valid authenticated customer's Surface lockout when self-service is enabled.
+PASS  License-server PHP lint: 85 files, 0 failures.

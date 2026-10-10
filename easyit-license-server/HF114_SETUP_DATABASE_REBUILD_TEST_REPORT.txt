@@ -1,0 +1,72 @@
+HF114 – LICENSE SERVER SETUP DATABASE REBUILD
+Date: 2026-09-25
+
+Verbindlicher Setup-Vertrag:
+1. Zieldatenbank fehlt -> beim Initialisieren automatisch anlegen.
+2. Zieldatenbank vorhanden -> alle vorhandenen Benutzertabellen löschen.
+3. Zieldatenbank vorhanden und leer -> vollständiges Schema anlegen.
+4. Fehlendes CREATE DATABASE/CREATEDB-Recht -> verständlicher Setup-Abbruch.
+5. Danach 39/39 Pflichttabellen vollständig neu provisionieren und validieren.
+6. Setup-Lock und Konfiguration erst nach erfolgreichem Vollschema-Gate.
+7. Reparaturmodus bleibt nicht-destruktiv.
+
+Treiber-Verhalten:
+- MySQL/MariaDB: alle BASE TABLES in DATABASE() löschen; FOREIGN_KEY_CHECKS kontrolliert deaktivieren.
+- PostgreSQL: alle Tabellen im konfigurierten current_schema() mit CASCADE löschen.
+- SQLite: alle nicht-internen Tabellen der Zieldatei löschen.
+
+Validierung:
+PASS - 39 Pflichttabellen bleiben verbindlicher Vollschema-Vertrag
+PASS - MigrationRunner besitzt expliziten Setup-Neuaufbau
+PASS - MySQL/MariaDB löscht alle vorhandenen Benutzertabellen vor Neuaufbau
+PASS - PostgreSQL löscht alle Tabellen des konfigurierten Schemas vor Neuaufbau
+PASS - SQLite löscht alle nicht-internen Tabellen vor Neuaufbau
+PASS - Setup erzwingt DB-Anlage und vollständigen Neuaufbau
+PASS - Reparatur bleibt nicht-destruktiv und getrennt vom Setup
+PASS - Fehlende CREATE-DATABASE-Rechte erzeugen klare Setup-Meldung
+PASS - Verbindungstest prüft die Zieldatenbank separat
+PASS - DB-/Schema-Anlage ist im Setup nicht mehr optional abschaltbar
+PASS - Setup-Oberfläche weist eindeutig auf den destruktiven Neuaufbau hin
+PASS - Konfiguration und Setup-Lock werden erst nach erfolgreichem Neuaufbau finalisiert
+HF114_CHECKS=12
+HF114_SETUP_DATABASE_REBUILD_OK
+
+PASS - 39 Pflichttabellen sind im zentralen Schema-Vertrag definiert
+PASS - REQUIRED_TABLES entspricht exakt allen CREATE-TABLE-Definitionen
+PASS - MigrationRunner besitzt reales Vollständigkeits-Gate
+PASS - Schema-Migration wird revisionssicher markiert
+PASS - Setup sperrt erst nach vollständiger Schema-Provisionierung
+PASS - Bestehende Installation kann idempotent und nicht-destruktiv repariert werden
+PASS - Setup bietet lokale Schema-Reparatur an
+PASS - Setup zeigt Schema-Gate/Tabellenstatus an
+PASS - CLI-Migration meldet vollständigen Schema-Status
+PASS - Reparatur bleibt vom destruktiven Setup-Neuaufbau getrennt
+HF113_CHECKS=10
+HF113_FULL_SCHEMA_SETUP_OK
+
+PASS - Nur installierte PDO-Treiber werden angeboten
+PASS - MySQL/PostgreSQL/SQLite sind als unterstützte Datenquellen definiert
+PASS - Setup besitzt Test- und Initialisierungsaktion
+PASS - Lokale Datenquellenkonfiguration wird gespeichert und geladen
+PASS - MySQL/MariaDB verwendet utf8mb4_unicode_ci
+PASS - PostgreSQL-Schema wird unterstützt
+PASS - SQLite-Datenquelle wird unterstützt
+PASS - Unkonfigurierter Server führt zur Einrichtung
+PASS - Frischpaket enthält keine fest verdrahtete Datenbank
+PASS - Abgeschlossene Einrichtung wird gesperrt
+HF110_CHECKS=10
+HF110_DATASOURCE_SETUP_OK\n
+PASS - missing DB detector
+PASS - mysql bootstrap
+PASS - utf8mb4 collation
+PASS - postgres bootstrap
+PASS - no drop database
+PASS - retry normal connection
+PASS - clear permission error
+PASS - admin catches bootstrap errors
+PASS - installation doc auto bootstrap
+HF109_DATABASE_BOOTSTRAP_GATE_OK
+
+PHP syntax: 81/81 PASS
+
+Hinweis: In der Build-Umgebung sind keine PDO-Datenbanktreiber installiert; daher konnte kein Live-MySQL/PostgreSQL/SQLite-Neuaufbau ausgeführt werden. Die Setup-Verträge wurden statisch und per vollständigem PHP-Lint validiert.

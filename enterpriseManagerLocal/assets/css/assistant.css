@@ -1,0 +1,389 @@
+.eit-assistant-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.25rem;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.45;
+}
+
+.eit-assistant-header,
+.eit-assistant-context,
+.eit-assistant-card,
+.eit-assistant-result,
+.eit-assistant-message {
+    border: 1px solid #b9b9b9;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.eit-assistant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.eit-assistant-context dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: .75rem;
+    margin: 0;
+}
+
+.eit-assistant-context dl > div {
+    border: 1px solid #d4d4d4;
+    padding: .6rem;
+}
+
+.eit-assistant-context dt {
+    font-weight: 700;
+}
+
+.eit-assistant-context dd {
+    margin: .25rem 0 0;
+}
+
+.eit-assistant-link,
+.eit-assistant-nav a {
+    text-decoration: underline;
+}
+
+.eit-assistant-steps {
+    padding-left: 1.5rem;
+}
+
+.eit-assistant-steps li {
+    margin-bottom: .8rem;
+    padding: .55rem;
+    border-left: 4px solid #999;
+}
+
+.eit-assistant-steps li[data-state="current"] {
+    font-weight: 700;
+}
+
+.eit-assistant-steps span {
+    display: block;
+    font-weight: 400;
+    margin-top: .2rem;
+}
+
+.eit-assistant-result pre {
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.eit-assistant-work {
+    border: 1px solid #b9b9b9;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.eit-assistant-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.eit-assistant-field label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: .3rem;
+}
+
+.eit-assistant-field input[type="text"],
+.eit-assistant-field input[type="number"],
+.eit-assistant-field select,
+.eit-assistant-field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: .5rem;
+    font: inherit;
+}
+
+.eit-assistant-field textarea {
+    font-family: Consolas, "Courier New", monospace;
+}
+
+.eit-assistant-field-checkbox label {
+    font-weight: 400;
+}
+
+.eit-assistant-actions,
+.eit-assistant-bottom-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-top: 1rem;
+}
+
+.eit-assistant-actions button {
+    font: inherit;
+    padding: .45rem .8rem;
+    border: 1px solid #8e8e8e;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+
+.eit-diagnostic-list {
+    display: grid;
+    gap: .75rem;
+}
+
+.eit-diagnostic-check {
+    border: 1px solid #b9b9b9;
+    border-left-width: 6px;
+    border-radius: 4px;
+    padding: .75rem;
+}
+
+.eit-diagnostic-check h3 {
+    margin-top: 0;
+}
+
+.eit-diagnostic-check[data-status="fail"] {
+    border-left-style: double;
+}
+
+.eit-diagnostic-check[data-status="warn"] {
+    border-left-style: dashed;
+}
+
+.eit-diagnostic-check[data-status="skip"] {
+    border-left-style: dotted;
+}
+
+.eit-diagnostic-check pre {
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Phase 11 – kontextbezogener Assistenten-Starter. Keine farbigen/verlaufsbasierten Aktionsbuttons. */
+.eit-assistant-launcher {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: .65rem 1rem;
+    border: 1px solid #b9b9b9;
+    border-radius: 6px;
+    padding: .65rem .8rem;
+    margin: .75rem 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.eit-assistant-launcher-title {
+    font-weight: 700;
+}
+
+.eit-assistant-launcher ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem .9rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.eit-assistant-launcher a {
+    text-decoration: underline;
+}
+
+.eit-assistant-launcher-disabled,
+.eit-assistant-unavailable {
+    opacity: .62;
+}
+
+/* Phase 12 – Workflow-Assistent. Status wird über Text, Rahmenstil und Semantik dargestellt. */
+.eit-workflow-dashboard progress {
+    width: 100%;
+    min-height: 1.1rem;
+    margin: .4rem 0 1rem;
+}
+
+.eit-workflow-context {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: .75rem;
+}
+
+.eit-workflow-context > div,
+.eit-workflow-step {
+    border: 1px solid #b9b9b9;
+    border-radius: 4px;
+    padding: .75rem;
+}
+
+.eit-workflow-context dt,
+.eit-workflow-status {
+    font-weight: 700;
+}
+
+.eit-workflow-context dd {
+    margin: .2rem 0 0;
+}
+
+.eit-workflow-context-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: .75rem;
+    align-items: end;
+    margin: 1rem 0;
+}
+
+.eit-workflow-context-form label {
+    display: grid;
+    gap: .3rem;
+    font-weight: 700;
+}
+
+.eit-workflow-context-form input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: .45rem;
+    font: inherit;
+}
+
+.eit-workflow-list {
+    display: grid;
+    gap: .75rem;
+}
+
+.eit-workflow-step[data-status="complete"] {
+    border-left-width: 6px;
+}
+
+.eit-workflow-step[data-status="pending"] {
+    border-left-width: 6px;
+    border-left-style: dashed;
+}
+
+.eit-workflow-step[data-status="blocked"] {
+    border-left-width: 6px;
+    border-left-style: dotted;
+    opacity: .7;
+}
+
+.eit-workflow-step h3 {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0;
+}
+
+.eit-workflow-step form {
+    margin-top: .6rem;
+}
+
+/* Phase 14 – Assistenten-Historie. Keine farbigen oder verlaufenden Aktionshintergründe. */
+.eit-history-actions,
+.eit-history-version-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem 1rem;
+    align-items: center;
+}
+
+.eit-history-list,
+.eit-history-diff-list {
+    display: grid;
+    gap: .8rem;
+}
+
+.eit-history-version,
+.eit-history-diff {
+    border: 1px solid #b9b9b9;
+    border-radius: 4px;
+    padding: .75rem;
+}
+
+.eit-history-version[data-current="true"] {
+    border-left-width: 6px;
+}
+
+.eit-history-version[data-detached="true"] {
+    border-left-style: dashed;
+    opacity: .82;
+}
+
+.eit-history-version h3,
+.eit-history-diff h3 {
+    margin-top: 0;
+}
+
+.eit-history-version pre,
+.eit-history-diff pre {
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.eit-history-before-after {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: .75rem;
+}
+
+.eit-history-before-after > div {
+    min-width: 0;
+}
+
+/* Phase 31 – konsolidierte Assistentenzentrale und einheitliche Seitennavigation. */
+.eit-assistant-toolbar {
+    border: 1px solid #b9b9b9;
+    border-radius: 6px;
+    padding: .55rem .75rem;
+    margin: 0 0 1rem;
+}
+
+.eit-assistant-toolbar ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .55rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.eit-assistant-toolbar a {
+    text-decoration: underline;
+}
+
+.eit-assistant-category-list {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.eit-assistant-category {
+    border-top: 1px solid #b9b9b9;
+    padding-top: 1rem;
+}
+
+.eit-assistant-category > header h2 {
+    margin-bottom: .2rem;
+}
+
+.eit-assistant-category > header p {
+    margin-top: 0;
+}
+
+.eit-assistant-filter-label {
+    display: grid;
+    gap: .35rem;
+    max-width: 40rem;
+    font-weight: 700;
+}
+
+.eit-assistant-filter-label input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: .5rem;
+    font: inherit;
+}
+
+[hidden] {
+    display: none !important;
+}

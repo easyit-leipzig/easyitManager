@@ -1,0 +1,11 @@
+HF132 – Calendar API documentation examples
+
+PASS: 18 public API functions documented individually
+PASS: 18 JavaScript example scripts
+PASS: 18 PHP example scripts
+PASS: PHP example helper + config template
+PASS: easyit-calendar-api.js included in product assets / standalone export source
+PASS: API HTML example links resolved
+PASS: all 971 Enterprise Manager PHP files passed php -l
+PASS: all JavaScript example files passed node --check
+PASS: calendar_project export runtime bumped to HF132

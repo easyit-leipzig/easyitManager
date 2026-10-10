@@ -1,0 +1,29 @@
+HF123 – Calendar Dialog Close & Lookup Synchronization
+=====================================================
+
+HF123 gate: 11/11 PASS
+HF122 Relation Key / Lookup: 11/11 PASS
+HF121 Dynamic Calendar Mapping: 12/12 PASS
+HF120 Calendar Event/Place: 12/12 PASS
+HF119 Calendar Embedded DataForm / CSV Wildcard: 9/9 PASS
+HF118 CSV Relations: 10/10 PASS
+HF117 Audit Actor: 8/8 PASS
+HF112 Installer Admin Schema: 10/10 PASS
+HF111 Trust Repair: PASS
+HF107 Admin DB: 10/10 PASS
+HF105 Calendar/DataForm: 16/16 PASS
+PHP syntax: 920/920 PASS
+JavaScript syntax: calendar.js/bootstrap.js PASS
+
+HF123 checks:
+- X close handler is registered even after DOMContentLoaded.
+- Delegated close fallback is present.
+- Closing unloads the embedded iframe.
+- Calendar JS cache-buster is updated.
+- Dynamic Calendar mappings synchronize lookup relations.
+- Saving Calendar mappings triggers synchronization immediately.
+- DataForm record editor renders active relation fields as select controls.
+- CSV Calendar/DataForm provisioning completes without lookup warnings.
+- events.location is an active n:1 lookup.
+- places records appear as lookup options.
+- Existing Calendar relations with lookup rendering disabled are normalized back to lookup mode.

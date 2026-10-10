@@ -1,0 +1,2 @@
+<?php
+declare(strict_types=1);$root=__DIR__;$php=PHP_BINARY;$files=['HF87_PHASE1_STATIC_GATE.php','HF87_PHASE3_LICENSE_REQUEST_STATIC_GATE.php','HF87_PHASE4_PROJECT_PRODUCT_STATIC_GATE.php','HF87_PHASE5_DB_ENGINE_STATIC_GATE.php'];$ok=true;foreach($files as $n){$f=$root.'/'.$n;echo "\n=== $n ===\n";passthru(escapeshellarg($php).' '.escapeshellarg($f),$rc);if($rc!==0)$ok=false;}echo "\nHF87 LICENSE SERVER FINAL STATIC STATUS: ".($ok?'PASSED':'FAILED').PHP_EOL;exit($ok?0:1);

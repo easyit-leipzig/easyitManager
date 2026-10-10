@@ -1,0 +1,14 @@
+HF154 – Separate Kennzeichnung gleichzeitiger personenbezogener Blockierungen
+
+[PASS] Slot-Auswertung verwendet blocksAtSlot() statt nur blockAtSlot() für die Darstellung.
+[PASS] Jede Blockierung erhält eine eigene .block-marker-Markierung.
+[PASS] Personenmarkierung enthält Initialen der zugeordneten Person.
+[PASS] Globale Blockierung wird separat mit "A" (Alle Personen) markiert.
+[PASS] Markierungsfarbe wird aus der jeweiligen Blockierungskategorie abgeleitet.
+[PASS] Ein Klick auf eine Markierung adressiert die konkrete Blockierungs-ID.
+[PASS] Mehrfach belegte Slots erhalten die Klasse multi-blocked.
+[PASS] Bestehende HF153-Konfliktlogik bleibt unverändert.
+[PASS] JavaScript-Syntaxprüfung mit node --check erfolgreich.
+[PASS] PHP-Syntaxprüfung Calendar index.php erfolgreich.
+
+SUMMARY: PASS 10/10

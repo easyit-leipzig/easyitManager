@@ -1,0 +1,8 @@
+PASS - URL input
+PASS - check action
+PASS - persistent save
+PASS - loopback guard
+PASS - health endpoint
+PASS - install uses entered URL
+PASS - setup link
+No syntax errors detected in /mnt/data/hf138mgr/enterpriseManagerLocal/setup.php

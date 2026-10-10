@@ -1,0 +1,24 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);
+$lifecycle=(string)@file_get_contents($root.'/src/Service/InstallationLifecycleService.php');
+$activation=(string)@file_get_contents($root.'/src/Service/ActivationService.php');
+$account=(string)@file_get_contents($root.'/src/Service/AccountService.php');
+$roles=(string)@file_get_contents($root.'/src/Service/CustomerRoleService.php');
+$app=(string)@file_get_contents($root.'/src/App/Application.php');
+$admin=(string)@file_get_contents($root.'/src/Admin/AdminApp.php');
+$fail=0;
+$c=function(string $name,bool $ok)use(&$fail):void{echo($ok?'PASS ':'FAIL ').$name.PHP_EOL;if(!$ok)$fail++;};
+$c('central installation lifecycle service exists',$lifecycle!==''&&str_contains($lifecycle,'final class InstallationLifecycleService'));
+$c('active and blocked consume installation slots',str_contains($activation,"status IN ('active','blocked')")&&str_contains($account,'InstallationLifecycleService::consumesSlot'));
+$c('terminal transitions are irreversible',str_contains($lifecycle,"private const TERMINAL=['retired','replaced']")&&str_contains($lifecycle,"throw new \\RuntimeException('INSTALLATION_TERMINAL')"));
+$c('transition is serialized',str_contains($lifecycle,'FOR UPDATE')&&str_contains($lifecycle,'beginTransaction()'));
+$c('blocked or terminal revokes active runtimes',str_contains($lifecycle,"UPDATE runtime_sessions SET status='revoked'")&&str_contains($lifecycle,"\$targetStatus==='blocked'"));
+$c('terminal transition revokes installation keys',str_contains($lifecycle,"UPDATE installation_keys SET status='revoked'")&&str_contains($lifecycle,'valid_until=COALESCE'));
+$c('customer retire endpoint exists',str_contains($app,"/api/v1/account/installation/retire")&&str_contains($account,'function retireInstallation'));
+$c('customer retire is role protected',str_contains($account,"'account.installations.manage'")&&str_contains($roles,"'account.installations.manage'"));
+$c('existing customer admins are backfilled',str_contains($roles,"capability_code=?")&&str_contains($roles,"'account.installations.manage',\$now"));
+$c('superadmin uses central lifecycle service',str_contains($admin,'new InstallationLifecycleService')&&str_contains($admin,"'admin',(string)\$user['id']"));
+$c('terminal installations are not reactivated in admin ui',str_contains($admin,"terminal · keine Reaktivierung"));
+echo $fail?"HF86_PHASE10_STATIC_GATE FAIL ($fail)\n":"HF86_PHASE10_STATIC_GATE PASS\n";
+exit($fail?1:0);

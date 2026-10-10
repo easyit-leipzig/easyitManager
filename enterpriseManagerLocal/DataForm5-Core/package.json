@@ -1,0 +1,28 @@
+{
+  "package": "DataForm5-bound-form-binding",
+  "version": "1.0.1",
+  "type": "feature-addon",
+  "target": "easyIT-Enterprise/DataForm5-Core",
+  "feature": {
+    "inheritParentValue": true,
+    "boundFieldReadonlyDefault": true,
+    "serverSideReadonlyEnforcement": true,
+    "blockChildForUnsavedParent": true,
+    "dataformContextExtension": true
+  },
+  "helpId": "dataform.boundForm",
+  "migrations": {
+    "mysql": "migrations/admin/mysql/005_bound_form_binding_settings.sql",
+    "sqlite": "migrations/admin/sqlite/005_bound_form_binding_settings.sql"
+  },
+  "fixes": [
+    "new child row shows current parent ID instead of parent-selection placeholder",
+    "new-row binding is re-applied after dynamic rendering",
+    "pagination is always placed below records and outside horizontal scroll area"
+  ],
+  "assets": [
+    "assets/js/dataform-bound-form.js",
+    "assets/js/dataform-recordset-layout.js",
+    "assets/css/dataform-recordset-layout.css"
+  ]
+}

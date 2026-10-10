@@ -1,0 +1,13 @@
+HF125 – Unified Local Admin Login – Test Report
+
+PASS - Hauptlogin verwendet kein type=email mehr für das gemeinsame Anmeldefeld.
+PASS - Hauptlogin akzeptiert das Feld identity.
+PASS - Nicht-E-Mail-Identitäten werden vor Lizenzserverprüfung lokal authentifiziert.
+PASS - Lokale Anmeldung prüft password_hash und is_active.
+PASS - Lokale Anmeldung verlangt admin oder superadmin.
+PASS - Lokale Anmeldung lädt Rollen und Capabilities.
+PASS - Lokale Anmeldung schreibt Audit und Login-Event.
+PASS - Kunden-E-Mail wird weiterhin über LicenseApiClient::loginAccount authentifiziert.
+PASS - Kundenregistrierung bleibt lizenzservergebunden.
+PASS - Direkter Link auf admin-login.php bleibt vorhanden.
+PASS - login.php PHP-Syntax gültig.

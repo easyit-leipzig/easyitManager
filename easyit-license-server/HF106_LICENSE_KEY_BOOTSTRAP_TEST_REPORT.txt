@@ -1,0 +1,36 @@
+HF106 LICENSE SERVER KEY BOOTSTRAP - TEST REPORT
+Date: 2026-09-25
+
+Scope
+- easyIT License Server key bootstrap
+- Enterprise Manager automatic trust-key discovery
+
+Server checks
+PASS - missing initial Ed25519 key pair is generated once
+PASS - generated public key is 32 bytes after Base64 decoding
+PASS - second signer initialization reuses the same key pair
+PASS - incomplete key material is rejected with SERVER_KEY_MATERIAL_INCOMPLETE
+PASS - existing key/keyring is not silently replaced
+PASS - admin dashboard exposes only key ID, public key and SHA-256 fingerprint
+PASS - activation-key workflow remains separate
+
+Manager checks
+PASS - HTTP GET transport for bootstrap discovery
+PASS - /api/v1/health server_trust bundle discovery
+PASS - active key selection
+PASS - Ed25519 public-key length validation
+PASS - existing trust-anchor conflict protection
+PASS - explicit "Server prüfen & Schlüssel laden" action
+PASS - empty public-key field can trigger automatic discovery during save
+
+Regression / syntax
+PASS - 74 license-server PHP files syntax checked
+PASS - 907 Enterprise-Manager PHP files syntax checked
+PASS - mock HTTP health endpoint fetched with manager Transport::get
+PASS - HF106 static integration gate 12/12
+
+Security behavior
+- The server private Ed25519 key is never displayed or transferred to the Manager.
+- The update ZIP contains no private key material.
+- Remote bootstrap requires HTTPS; localhost may use HTTP for local development.
+- Existing trusted keys are not silently replaced by discovery.

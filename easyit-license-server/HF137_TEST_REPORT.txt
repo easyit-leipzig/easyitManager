@@ -1,0 +1,13 @@
+HF137 – ONE PAGE LICENSE SERVER SETUP
+=====================================
+
+Prüfumfang:
+- PHP-Syntax der geänderten Setup-, Auth-, Datenquellen- und Health-Dateien
+- explizite Bestandsdatenbank-Entscheidung keep/rebuild
+- zusätzliche Bestätigung vor destruktivem Rebuild
+- Superadmin-Felder auf derselben Setup-Seite
+- nicht-destruktiver Migrationspfad beim Beibehalten
+- READY/SETUP_REQUIRED im Setup und im Health-Endpunkt
+
+Hinweis zur Laufzeitprüfung:
+Die Build-Umgebung stellt keinen PDO-Treiber bereit. Datenbankintegration wurde deshalb statisch gegen die vorhandenen Connection-/MigrationRunner-Verträge geprüft. Die PHP-Syntaxprüfung und HF137-Static-Gate sind verbindlich bestanden.

@@ -1,0 +1,76 @@
+HF112 – Installer Admin-Schema Gate / Repair
+Datum: 2026-09-25
+
+PHP-Dateien: 912
+PHP Syntax: PASS
+
+--- HF105 Calendar/DataForm ---
+PASS Calendar-DataForm-Bridge nutzt Manager, RecordStore und Relationen
+PASS Sieben Calendar-Datenbereiche werden als DataForms provisioniert
+PASS Basisrelationen werden provisioniert
+PASS Terminbasis enthält Ganztägig, Ort, Ressourcen- und Kategorie-Lookups
+PASS Neue Calendar-Projekte provisionieren DataForm automatisch
+PASS Calendar-Projektkonfiguration v2 enthält DataForm-Gates
+PASS Calendar-Auslieferung enthält die verbindliche DataForm-Schicht
+PASS Setup besitzt keine eigene Calendar-CRUD-Datenpflege mehr
+PASS Setup führt Datenpflege, Konfiguration und Relationen über DataForm
+PASS Fest codierter Calendar-Termindialog ist entfernt
+PASS Calendar öffnet DataForm-Termindialog und verarbeitet den echten DataForm-Save-Event
+PASS Calendar-API nutzt RecordStore statt eigener SQL-CRUD-Schicht
+PASS Legacy-Maintenance delegiert vollständig an DataForm
+PASS DataForm-Record-Runtime unterstützt Calendar intern und Dialog-Defaults
+PASS DataForm-Konfiguration akzeptiert Calendar-Projekte vollständig
+PASS DataForm-Relationen akzeptieren Calendar-Projekte
+HF105 Calendar/DataForm Gate: PASS (16 checks)
+
+--- HF107 Admin DB easyit_license ---
+PASS - HF107 Buildkennung / Nachfolgestand
+PASS - Runtime kanonisiert Legacy-Admin-DB auf easyit_license
+PASS - Bestehende .env wird gezielt repariert
+PASS - MySQL/MariaDB verwendet kanonischen Datenbanknamen
+PASS - MSSQL verwendet kanonischen Datenbanknamen
+PASS - Setup-Default ist easyit_license
+PASS - DB-Name und PostgreSQL-Schema sind getrennt
+PASS - Datenbank-Assistent verwendet easyit_license als Fallback
+PASS - Ausgeliefertes Grundprofil verwendet easyit_license
+PASS - Kein produktiver Runtime-Fallback auf easyit_admin
+RESULT 10/10 PASS
+
+--- HF108 License Extension ---
+PASS extension is default for licensed customer
+PASS visible top submit exists
+PASS current installation limit prefilled
+PASS current dataform limit prefilled
+PASS current modules preselected
+PASS current capabilities preselected
+PASS advanced section collapsible
+PASS non admin gets explicit message
+PASS misleading additional license option removed
+
+--- HF111 License Server Trust ---
+PASS - HF111 Buildkennung
+PASS - Health-Antwort wird gegen publizierten Ed25519-Key geprüft
+PASS - Explizite Prüfen-/Neu-Koppeln-Aktionen vorhanden
+PASS - Explizite Admin-Bestätigung erforderlich
+PASS - Fingerprint wird vor Austausch erneut gebunden geprüft
+PASS - Stiller Trust-Austausch blockiert
+PASS - Neu-Kopplung wird lokal protokolliert
+PASS - Dynamischer Trust-Cache wird kontrolliert zurückgesetzt
+PASS - Login verweist bei Trust-Fehler auf lokale Administration
+PASS - Bestehende lokale Lizenz-Storage-Identität wird weiterverwendet
+
+--- HF112 Installer Admin Schema ---
+PASS - Pflichttabellen sind explizit definiert
+PASS - Realer Tabellenzustand wird geprüft
+PASS - Gezielte Basisreparatur ist vorhanden
+PASS - Gemeinsames Gate ist nicht an MySQL-information_schema gebunden
+PASS - Schritt 6 lädt das Admin-Schema-Gate
+PASS - Schritt 6 validiert das reale Schema vor Fortsetzung
+PASS - Schritt 7 lädt dasselbe Gate
+PASS - Schritt 7 kann abgebrochene Basisschemata reparieren
+PASS - MySQL-spezifische lokale tableExists-Prüfung wurde entfernt
+PASS - HF112-Version gesetzt
+RESULT 10/10 PASS
+
+CSV-Control-Plane-Funktionstest: PASS (admin schema ensure + required tables)
+Hinweis: In der Ausführungsumgebung sind keine nativen PDO-Datenbanktreiber geladen; MySQL/PostgreSQL wurden statisch über die Installer-Verträge geprüft.

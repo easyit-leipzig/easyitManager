@@ -1,0 +1,33 @@
+HF126 – Calendar categorized blocking / standalone roles
+Stand: 2026-09-27
+
+Funktionstest CSV:
+PASS - Blockierungs-DataForm vorhanden
+PASS - 9 Calendar-DataForms gebunden
+PASS - blocked_ranges Tabelle vorhanden
+PASS - mindestens eine Kategorie vorhanden
+PASS - Blockierung über DataFormRecordStore speicherbar
+PASS - Blockierung -> Kategorie Relation vorhanden
+PASS - keine Integrationswarnungen
+
+Standalone-Auth:
+PASS - Auth-Nullstand enthält keinen Benutzer
+PASS - erster Admin kann angelegt werden
+PASS - Login per Benutzername möglich
+PASS - Rolle admin wird ausgewertet
+PASS - editor und viewer können angelegt werden
+
+Static / Syntax:
+PASS - 931 PHP-Dateien ohne Syntaxfehler
+PASS - calendar.js Syntax
+PASS - bootstrap.js Syntax
+PASS - Standalone-Runtime enthält auth.php/login.php/logout.php/admin.php
+PASS - Exportmanifest enthält HF126 + categorized_blocks + Rollen
+
+Sicherheits-/Integritätsvertrag:
+- Blockierungen werden serverseitig gespeichert.
+- Kategorie ist für neue Blockierungen Pflicht.
+- Blockierungen dürfen sich nicht überschneiden.
+- Blockierungen dürfen keine aktiven Termine überdecken.
+- Termine dürfen nicht in blockierte Bereiche geschrieben oder verschoben werden.
+- Viewer dürfen keine schreibenden Standalone-API-Aktionen ausführen.

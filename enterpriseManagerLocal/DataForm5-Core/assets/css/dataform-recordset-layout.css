@@ -1,0 +1,58 @@
+/*
+ * DataForm 5 – Recordset Layout
+ *
+ * Die Daten dürfen horizontal scrollen.
+ * Die Paginierung bleibt als eigener Block darunter.
+ */
+
+[data-role="recordset"],
+.df-recordset,
+.recordset {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+[data-role="recordset-data"],
+[data-role="recordset-records"],
+.df-recordset-data,
+.recordset-data,
+.df-recordset-scroll {
+    order: 10;
+    min-width: 0;
+}
+
+/* Nur der Datenbereich scrollt horizontal. */
+.df-recordset-scroll,
+[data-role="recordset-data"].is-scrollable,
+[data-role="recordset-records"].is-scrollable {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+/* Paginierung IMMER unter den Datensätzen. */
+[data-role="recordset-pagination"],
+.df-recordset-pagination,
+.recordset-pagination,
+.df-pagination {
+    order: 20;
+    position: static !important;
+    float: none !important;
+    clear: both;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 8px;
+    overflow: visible !important;
+    flex: 0 0 auto;
+}
+
+/* Pagination darf niemals Teil eines horizontalen Scrollinhalts werden. */
+[data-role="recordset-pagination"][data-df-pagination-placement="below"],
+.df-recordset-pagination[data-df-pagination-placement="below"],
+.recordset-pagination[data-df-pagination-placement="below"],
+.df-pagination[data-df-pagination-placement="below"] {
+    align-self: stretch;
+}

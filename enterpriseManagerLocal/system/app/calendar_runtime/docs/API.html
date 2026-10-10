@@ -1,0 +1,403 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>easyIT Calendar – Integration API 1.1</title><style>
+:root{--b:#075aa6;--d:#12324d;--l:#d9e3ec;--bg:#f5f7fa}*{box-sizing:border-box}body{margin:0;font:15px/1.55 system-ui,Segoe UI,Arial;color:#17212b;background:var(--bg)}header{background:var(--d);color:white;padding:32px max(24px,calc((100% - 1180px)/2))}header h1{margin:0 0 6px}header p{margin:0;color:#dceaf5}main{max-width:1180px;margin:auto;padding:28px 20px 60px}nav,.box,section,.op{background:white;border:1px solid var(--l);border-radius:10px;padding:20px;margin-bottom:18px}nav a{margin-right:16px}h2{color:var(--b);border-bottom:2px solid #e5eff7;padding-bottom:6px}h3{color:#24577d}h4{margin-bottom:5px}code{background:#edf2f6;padding:2px 5px;border-radius:4px}pre{background:#101820;color:#eef5fa;padding:15px;border-radius:8px;overflow:auto}pre code{background:none;padding:0}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--l);padding:8px;text-align:left;vertical-align:top}th{background:#edf4fa}.note{border-left:4px solid var(--b);padding:10px 14px;background:#edf6ff}.warn{border-left-color:#b36b00;background:#fff6e8}.links{margin:8px 0 12px}.op{scroll-margin-top:10px}@media print{body{background:white}nav{display:none}.op{break-inside:avoid}}</style></head><body>
+<header><h1>easyIT Calendar – Integration API 1.1</h1><p>API-Referenz mit vollständigen Einzelbeispielen für JavaScript und PHP · HF156</p></header><main>
+<nav><a href="#start">Schnellstart</a><a href="#auth">Authentifizierung</a><a href="#matrix">Funktionsmatrix</a><a href="#render-api">Render/Filter</a><a href="#examples">REST-Beispiele</a><a href="#errors">Fehler</a><a href="../api-tokens.php">API-Tokens</a><a href="../index.php">Calendar</a></nav>
+<section id="start"><h2>1. Schnellstart</h2><p>Öffentliche Basis: <code>https://HOST/PFAD/easyITCalendar/api-v1.php</code>. Alle Antworten sind JSON. Fremdanwendungen verwenden ausschließlich <code>api-v1.php</code> oder die öffentliche JavaScript-Klasse <code>EasyITCalendarAPI</code>.</p><div class="note"><b>JavaScript-Client:</b> <code>assets/js/easyit-calendar-api.js</code><br><b>PHP-Beispiele:</b> <code>docs/examples/php/</code><br><b>JavaScript-Beispiele:</b> <code>docs/examples/javascript/</code></div><p>Für PHP zuerst <code>examples/php/_config.php.example</code> nach <code>_config.php</code> kopieren und Basisadresse sowie Token eintragen. Die mitgelieferte <code>_client.php</code> kapselt cURL, JSON und HTTP-Fehler.</p></section>
+<section id="auth"><h2>2. Authentifizierung und Rollen</h2><p>Jeder Aufruf benötigt <code>Authorization: Bearer &lt;TOKEN&gt;</code>. Tokens werden in <code>api-tokens.php</code> erzeugt.</p><table><tr><th>Rolle</th><th>Rechte</th></tr><tr><td>viewer</td><td>Metadaten, Events, Blockierungen, Kategorien und Places lesen</td></tr><tr><td>editor</td><td>viewer + Events und Blockierungen anlegen, ändern, löschen</td></tr><tr><td>admin</td><td>editor + Kategorien, Places und API-Tokens administrieren</td></tr></table><div class="note warn"><b>Sicherheit:</b> Ein dauerhaftes Token gehört nicht in öffentlich abrufbaren Browsercode. Für öffentliche Websites ein eigenes Backend/Proxy einsetzen.</div></section>
+<section id="matrix"><h2>3. Funktionsmatrix und Beispielskripte</h2><p>Für jede öffentliche Client-Funktion existiert ein separates JavaScript- und PHP-Beispiel. Die Dateien sind Bestandteil des Managers und des exportierten Standalone-Calendar-Pakets.</p><table><tr><th>Funktion</th><th>Methode</th><th>REST-Pfad</th><th>Rolle</th><th>Zweck</th><th>Beispiele</th></tr><tr><td><code>meta()</code></td><td>GET</td><td><code>/meta</code></td><td>viewer</td><td>API-/Projektinformationen und Tokenrolle lesen</td><td><a href="examples/javascript/meta.js">JS</a> · <a href="examples/php/meta.php">PHP</a></td></tr>
+<tr><td><code>listEvents(start, end)</code></td><td>GET</td><td><code>/events?start=...&amp;end=...</code></td><td>viewer</td><td>Termine eines Zeitraums lesen</td><td><a href="examples/javascript/list-events.js">JS</a> · <a href="examples/php/list-events.php">PHP</a></td></tr>
+<tr><td><code>getEvent(id)</code></td><td>GET</td><td><code>/events/{id}</code></td><td>viewer</td><td>Einzelnen Termin lesen</td><td><a href="examples/javascript/get-event.js">JS</a> · <a href="examples/php/get-event.php">PHP</a></td></tr>
+<tr><td><code>createEvent(data)</code></td><td>POST</td><td><code>/events</code></td><td>editor</td><td>Termin anlegen</td><td><a href="examples/javascript/create-event.js">JS</a> · <a href="examples/php/create-event.php">PHP</a></td></tr>
+<tr><td><code>updateEvent(id, data)</code></td><td>PUT</td><td><code>/events/{id}</code></td><td>editor</td><td>Termin ändern</td><td><a href="examples/javascript/update-event.js">JS</a> · <a href="examples/php/update-event.php">PHP</a></td></tr>
+<tr><td><code>deleteEvent(id)</code></td><td>DELETE</td><td><code>/events/{id}</code></td><td>editor</td><td>Termin logisch löschen</td><td><a href="examples/javascript/delete-event.js">JS</a> · <a href="examples/php/delete-event.php">PHP</a></td></tr>
+<tr><td><code>listBlocks()</code></td><td>GET</td><td><code>/blocks</code></td><td>viewer</td><td>Zeitblockierungen lesen</td><td><a href="examples/javascript/list-blocks.js">JS</a> · <a href="examples/php/list-blocks.php">PHP</a></td></tr>
+<tr><td><code>createBlock(data)</code></td><td>POST</td><td><code>/blocks</code></td><td>editor</td><td>Zeitblockierung anlegen</td><td><a href="examples/javascript/create-block.js">JS</a> · <a href="examples/php/create-block.php">PHP</a></td></tr>
+<tr><td><code>updateBlock(id, data)</code></td><td>PUT</td><td><code>/blocks/{id}</code></td><td>editor</td><td>Zeitblockierung ändern</td><td><a href="examples/javascript/update-block.js">JS</a> · <a href="examples/php/update-block.php">PHP</a></td></tr>
+<tr><td><code>deleteBlock(id)</code></td><td>DELETE</td><td><code>/blocks/{id}</code></td><td>editor</td><td>Zeitblockierung löschen</td><td><a href="examples/javascript/delete-block.js">JS</a> · <a href="examples/php/delete-block.php">PHP</a></td></tr>
+<tr><td><code>listBlockCategories()</code></td><td>GET</td><td><code>/block-categories</code></td><td>viewer</td><td>Blockierungskategorien lesen</td><td><a href="examples/javascript/list-block-categories.js">JS</a> · <a href="examples/php/list-block-categories.php">PHP</a></td></tr>
+<tr><td><code>createBlockCategory(data)</code></td><td>POST</td><td><code>/block-categories</code></td><td>admin</td><td>Blockierungskategorie anlegen</td><td><a href="examples/javascript/create-block-category.js">JS</a> · <a href="examples/php/create-block-category.php">PHP</a></td></tr>
+<tr><td><code>updateBlockCategory(id, data)</code></td><td>PUT</td><td><code>/block-categories/{id}</code></td><td>admin</td><td>Blockierungskategorie ändern</td><td><a href="examples/javascript/update-block-category.js">JS</a> · <a href="examples/php/update-block-category.php">PHP</a></td></tr>
+<tr><td><code>deleteBlockCategory(id)</code></td><td>DELETE</td><td><code>/block-categories/{id}</code></td><td>admin</td><td>Blockierungskategorie löschen</td><td><a href="examples/javascript/delete-block-category.js">JS</a> · <a href="examples/php/delete-block-category.php">PHP</a></td></tr>
+<tr><td><code>listPlaces()</code></td><td>GET</td><td><code>/places</code></td><td>viewer</td><td>Orte lesen</td><td><a href="examples/javascript/list-places.js">JS</a> · <a href="examples/php/list-places.php">PHP</a></td></tr>
+<tr><td><code>createPlace(data)</code></td><td>POST</td><td><code>/places</code></td><td>admin</td><td>Ort anlegen</td><td><a href="examples/javascript/create-place.js">JS</a> · <a href="examples/php/create-place.php">PHP</a></td></tr>
+<tr><td><code>updatePlace(id, data)</code></td><td>PUT</td><td><code>/places/{id}</code></td><td>admin</td><td>Ort ändern</td><td><a href="examples/javascript/update-place.js">JS</a> · <a href="examples/php/update-place.php">PHP</a></td></tr>
+<tr><td><code>deletePlace(id)</code></td><td>DELETE</td><td><code>/places/{id}</code></td><td>admin</td><td>Ort löschen</td><td><a href="examples/javascript/delete-place.js">JS</a> · <a href="examples/php/delete-place.php">PHP</a></td></tr></table></section>
+<section><h2>4. Nutzdaten</h2><h3>Event</h3><pre><code>{
+  "start": "2026-10-05T14:30:00",
+  "end": "2026-10-05T15:30:00",
+  "title": "Besprechung",
+  "description": "Projektstatus",
+  "location_id": 3
+}</code></pre><p>Ein Event, das eine aktive Blockierung überschneidet, wird mit HTTP 409 / <code>TIME_BLOCKED</code> abgewiesen.</p><h3>Blockierung</h3><p><code>person_id</code> leer, 0 oder nicht gesetzt bedeutet: Die Blockierung gilt für alle Personen. Eine positive ID begrenzt die Sperre auf diese Person.</p><pre><code>{"start":"2026-10-06T08:00:00","end":"2026-10-06T10:00:00","category_id":2,"person_id":0,"reason":"Nicht verfügbar"}</code></pre><h3>Kategorie</h3><pre><code>{"name":"Intern","description":"Interne Sperrzeit","activ":1}</code></pre><h3>Place</h3><p>Unterstützte Felder: <code>name</code>, <code>description</code>, <code>address</code>, <code>street</code>, <code>postal_code</code>, <code>city</code>, <code>country</code>, <code>room</code>, <code>activ</code>.</p></section>
+
+<section id="render-api"><h2>5. Kalenderansichts-API: <code>render(filterObjekt)</code></h2>
+<p>Die Kalenderansicht wird über <code>window.TinyCalendar</code> gesteuert. Der verbindliche Einstieg lautet <code>TinyCalendar.render(filterObjekt)</code>.</p>
+<div class="note"><b>Ungefilterter Zustand:</b> <code>TinyCalendar.render(null)</code> zeigt alle für den sichtbaren Zeitraum geladenen Termine. <code>null</code> ist der definierte Zustand „kein Filter“.</div>
+<h3>Nach einem Feld filtern</h3><pre><code>TinyCalendar.render({ category_id: 3 });</code></pre>
+<h3>Mehrere Felder</h3><pre><code>TinyCalendar.render({
+  to_student: 17,
+  activ: true,
+  category_id: 3
+});</code></pre>
+<p>Mehrere Felder werden mit UND verknüpft. Arrays erlauben mehrere zulässige Werte:</p><pre><code>TinyCalendar.render({
+  event_status: ['planned', 'confirmed']
+});</code></pre>
+<h3>Operatorfilter</h3><pre><code>TinyCalendar.render({ thema: { contains: 'Mathematik' } });
+TinyCalendar.render({
+  start: { gte: '2026-10-10T08:00:00', lt: '2026-10-10T12:00:00' }
+});</code></pre>
+<p>Unterstützt werden <code>eq</code>, <code>neq</code>, <code>in</code>, <code>contains</code>, <code>startsWith</code>, <code>endsWith</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code>, <code>between</code> und <code>empty</code>.</p>
+<h3>Aktiven Filter lesen oder zurücksetzen</h3><pre><code>const filter = TinyCalendar.getFilter();
+TinyCalendar.render(null);</code></pre>
+<p>Filterbar sind alle normalisierten Terminwerte sowie sämtliche vom Server in <code>filter_data</code> gelieferten DataForm-Felder. Dadurch funktionieren auch projektspezifische Calendar-Felder ohne Änderung der Render-API.</p>
+<div class="links"><a href="examples/javascript/render-all.js">Beispiel: alle Datensätze</a> · <a href="examples/javascript/render-filter.js">Beispiel: Filter</a> · <a href="examples/javascript/get-filter.js">Beispiel: Filter lesen/zurücksetzen</a></div>
+</section>
+<section id="blocking-person"><h2>6. Personenbezogene Blockierungen</h2><p>Eine Blockierung kann über <code>person_id</code> genau einer Person zugeordnet werden. Ist <code>person_id</code> leer, <code>0</code> oder <code>null</code>, gilt sie für <b>Alle Personen</b>. Gleichzeitige Blockierungen verschiedener Personen bleiben getrennte Datensätze.</p><pre><code>{
+  "start":"2026-10-10T08:00:00",
+  "end":"2026-10-10T10:00:00",
+  "category_id":2,
+  "person_id":17,
+  "reason":"Nicht verfügbar"
+}</code></pre></section>
+<section id="examples"><h2>7. REST-Einzelbeispiele pro Funktion</h2><p>Die IDs 17, 8, 2 und 3 in den Beispielen sind Platzhalter und müssen durch echte Datensatz-IDs ersetzt werden. Schreibbeispiele verwenden bewusst feste Demo-Daten, damit die benötigte Struktur vollständig sichtbar ist.</p></section>
+<article class="op" id="fn-meta"><h3>1. <code>meta()</code></h3><p><b>GET /meta</b> · Mindestrolle: <code>viewer</code><br>API-/Projektinformationen und Tokenrolle lesen</p><div class="links"><a href="examples/javascript/meta.js">JavaScript-Datei öffnen</a> · <a href="examples/php/meta.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.meta();
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;GET&#x27;,&#x27;meta&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-list-events"><h3>2. <code>listEvents(start, end)</code></h3><p><b>GET /events?start=...&amp;end=...</b> · Mindestrolle: <code>viewer</code><br>Termine eines Zeitraums lesen</p><div class="links"><a href="examples/javascript/list-events.js">JavaScript-Datei öffnen</a> · <a href="examples/php/list-events.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.listEvents(&#x27;2026-10-01&#x27;, &#x27;2026-10-08&#x27;);
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;GET&#x27;,&#x27;events?start=2026-10-01&amp;end=2026-10-08&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-get-event"><h3>3. <code>getEvent(id)</code></h3><p><b>GET /events/{id}</b> · Mindestrolle: <code>viewer</code><br>Einzelnen Termin lesen</p><div class="links"><a href="examples/javascript/get-event.js">JavaScript-Datei öffnen</a> · <a href="examples/php/get-event.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.getEvent(17);
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;GET&#x27;,&#x27;events/17&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-create-event"><h3>4. <code>createEvent(data)</code></h3><p><b>POST /events</b> · Mindestrolle: <code>editor</code><br>Termin anlegen</p><div class="links"><a href="examples/javascript/create-event.js">JavaScript-Datei öffnen</a> · <a href="examples/php/create-event.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.createEvent({
+    &quot;start&quot;: &quot;2026-10-05T14:30:00&quot;,
+    &quot;end&quot;: &quot;2026-10-05T15:30:00&quot;,
+    &quot;title&quot;: &quot;Besprechung&quot;,
+    &quot;description&quot;: &quot;Projektstatus&quot;,
+    &quot;location_id&quot;: 3
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;POST&#x27;,&#x27;events&#x27;,json_decode(&#x27;{&quot;start&quot;: &quot;2026-10-05T14:30:00&quot;, &quot;end&quot;: &quot;2026-10-05T15:30:00&quot;, &quot;title&quot;: &quot;Besprechung&quot;, &quot;description&quot;: &quot;Projektstatus&quot;, &quot;location_id&quot;: 3}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-update-event"><h3>5. <code>updateEvent(id, data)</code></h3><p><b>PUT /events/{id}</b> · Mindestrolle: <code>editor</code><br>Termin ändern</p><div class="links"><a href="examples/javascript/update-event.js">JavaScript-Datei öffnen</a> · <a href="examples/php/update-event.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.updateEvent(17, {
+    &quot;start&quot;: &quot;2026-10-05T15:00:00&quot;,
+    &quot;end&quot;: &quot;2026-10-05T16:00:00&quot;,
+    &quot;title&quot;: &quot;Besprechung verschoben&quot;,
+    &quot;description&quot;: &quot;Projektstatus&quot;,
+    &quot;location_id&quot;: 3
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;PUT&#x27;,&#x27;events/17&#x27;,json_decode(&#x27;{&quot;start&quot;: &quot;2026-10-05T15:00:00&quot;, &quot;end&quot;: &quot;2026-10-05T16:00:00&quot;, &quot;title&quot;: &quot;Besprechung verschoben&quot;, &quot;description&quot;: &quot;Projektstatus&quot;, &quot;location_id&quot;: 3}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-delete-event"><h3>6. <code>deleteEvent(id)</code></h3><p><b>DELETE /events/{id}</b> · Mindestrolle: <code>editor</code><br>Termin logisch löschen</p><div class="links"><a href="examples/javascript/delete-event.js">JavaScript-Datei öffnen</a> · <a href="examples/php/delete-event.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.deleteEvent(17);
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;DELETE&#x27;,&#x27;events/17&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-list-blocks"><h3>7. <code>listBlocks()</code></h3><p><b>GET /blocks</b> · Mindestrolle: <code>viewer</code><br>Zeitblockierungen lesen</p><div class="links"><a href="examples/javascript/list-blocks.js">JavaScript-Datei öffnen</a> · <a href="examples/php/list-blocks.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.listBlocks();
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;GET&#x27;,&#x27;blocks&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-create-block"><h3>8. <code>createBlock(data)</code></h3><p><b>POST /blocks</b> · Mindestrolle: <code>editor</code><br>Zeitblockierung anlegen</p><div class="links"><a href="examples/javascript/create-block.js">JavaScript-Datei öffnen</a> · <a href="examples/php/create-block.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.createBlock({
+    &quot;start&quot;: &quot;2026-10-06T08:00:00&quot;,
+    &quot;end&quot;: &quot;2026-10-06T10:00:00&quot;,
+    &quot;category_id&quot;: 2,
+    &quot;reason&quot;: &quot;Nicht verfügbar&quot;
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;POST&#x27;,&#x27;blocks&#x27;,json_decode(&#x27;{&quot;start&quot;: &quot;2026-10-06T08:00:00&quot;, &quot;end&quot;: &quot;2026-10-06T10:00:00&quot;, &quot;category_id&quot;: 2, &quot;person_id&quot;: 0, &quot;reason&quot;: &quot;Nicht verfügbar&quot;}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-update-block"><h3>9. <code>updateBlock(id, data)</code></h3><p><b>PUT /blocks/{id}</b> · Mindestrolle: <code>editor</code><br>Zeitblockierung ändern</p><div class="links"><a href="examples/javascript/update-block.js">JavaScript-Datei öffnen</a> · <a href="examples/php/update-block.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.updateBlock(8, {
+    &quot;start&quot;: &quot;2026-10-06T09:00:00&quot;,
+    &quot;end&quot;: &quot;2026-10-06T11:00:00&quot;,
+    &quot;category_id&quot;: 2,
+    &quot;reason&quot;: &quot;Verschoben&quot;
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;PUT&#x27;,&#x27;blocks/8&#x27;,json_decode(&#x27;{&quot;start&quot;: &quot;2026-10-06T09:00:00&quot;, &quot;end&quot;: &quot;2026-10-06T11:00:00&quot;, &quot;category_id&quot;: 2, &quot;person_id&quot;: 0, &quot;reason&quot;: &quot;Verschoben&quot;}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-delete-block"><h3>10. <code>deleteBlock(id)</code></h3><p><b>DELETE /blocks/{id}</b> · Mindestrolle: <code>editor</code><br>Zeitblockierung löschen</p><div class="links"><a href="examples/javascript/delete-block.js">JavaScript-Datei öffnen</a> · <a href="examples/php/delete-block.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.deleteBlock(8);
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;DELETE&#x27;,&#x27;blocks/8&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-list-block-categories"><h3>11. <code>listBlockCategories()</code></h3><p><b>GET /block-categories</b> · Mindestrolle: <code>viewer</code><br>Blockierungskategorien lesen</p><div class="links"><a href="examples/javascript/list-block-categories.js">JavaScript-Datei öffnen</a> · <a href="examples/php/list-block-categories.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.listBlockCategories();
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;GET&#x27;,&#x27;block-categories&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-create-block-category"><h3>12. <code>createBlockCategory(data)</code></h3><p><b>POST /block-categories</b> · Mindestrolle: <code>admin</code><br>Blockierungskategorie anlegen</p><div class="links"><a href="examples/javascript/create-block-category.js">JavaScript-Datei öffnen</a> · <a href="examples/php/create-block-category.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.createBlockCategory({
+    &quot;name&quot;: &quot;Intern&quot;,
+    &quot;description&quot;: &quot;Interne Sperrzeit&quot;,
+    &quot;activ&quot;: 1
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;POST&#x27;,&#x27;block-categories&#x27;,json_decode(&#x27;{&quot;name&quot;: &quot;Intern&quot;, &quot;description&quot;: &quot;Interne Sperrzeit&quot;, &quot;activ&quot;: 1}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-update-block-category"><h3>13. <code>updateBlockCategory(id, data)</code></h3><p><b>PUT /block-categories/{id}</b> · Mindestrolle: <code>admin</code><br>Blockierungskategorie ändern</p><div class="links"><a href="examples/javascript/update-block-category.js">JavaScript-Datei öffnen</a> · <a href="examples/php/update-block-category.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.updateBlockCategory(2, {
+    &quot;name&quot;: &quot;Intern geändert&quot;,
+    &quot;description&quot;: &quot;Interne Sperrzeit&quot;,
+    &quot;activ&quot;: 1
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;PUT&#x27;,&#x27;block-categories/2&#x27;,json_decode(&#x27;{&quot;name&quot;: &quot;Intern geändert&quot;, &quot;description&quot;: &quot;Interne Sperrzeit&quot;, &quot;activ&quot;: 1}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-delete-block-category"><h3>14. <code>deleteBlockCategory(id)</code></h3><p><b>DELETE /block-categories/{id}</b> · Mindestrolle: <code>admin</code><br>Blockierungskategorie löschen</p><div class="links"><a href="examples/javascript/delete-block-category.js">JavaScript-Datei öffnen</a> · <a href="examples/php/delete-block-category.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.deleteBlockCategory(2);
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;DELETE&#x27;,&#x27;block-categories/2&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-list-places"><h3>15. <code>listPlaces()</code></h3><p><b>GET /places</b> · Mindestrolle: <code>viewer</code><br>Orte lesen</p><div class="links"><a href="examples/javascript/list-places.js">JavaScript-Datei öffnen</a> · <a href="examples/php/list-places.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.listPlaces();
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;GET&#x27;,&#x27;places&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-create-place"><h3>16. <code>createPlace(data)</code></h3><p><b>POST /places</b> · Mindestrolle: <code>admin</code><br>Ort anlegen</p><div class="links"><a href="examples/javascript/create-place.js">JavaScript-Datei öffnen</a> · <a href="examples/php/create-place.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.createPlace({
+    &quot;name&quot;: &quot;Raum 101&quot;,
+    &quot;description&quot;: &quot;Besprechungsraum&quot;,
+    &quot;street&quot;: &quot;Musterstraße 1&quot;,
+    &quot;postal_code&quot;: &quot;04109&quot;,
+    &quot;city&quot;: &quot;Leipzig&quot;,
+    &quot;country&quot;: &quot;DE&quot;,
+    &quot;room&quot;: &quot;101&quot;,
+    &quot;activ&quot;: 1
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;POST&#x27;,&#x27;places&#x27;,json_decode(&#x27;{&quot;name&quot;: &quot;Raum 101&quot;, &quot;description&quot;: &quot;Besprechungsraum&quot;, &quot;street&quot;: &quot;Musterstraße 1&quot;, &quot;postal_code&quot;: &quot;04109&quot;, &quot;city&quot;: &quot;Leipzig&quot;, &quot;country&quot;: &quot;DE&quot;, &quot;room&quot;: &quot;101&quot;, &quot;activ&quot;: 1}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-update-place"><h3>17. <code>updatePlace(id, data)</code></h3><p><b>PUT /places/{id}</b> · Mindestrolle: <code>admin</code><br>Ort ändern</p><div class="links"><a href="examples/javascript/update-place.js">JavaScript-Datei öffnen</a> · <a href="examples/php/update-place.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.updatePlace(3, {
+    &quot;name&quot;: &quot;Raum 102&quot;,
+    &quot;description&quot;: &quot;Besprechungsraum&quot;,
+    &quot;street&quot;: &quot;Musterstraße 1&quot;,
+    &quot;postal_code&quot;: &quot;04109&quot;,
+    &quot;city&quot;: &quot;Leipzig&quot;,
+    &quot;country&quot;: &quot;DE&quot;,
+    &quot;room&quot;: &quot;102&quot;,
+    &quot;activ&quot;: 1
+  });
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;PUT&#x27;,&#x27;places/3&#x27;,json_decode(&#x27;{&quot;name&quot;: &quot;Raum 102&quot;, &quot;description&quot;: &quot;Besprechungsraum&quot;, &quot;street&quot;: &quot;Musterstraße 1&quot;, &quot;postal_code&quot;: &quot;04109&quot;, &quot;city&quot;: &quot;Leipzig&quot;, &quot;country&quot;: &quot;DE&quot;, &quot;room&quot;: &quot;102&quot;, &quot;activ&quot;: 1}&#x27;, true, 512, JSON_THROW_ON_ERROR));
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article><article class="op" id="fn-delete-place"><h3>18. <code>deletePlace(id)</code></h3><p><b>DELETE /places/{id}</b> · Mindestrolle: <code>admin</code><br>Ort löschen</p><div class="links"><a href="examples/javascript/delete-place.js">JavaScript-Datei öffnen</a> · <a href="examples/php/delete-place.php">PHP-Datei öffnen</a></div><h4>JavaScript</h4><pre><code>// TOKEN nie in öffentlich ausgeliefertem JavaScript speichern.
+// Dieses Beispiel ist für geschützte/interne Seiten bzw. Tests gedacht.
+(async () =&gt; {
+  const calendar = new EasyITCalendarAPI({
+    baseUrl: &#x27;/easyITCalendar/api-v1.php&#x27;,
+    token: &#x27;cal_HIER_TOKEN_EINTRAGEN&#x27;
+  });
+  
+  const result = await calendar.deletePlace(3);
+  console.log(result);
+})().catch(error =&gt; console.error(error));</code></pre><h4>PHP</h4><pre><code>&lt;?php
+declare(strict_types=1);
+require __DIR__.&#x27;/_client.php&#x27;;
+
+$result=calendar_api(&#x27;DELETE&#x27;,&#x27;places/3&#x27;,null);
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);</code></pre></article>
+<section id="errors"><h2>8. Antworten und Fehler</h2><pre><code>{"ok":true,"data":[...]}
+{"ok":false,"error":{"code":"AUTH_REQUIRED","message":"Bearer token required."}}</code></pre><table><tr><th>HTTP</th><th>Code</th><th>Bedeutung</th></tr><tr><td>400</td><td>VALIDATION_ERROR</td><td>Ungültige/unvollständige Daten</td></tr><tr><td>401</td><td>AUTH_REQUIRED / AUTH_INVALID</td><td>Token fehlt oder ist ungültig</td></tr><tr><td>403</td><td>FORBIDDEN</td><td>Rolle reicht nicht aus</td></tr><tr><td>404</td><td>NOT_FOUND</td><td>Ressource/Datensatz nicht gefunden</td></tr><tr><td>405</td><td>METHOD_NOT_ALLOWED</td><td>Methode nicht erlaubt</td></tr><tr><td>409</td><td>TIME_BLOCKED</td><td>Event kollidiert mit Zeitblockierung</td></tr><tr><td>500</td><td>SERVER_ERROR</td><td>Server-/Konfigurationsfehler</td></tr></table></section>
+<section><h2>9. Versionsregel</h2><p><b>API-Version:</b> 1.1 · <b>Dokumentationsstand:</b> 2026-10-10 · <b>Dokumentationsrevision:</b> HF156. <code>api.php</code> bleibt interne Session-/CSRF-Schnittstelle; externe Integrationen verwenden <code>api-v1.php</code>.</p></section>
+</main></body></html>

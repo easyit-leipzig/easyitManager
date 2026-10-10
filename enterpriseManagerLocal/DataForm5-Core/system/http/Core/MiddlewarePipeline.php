@@ -1,0 +1,5 @@
+<?php
+declare(strict_types=1);
+namespace DataForm5\Http\Core;
+use Closure; use DataForm5\Core\Container\ServiceContainer; use DataForm5\Http\Contracts\MiddlewareInterface;
+final readonly class MiddlewarePipeline { public function __construct(private ServiceContainer $container){} public function process(Request $request,array $middleware,callable $destination):Response{$next=fn(Request $r):Response=>$this->normalize($destination($r)); foreach(array_reverse($middleware) as $m){$previous=$next;$next=function(Request $r)use($m,$previous):Response{$instance=is_string($m)?$this->container->get($m):$m;if($instance instanceof MiddlewareInterface||is_object($instance)&&method_exists($instance,'handle'))return $this->normalize($instance->handle($r,Closure::fromCallable($previous)));if(is_callable($instance))return $this->normalize($instance($r,$previous));throw new \InvalidArgumentException('Ungültige Middleware.');};}return $next($request);} private function normalize(mixed $v):Response{return $v instanceof Response?$v:(is_array($v)?Response::json($v):Response::html((string)$v));}}

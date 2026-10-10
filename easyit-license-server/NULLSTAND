@@ -1,0 +1,14 @@
+easyIT License/DataForm Server
+NULLSTAND / FRESH INSTALL
+Basis: RC1.8-FC1-HF116-BOOTSTRAP-ACTIVATION
+Erzeugt: 2026-09-26
+
+Dieser Stand enthält keine installationsspezifischen Daten:
+- keine Datenbankkonfiguration
+- keine Setup-Sperre
+- keinen Admin-Setup-Token
+- keine Server-Schlüssel
+- keine SQLite-/DB-Datei
+- keine Kunden, Lizenzen, Installationen oder DataForms
+
+Erster Einstieg: /easyit-license-server/setup/

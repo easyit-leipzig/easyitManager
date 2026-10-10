@@ -1,0 +1,1652 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DataForm 5 – dataformContext – Technische Referenz</title>
+<meta name="description" content="Vollständige technische HTML-Dokumentation des DataForm-5-Übergabeobjekts dataformContext für Aktionen, Lifecycle-Events und Recordset-Callbacks.">
+<style>
+:root{
+  --bg:#f5f7fa; --panel:#ffffff; --text:#1f2937; --muted:#667085;
+  --border:#d8dee8; --accent:#244d76; --accent2:#376fa3;
+  --code:#101820; --codeText:#e8eef5; --ok:#176b3a; --warn:#8a5a00; --bad:#9b1c1c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.62 "Segoe UI",Arial,sans-serif}
+header{background:linear-gradient(135deg,#18354f,#315f89);color:white;padding:34px 40px}
+header h1{margin:0 0 8px;font-size:31px}
+header p{max-width:1050px;margin:5px 0;color:#eaf2f9}
+.badge{display:inline-block;margin:8px 8px 0 0;padding:3px 9px;border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:12px}
+.layout{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1500px;margin:0 auto}
+nav{position:sticky;top:0;height:100vh;overflow:auto;padding:24px 18px;border-right:1px solid var(--border);background:#eef2f6}
+nav strong{display:block;margin:0 0 12px;color:#203b56}
+nav a{display:block;color:#334155;text-decoration:none;padding:5px 8px;border-radius:5px}
+nav a:hover{background:#dfe8f0;color:#142d45}
+nav .sub{padding-left:18px;font-size:13px}
+main{padding:30px 42px 60px;min-width:0}
+section{scroll-margin-top:18px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:27px 30px;margin:0 0 22px}
+h2{font-size:24px;color:#183f63;margin:0 0 17px;border-bottom:1px solid var(--border);padding-bottom:9px}
+h3{font-size:19px;color:#24577e;margin-top:28px}
+h4{font-size:16px;color:#315f80;margin-top:23px}
+p{max-width:1100px}
+code{font-family:Consolas,"Courier New",monospace;background:#eef2f6;padding:.08em .32em;border-radius:4px}
+pre{position:relative;overflow:auto;background:var(--code);color:var(--codeText);border-radius:8px;padding:18px 20px;line-height:1.48;border:1px solid #263848}
+pre code{background:transparent;padding:0;color:inherit}
+table{border-collapse:collapse;width:100%;margin:15px 0 22px;font-size:14px}
+th,td{border:1px solid var(--border);padding:9px 11px;vertical-align:top;text-align:left}
+th{background:#edf3f8;color:#193b58}
+tr:nth-child(even) td{background:#fafbfd}
+.note,.rule,.warning,.success{border-left:5px solid var(--accent2);padding:12px 15px;margin:15px 0;background:#f0f6fb}
+.rule{border-color:#5b6470;background:#f4f5f7}
+.warning{border-color:#b7791f;background:#fff8e7}
+.success{border-color:#25824d;background:#effaf4}
+kbd{background:#263848;color:#fff;padding:2px 6px;border-radius:4px;font:12px Consolas,monospace}
+.small{font-size:13px;color:var(--muted)}
+.req{color:#9b1c1c;font-weight:700}
+.opt{color:#56606d}
+.path{white-space:nowrap;font-family:Consolas,monospace;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{border:1px solid var(--border);border-radius:8px;padding:14px;background:#fbfcfe}
+.card b{display:block;color:#244d76;margin-bottom:5px}
+.copy{position:absolute;right:8px;top:8px;border:1px solid #60768b;background:#1d3041;color:white;border-radius:4px;padding:5px 8px;cursor:pointer}
+footer{max-width:1500px;margin:0 auto;padding:0 42px 40px;color:var(--muted)}
+@media(max-width:900px){.layout{display:block}nav{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--border)}main{padding:20px 14px}header{padding:26px 20px}section{padding:20px 18px}}
+@media print{nav,.copy{display:none}.layout{display:block}body{background:white}main{padding:0}section{break-inside:avoid;border:0;padding:14px 0}header{background:white;color:black;padding:0 0 20px}header p{color:#333}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DataForm 5 – <code>dataformContext</code></h1>
+  <p>Technische Referenz des standardisierten Übergabeobjekts für DataForm-Aktionen, Recordset-Lifecycle und JavaScript-Callbacks. Das Objekt beschreibt den aktuellen fachlichen und technischen Zustand einer DataForm zu einem eindeutig definierten Zeitpunkt.</p>
+  <span class="badge">Contract: easyIT.dataformContext</span>
+  <span class="badge">Referenzversion: 1.0.0</span>
+  <span class="badge">Format: JSON / JavaScript Object</span>
+</header>
+
+<div class="layout">
+<nav>
+  <strong>Inhalt</strong>
+  <a href="#ziel">1. Ziel und Grundprinzip</a>
+  <a href="#lebenszyklus">2. Lifecycle</a>
+  <a href="#struktur">3. Gesamtstruktur</a>
+  <a class="sub" href="#contract">3.1 contract</a>
+  <a class="sub" href="#event">3.2 event</a>
+  <a class="sub" href="#project">3.3 project</a>
+  <a class="sub" href="#dataform">3.4 dataform</a>
+  <a class="sub" href="#recordset">3.5 recordset</a>
+  <a class="sub" href="#record">3.6 record</a>
+  <a class="sub" href="#values">3.7 values</a>
+  <a class="sub" href="#relations">3.8 relations</a>
+  <a class="sub" href="#state">3.9 state</a>
+  <a class="sub" href="#validation">3.10 validation</a>
+  <a class="sub" href="#permissions">3.11 permissions</a>
+  <a class="sub" href="#ui">3.12 ui</a>
+  <a class="sub" href="#request">3.13 request</a>
+  <a class="sub" href="#result">3.14 result</a>
+  <a href="#actions">4. Aktionen</a>
+  <a href="#callbacks">5. Recordset-Callbacks</a>
+  <a href="#aftersave">6. afterSave(dataformContext)</a>
+  <a href="#beispiele">7. Vollständige Beispiele</a>
+  <a href="#regeln">8. Verbindliche Regeln</a>
+  <a href="#schema">9. JSON-Schema</a>
+  <a href="#implementation">10. Implementierung</a>
+  <a href="#tests">11. Prüffälle</a>
+  <a href="#versionierung">12. Versionierung</a>
+  <a href="#praxis-js">13. JS-Anwendungsbeispiele</a>
+</nav>
+
+<main>
+
+<section id="ziel">
+<h2>1. Ziel und Grundprinzip</h2>
+<p><code>dataformContext</code> ist der einheitliche Übergabevertrag zwischen DataForm-Kern, Recordsets, Aktionssystem und benutzerdefinierten JavaScript-Callbacks. Eine Aktion wie Öffnen, Neu, Bearbeiten, Speichern, Löschen oder Navigieren soll nicht mit verstreuten Einzelparametern arbeiten. Stattdessen erhält sie genau ein benanntes Objekt, das den gegenwärtigen Zustand der DataForm als Snapshot beschreibt.</p>
+
+<div class="success"><b>Kernregel:</b> Jeder DataForm-Lifecycle-Callback erhält das Objekt unter dem Namen <code>dataformContext</code>. Für das Recordset-Feld „Nach Speichern“ ist damit beispielsweise <code>afterSave(dataformContext)</code> eine gültige und eindeutig verständliche Konfiguration.</div>
+
+<p>Der Kontext ist bewusst JSON-kompatibel. Er darf keine DOM-Elemente, JavaScript-Funktionen, Datenbankverbindungen oder andere nicht serialisierbare Laufzeitobjekte enthalten. Dadurch kann derselbe Vertrag im Browser, beim Logging, in Tests, über interne APIs und – soweit erforderlich – serverseitig verwendet werden.</p>
+
+<div class="cards">
+  <div class="card"><b>Ein Objekt</b>Kein wachsender Satz positionsabhängiger Callback-Parameter.</div>
+  <div class="card"><b>Snapshot</b>Der Zustand gehört exakt zu einem Event und einer Lifecycle-Phase.</div>
+  <div class="card"><b>Serialisierbar</b>Der Kerninhalt muss mit <code>JSON.stringify()</code> abbildbar sein.</div>
+  <div class="card"><b>Erweiterbar</b>Neue Felder werden versionskompatibel ergänzt.</div>
+</div>
+</section>
+
+<section id="lebenszyklus">
+<h2>2. Lifecycle des Kontextobjekts</h2>
+<p>Für jede ausgeführte Aktion erzeugt der DataForm-Kern einen neuen Kontext. Ein „before“-Kontext dokumentiert die Situation unmittelbar vor der Operation; ein „after“-Kontext wird nach der Operation neu aufgebaut und enthält zusätzlich das Operationsergebnis. Auf diese Weise kann <code>afterSave(dataformContext)</code> sowohl die tatsächlich gespeicherten Werte als auch den vorherigen Zustand und die während des Speicherns entstandenen Änderungen auswerten.</p>
+
+<table>
+<thead><tr><th>Phase</th><th>Beispiel</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td>before</td><td><code>beforeSave</code></td><td>Zustand vor der persistierenden Operation. Geeignet für Prüfungen, Abbruch oder Ergänzung kontrollierter Aktionsoptionen.</td></tr>
+<tr><td>execute</td><td><code>save</code></td><td>Interne Ausführung durch den DataForm-Kern bzw. den Datenadapter.</td></tr>
+<tr><td>after</td><td><code>afterSave</code></td><td>Neu aufgebauter Zustand nach erfolgreicher oder fehlgeschlagener Operation; <code>result</code> ist gesetzt.</td></tr>
+</tbody>
+</table>
+
+<pre><code>UI-Aktion
+   │
+   ├── buildContext("save", "before")
+   │        └── beforeSave(dataformContext)
+   │
+   ├── DataForm/Recordset speichert
+   │
+   └── buildContext("save", "after", result)
+            └── afterSave(dataformContext)</code></pre>
+</section>
+
+<section id="struktur">
+<h2>3. Gesamtstruktur</h2>
+<p>Die folgende Struktur ist die kanonische Referenz. Felder können im konkreten Zustand <code>null</code>, leer oder nicht anwendbar sein; die Hauptbereiche des Objekts bleiben jedoch stabil.</p>
+
+<pre><code>{
+  "contract": {
+    "name": "easyIT.dataformContext",
+    "version": "1.0.0",
+    "contextId": "ctx_..."
+  },
+  "event": { ... },
+  "project": { ... },
+  "dataform": { ... },
+  "recordset": { ... },
+  "record": { ... },
+  "values": { ... },
+  "relations": { ... },
+  "state": { ... },
+  "validation": { ... },
+  "permissions": { ... },
+  "ui": { ... },
+  "request": { ... },
+  "result": { ... }
+}</code></pre>
+
+<h3 id="contract">3.1 <code>contract</code> – Identität und Version</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">contract.name</td><td>string</td><td class="req">ja</td><td>Konstanter Vertragsname: <code>easyIT.dataformContext</code>.</td></tr>
+<tr><td class="path">contract.version</td><td>string</td><td class="req">ja</td><td>Semantische Version des Kontextvertrags.</td></tr>
+<tr><td class="path">contract.contextId</td><td>string</td><td class="req">ja</td><td>Eindeutige ID dieses Snapshots; nicht die Record-ID.</td></tr>
+<tr><td class="path">contract.createdAt</td><td>string</td><td class="req">ja</td><td>ISO-8601-Zeitpunkt der Kontexterzeugung.</td></tr>
+</tbody>
+</table>
+
+<h3 id="event">3.2 <code>event</code> – Auslöser und Lifecycle-Phase</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Beispiel</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">event.name</td><td>string</td><td><code>afterSave</code></td><td>Konkretes Lifecycle-Event.</td></tr>
+<tr><td class="path">event.action</td><td>string</td><td><code>save</code></td><td>Normierte fachliche Aktion.</td></tr>
+<tr><td class="path">event.phase</td><td>string</td><td><code>after</code></td><td><code>before</code> oder <code>after</code>.</td></tr>
+<tr><td class="path">event.timestamp</td><td>string</td><td>ISO 8601</td><td>Zeitpunkt des Events.</td></tr>
+<tr><td class="path">event.source</td><td>string</td><td><code>button</code></td><td>Auslöser, z. B. <code>button</code>, <code>api</code>, <code>keyboard</code>, <code>system</code>.</td></tr>
+<tr><td class="path">event.actionId</td><td>string|null</td><td><code>save</code></td><td>ID der zentral registrierten DataForm-Aktion.</td></tr>
+</tbody>
+</table>
+
+<h3 id="project">3.3 <code>project</code> – Projektkontext</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">project.id</td><td>string|number|null</td><td>Interne Projekt-ID.</td></tr>
+<tr><td class="path">project.name</td><td>string|null</td><td>Projektname.</td></tr>
+<tr><td class="path">project.slug</td><td>string|null</td><td>Technischer Projektbezeichner.</td></tr>
+<tr><td class="path">project.database.type</td><td>string|null</td><td>Datenquellentyp, z. B. <code>mysql</code>, <code>sqlite</code>, <code>csv</code>, <code>oracle</code>.</td></tr>
+<tr><td class="path">project.database.name</td><td>string|null</td><td>Logischer Datenbankname. Keine Zugangsdaten.</td></tr>
+</tbody>
+</table>
+
+<h3 id="dataform">3.4 <code>dataform</code> – Aktuelle DataForm</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">dataform.id</td><td>string|number</td><td>DataForm-ID.</td></tr>
+<tr><td class="path">dataform.name</td><td>string</td><td>Technischer Name.</td></tr>
+<tr><td class="path">dataform.title</td><td>string|null</td><td>Anzeigetitel.</td></tr>
+<tr><td class="path">dataform.mode</td><td>string</td><td>Aktueller DataForm-Modus, z. B. <code>show</code>, <code>edit</code>, <code>new</code>.</td></tr>
+<tr><td class="path">dataform.fulltext_search</td><td>boolean</td><td>DataForm-Eigenschaft „Volltextsuche“. Bei <code>false</code> wird die Volltextsuche weder angezeigt noch ausgeführt.</td></tr>
+<tr><td class="path">dataform.filter</td><td>boolean</td><td>DataForm-Eigenschaft „Filter“. Bei <code>false</code> werden Feldfilter und gespeicherte Filter weder angezeigt noch ausgeführt.</td></tr>
+<tr><td class="path">dataform.masterRecordsetId</td><td>string|number|null</td><td>ID des führenden Recordsets.</td></tr>
+</tbody>
+</table>
+
+<h3 id="recordset">3.5 <code>recordset</code> – Aktives Recordset</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">recordset.id</td><td>string|number</td><td>Recordset-ID.</td></tr>
+<tr><td class="path">recordset.name</td><td>string</td><td>Technischer Recordset-Name.</td></tr>
+<tr><td class="path">recordset.table</td><td>string|null</td><td>Zieltabelle bzw. logische Datenquelle.</td></tr>
+<tr><td class="path">recordset.alias</td><td>string|null</td><td>Optionaler Tabellen-/Query-Alias.</td></tr>
+<tr><td class="path">recordset.primaryKey</td><td>string</td><td>Primärschlüsselspalte; bei CSV typischerweise <code>id</code>.</td></tr>
+<tr><td class="path">recordset.mode</td><td>string</td><td><code>browse</code>, <code>show</code>, <code>edit</code> oder <code>new</code>.</td></tr>
+<tr><td class="path">recordset.currentIndex</td><td>integer|null</td><td>Nullbasierter Index innerhalb der geladenen Ergebnismenge.</td></tr>
+<tr><td class="path">recordset.currentNumber</td><td>integer|null</td><td>Benutzerorientierte Datensatznummer, beginnend bei 1.</td></tr>
+<tr><td class="path">recordset.totalRecords</td><td>integer|null</td><td>Gesamtzahl der Datensätze, sofern bekannt.</td></tr>
+<tr><td class="path">recordset.page</td><td>integer|null</td><td>Aktuelle Seite.</td></tr>
+<tr><td class="path">recordset.pageSize</td><td>integer|null</td><td>Seitengröße.</td></tr>
+<tr><td class="path">recordset.callbacks</td><td>object</td><td>Konfigurierte Recordset-Callbacks, z. B. <code>afterSave</code>.</td></tr>
+</tbody>
+</table>
+
+<h3 id="record">3.6 <code>record</code> – Identität des aktuellen Datensatzes</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">record.id</td><td>string|number|null</td><td>Wert des Primärschlüssels. Bei einem noch nicht gespeicherten neuen Datensatz <code>null</code>.</td></tr>
+<tr><td class="path">record.primaryKey</td><td>string</td><td>Name der Primärschlüsselspalte.</td></tr>
+<tr><td class="path">record.isNew</td><td>boolean</td><td>Datensatz wurde im aktuellen Bearbeitungszyklus neu angelegt.</td></tr>
+<tr><td class="path">record.isPersisted</td><td>boolean</td><td>Datensatz besitzt einen bestätigten persistenten Zustand.</td></tr>
+<tr><td class="path">record.exists</td><td>boolean</td><td>Der Datensatz existiert nach gegenwärtigem Kenntnisstand in der Datenquelle.</td></tr>
+</tbody>
+</table>
+
+<h3 id="values">3.7 <code>values</code> – Dateninhalt und Änderungen</h3>
+<p>Dieser Bereich ist für Callbacks besonders wichtig. Er trennt den ursprünglichen Zustand, die aktuell sichtbaren Werte und die tatsächlich geänderten Felder.</p>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">values.original</td><td>object</td><td>Werte beim Eintritt in den Bearbeitungszyklus bzw. vor der Aktion.</td></tr>
+<tr><td class="path">values.current</td><td>object</td><td>Aktuell gültiger DataForm-Inhalt zum Eventzeitpunkt.</td></tr>
+<tr><td class="path">values.submitted</td><td>object|null</td><td>Bei Save: die an die Persistenzschicht übergebenen Werte.</td></tr>
+<tr><td class="path">values.changed</td><td>object</td><td>Nur Felder, deren Wert sich verändert hat; je Feld <code>oldValue</code> und <code>newValue</code>.</td></tr>
+<tr><td class="path">values.dirtyFields</td><td>array&lt;string&gt;</td><td>Liste geänderter Feldnamen.</td></tr>
+</tbody>
+</table>
+
+<pre><code>"values": {
+  "original": {
+    "id": 42,
+    "name": "Alt"
+  },
+  "current": {
+    "id": 42,
+    "name": "Neu"
+  },
+  "submitted": {
+    "id": 42,
+    "name": "Neu"
+  },
+  "changed": {
+    "name": {
+      "oldValue": "Alt",
+      "newValue": "Neu"
+    }
+  },
+  "dirtyFields": ["name"]
+}</code></pre>
+
+<h3 id="relations">3.8 <code>relations</code> – Eltern-/Kind- und abhängige Recordsets</h3>
+<p>Der Kontext kann Relationen abbilden, ohne an einen bestimmten Datenbanktreiber gebunden zu sein. Für eine typische DataForm-Eltern-/Kind-Beziehung kann beispielsweise <code>id</code> im Elternsatz auf <code>to_ev_id</code> im Kind-Recordset abgebildet werden.</p>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">relations.parent</td><td>object|null</td><td>Optionaler Elternkontext mit Recordset, Schlüsselspalte und Schlüsselwert.</td></tr>
+<tr><td class="path">relations.children</td><td>array</td><td>Bekannte Kind-Recordsets und ihre Bindung.</td></tr>
+<tr><td class="path">relations.dependencies</td><td>array</td><td>Weitere Lookup-/Abhängigkeitsbindungen.</td></tr>
+</tbody>
+</table>
+
+<h3 id="state">3.9 <code>state</code> – DataForm-Zustand</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">state.mode</td><td>string</td><td><code>show</code>, <code>edit</code>, <code>new</code> usw.</td></tr>
+<tr><td class="path">state.isDirty</td><td>boolean</td><td>Mindestens ein Feld wurde verändert.</td></tr>
+<tr><td class="path">state.isBusy</td><td>boolean</td><td>Eine Aktion wird gerade verarbeitet.</td></tr>
+<tr><td class="path">state.hasSelection</td><td>boolean</td><td>Ein bestehender Datensatz ist ausgewählt.</td></tr>
+<tr><td class="path">state.isFirstRecord</td><td>boolean</td><td>Aktueller Satz ist der erste verfügbare Satz.</td></tr>
+<tr><td class="path">state.isLastRecord</td><td>boolean</td><td>Aktueller Satz ist der letzte verfügbare Satz.</td></tr>
+<tr><td class="path">state.canNavigate</td><td>boolean</td><td>Navigation ist im aktuellen Zustand zulässig.</td></tr>
+</tbody>
+</table>
+
+<h3 id="validation">3.10 <code>validation</code> – Validierungszustand</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">validation.valid</td><td>boolean</td><td>Gesamtergebnis der DataForm-/Recordset-Prüfung.</td></tr>
+<tr><td class="path">validation.errors</td><td>array</td><td>Fehlerobjekte mit Feld, Code und Nachricht.</td></tr>
+<tr><td class="path">validation.warnings</td><td>array</td><td>Nicht blockierende Hinweise.</td></tr>
+</tbody>
+</table>
+
+<h3 id="permissions">3.11 <code>permissions</code> – Zulässige Aktionen</h3>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">permissions.open</td><td>boolean</td><td>Datensatz darf geöffnet/angezeigt werden.</td></tr>
+<tr><td class="path">permissions.create</td><td>boolean</td><td>Neuer Datensatz darf angelegt werden.</td></tr>
+<tr><td class="path">permissions.edit</td><td>boolean</td><td>Datensatz darf bearbeitet werden.</td></tr>
+<tr><td class="path">permissions.save</td><td>boolean</td><td>Speichern ist zulässig.</td></tr>
+<tr><td class="path">permissions.delete</td><td>boolean</td><td>Löschen ist zulässig.</td></tr>
+</tbody>
+</table>
+
+<h3 id="ui">3.12 <code>ui</code> – UI-bezogener Zustand</h3>
+<p>Der UI-Bereich enthält Zustandsinformationen, aber keine DOM-Referenzen. Aktionen werden über ihre zentrale Aktions-ID referenziert; die Darstellung eines Buttons bleibt Aufgabe der zentralen Button-Registry.</p>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">ui.focusedField</td><td>string|null</td><td>Technischer Name des fokussierten Feldes.</td></tr>
+<tr><td class="path">ui.triggerActionId</td><td>string|null</td><td>Aktion, die das Event ausgelöst hat.</td></tr>
+<tr><td class="path">ui.triggerRecordsetId</td><td>string|number|null</td><td>Recordset des auslösenden UI-Elements.</td></tr>
+<tr><td class="path">ui.locale</td><td>string|null</td><td>Aktuelle UI-Locale.</td></tr>
+</tbody>
+</table>
+
+<h3 id="request">3.13 <code>request</code> – Aktionsparameter</h3>
+<p><code>request</code> enthält kontrollierte Parameter der aktuell angeforderten Aktion. Dies verhindert, dass Action-Handler zusätzliche positionsabhängige Parameter benötigen.</p>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">request.options</td><td>object</td><td>Normierte Aktionsoptionen.</td></tr>
+<tr><td class="path">request.navigation</td><td>object|null</td><td>Bei Navigation z. B. Ziel <code>first</code>, <code>previous</code>, <code>next</code>, <code>last</code>, Seite oder Datensatz-ID.</td></tr>
+<tr><td class="path">request.reason</td><td>string|null</td><td>Optionaler technischer oder fachlicher Auslösegrund.</td></tr>
+</tbody>
+</table>
+
+<h3 id="result">3.14 <code>result</code> – Ergebnis der ausgeführten Aktion</h3>
+<p>Bei <code>before*</code>-Events ist <code>result</code> normalerweise <code>null</code>. Bei <code>after*</code>-Events beschreibt es das Resultat der Operation.</p>
+<table>
+<thead><tr><th>Pfad</th><th>Typ</th><th>Bedeutung</th></tr></thead>
+<tbody>
+<tr><td class="path">result.success</td><td>boolean</td><td>Operation erfolgreich.</td></tr>
+<tr><td class="path">result.status</td><td>string</td><td>Z. B. <code>success</code>, <code>failed</code>, <code>cancelled</code>.</td></tr>
+<tr><td class="path">result.operation</td><td>string</td><td>Ausgeführte Operation.</td></tr>
+<tr><td class="path">result.recordId</td><td>string|number|null</td><td>Primärschlüssel nach der Operation; für Inserts besonders wichtig.</td></tr>
+<tr><td class="path">result.affectedRows</td><td>integer|null</td><td>Anzahl betroffener Datensätze, soweit verfügbar.</td></tr>
+<tr><td class="path">result.message</td><td>string|null</td><td>Technisch/fachlich geeignete Ergebnisnachricht.</td></tr>
+<tr><td class="path">result.error</td><td>object|null</td><td>Normierter Fehler; niemals Stacktraces oder sensible Verbindungsdaten an unberechtigte Clients geben.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="actions">
+<h2>4. Standardisierte DataForm-Aktionen</h2>
+<p>Die Aktionskennung in <code>event.action</code> und <code>event.actionId</code> sollte aus einer zentralen Registry stammen. Dadurch bleibt die fachliche Aktion unabhängig von der visuellen Schaltfläche. Für die bestehenden DataForm-CRUD- und Navigationsfunktionen ist folgende Normierung vorgesehen:</p>
+<table>
+<thead><tr><th>action</th><th>before-Event</th><th>after-Event</th><th>Zweck</th></tr></thead>
+<tbody>
+<tr><td><code>open</code></td><td><code>beforeOpen</code></td><td><code>afterOpen</code></td><td>Datensatz öffnen/anzeigen.</td></tr>
+<tr><td><code>new</code></td><td><code>beforeNew</code></td><td><code>afterNew</code></td><td>Neuen Satz initialisieren.</td></tr>
+<tr><td><code>edit</code></td><td><code>beforeEdit</code></td><td><code>afterEdit</code></td><td>Bearbeitungsmodus aktivieren.</td></tr>
+<tr><td><code>save</code></td><td><code>beforeSave</code></td><td><code>afterSave</code></td><td>Insert oder Update persistieren.</td></tr>
+<tr><td><code>delete</code></td><td><code>beforeDelete</code></td><td><code>afterDelete</code></td><td>Datensatz löschen.</td></tr>
+<tr><td><code>cancel</code></td><td><code>beforeCancel</code></td><td><code>afterCancel</code></td><td>Bearbeitung verwerfen/beenden.</td></tr>
+<tr><td><code>refresh</code></td><td><code>beforeRefresh</code></td><td><code>afterRefresh</code></td><td>Recordset/DataForm neu laden.</td></tr>
+<tr><td><code>first</code></td><td><code>beforeNavigate</code></td><td><code>afterNavigate</code></td><td>Zum ersten Datensatz.</td></tr>
+<tr><td><code>previous</code></td><td><code>beforeNavigate</code></td><td><code>afterNavigate</code></td><td>Zum vorherigen Datensatz.</td></tr>
+<tr><td><code>next</code></td><td><code>beforeNavigate</code></td><td><code>afterNavigate</code></td><td>Zum nächsten Datensatz.</td></tr>
+<tr><td><code>last</code></td><td><code>beforeNavigate</code></td><td><code>afterNavigate</code></td><td>Zum letzten Datensatz.</td></tr>
+</tbody>
+</table>
+<div class="rule">Die Button-Grafik oder der lokale Tooltip ist nicht Teil des Kontextvertrags. <code>actionId</code> referenziert die zentrale Aktion; Titel, <code>title</code>, <code>aria-label</code> und PNG-Zuordnung bleiben zentral in der Button-Registry definiert.</div>
+</section>
+
+<section id="callbacks">
+<h2>5. Recordset-Callbacks</h2>
+<p>Ein Recordset kann Lifecycle-Felder wie „Vor Speichern“ oder „Nach Speichern“ besitzen. In diesen Feldern wird kein beliebiger JavaScript-Programmtext benötigt. Der empfohlene Vertrag ist ein benannter Callback mit genau einem Kontextargument.</p>
+
+<table>
+<thead><tr><th>Recordset-Feld</th><th>Beispielwert</th><th>Aufruf durch DataForm</th></tr></thead>
+<tbody>
+<tr><td>Vor Öffnen</td><td><code>beforeOpen(dataformContext)</code></td><td>vor dem Öffnen</td></tr>
+<tr><td>Nach Öffnen</td><td><code>afterOpen(dataformContext)</code></td><td>nach dem Öffnen</td></tr>
+<tr><td>Vor Speichern</td><td><code>beforeSave(dataformContext)</code></td><td>vor Insert/Update</td></tr>
+<tr><td>Nach Speichern</td><td><code>afterSave(dataformContext)</code></td><td>nach bestätigtem Save-Versuch</td></tr>
+<tr><td>Vor Löschen</td><td><code>beforeDelete(dataformContext)</code></td><td>vor Delete</td></tr>
+<tr><td>Nach Löschen</td><td><code>afterDelete(dataformContext)</code></td><td>nach Delete-Versuch</td></tr>
+</tbody>
+</table>
+
+<div class="warning"><b>Keine Verwendung von <code>eval()</code>.</b> Die Callback-Konfiguration soll geparst bzw. gegen eine Callback-Registry aufgelöst werden. Zulässig ist beispielsweise der Funktionsname <code>afterSave</code> oder die deklarative Schreibweise <code>afterSave(dataformContext)</code>; der Kern übergibt das Objekt selbst.</div>
+
+<h3>5.1 Empfohlene Callback-Registry</h3>
+<pre><code>DataFormCallbacks.register("afterSave", function (dataformContext) {
+    console.log("Gespeichert:", dataformContext.record.id);
+});
+
+DataFormCallbacks.invoke("afterSave", dataformContext);</code></pre>
+
+<h3>5.2 Zulässige Rückgabe für before-Callbacks</h3>
+<p>Ein <code>before*</code>-Callback kann die Aktion zulassen oder kontrolliert abbrechen. Damit bleibt das Verhalten testbar und frei von versteckten Seiteneffekten.</p>
+<pre><code>// Aktion zulassen:
+return true;
+
+// Aktion abbrechen:
+return false;
+
+// Alternativ normiertes Ergebnis:
+return {
+    cancel: true,
+    message: "Der Datensatz darf in diesem Zustand nicht gespeichert werden."
+};</code></pre>
+
+<p>Bei <code>after*</code>-Callbacks dient der Kontext primär zur Reaktion auf das abgeschlossene Ergebnis. Der Persistenzstatus selbst darf nicht nachträglich durch einen Rückgabewert des Callbacks umgedeutet werden.</p>
+</section>
+
+<section id="aftersave">
+<h2>6. <code>afterSave(dataformContext)</code> – Referenz</h2>
+<p>Das Recordset-Feld „Nach Speichern“ kann den Wert <code>afterSave(dataformContext)</code> tragen. DataForm ruft diese Methode auf, nachdem der Speichervorgang ein Ergebnis geliefert und der Kontext neu synchronisiert wurde.</p>
+
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result?.success) {
+        console.error(
+            "Speichern fehlgeschlagen:",
+            dataformContext.result?.error?.message
+        );
+        return;
+    }
+
+    console.log("Recordset:", dataformContext.recordset.name);
+    console.log("ID:", dataformContext.record.id);
+    console.log("Aktuelle Werte:", dataformContext.values.current);
+    console.log("Änderungen:", dataformContext.values.changed);
+}</code></pre>
+
+<h3>6.1 Insert erkennen</h3>
+<pre><code>function afterSave(dataformContext) {
+    const wasInsert =
+        dataformContext.result.success &&
+        dataformContext.result.operation === "insert";
+
+    if (wasInsert) {
+        console.log(
+            "Neuer Datensatz mit ID",
+            dataformContext.result.recordId
+        );
+    }
+}</code></pre>
+
+<h3>6.2 Update und einzelne Feldänderungen erkennen</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result.success) return;
+
+    const nameChange = dataformContext.values.changed.name;
+
+    if (nameChange) {
+        console.log("Alt:", nameChange.oldValue);
+        console.log("Neu:", nameChange.newValue);
+    }
+}</code></pre>
+
+<h3>6.3 Eltern-/Kindbezug auswerten</h3>
+<pre><code>function afterSave(dataformContext) {
+    const parent = dataformContext.relations.parent;
+
+    if (parent) {
+        console.log(
+            "Kind gespeichert für",
+            parent.recordsetName,
+            parent.keyField,
+            parent.keyValue
+        );
+    }
+}</code></pre>
+</section>
+
+<section id="beispiele">
+<h2>7. Vollständige Beispiele</h2>
+
+<h3>7.1 <code>afterSave</code> nach erfolgreichem Update</h3>
+<pre><code>{
+  "contract": {
+    "name": "easyIT.dataformContext",
+    "version": "1.0.0",
+    "contextId": "ctx_20260901_000123",
+    "createdAt": "2026-09-01T15:40:12.518Z"
+  },
+  "event": {
+    "name": "afterSave",
+    "action": "save",
+    "phase": "after",
+    "timestamp": "2026-09-01T15:40:12.518Z",
+    "source": "button",
+    "actionId": "save"
+  },
+  "project": {
+    "id": 7,
+    "name": "Musterprojekt",
+    "slug": "musterprojekt",
+    "database": {
+      "type": "mysql",
+      "name": "musterprojekt"
+    }
+  },
+  "dataform": {
+    "id": 12,
+    "name": "ed_ev",
+    "title": "Ereignisse",
+    "mode": "show",
+    "masterRecordsetId": "rs_ed_ev"
+  },
+  "recordset": {
+    "id": "rs_ed_ev",
+    "name": "ed_ev",
+    "table": "ed_ev",
+    "alias": null,
+    "primaryKey": "id",
+    "mode": "show",
+    "currentIndex": 4,
+    "currentNumber": 5,
+    "totalRecords": 20,
+    "page": 1,
+    "pageSize": 20,
+    "callbacks": {
+      "afterSave": "afterSave(dataformContext)"
+    }
+  },
+  "record": {
+    "id": 42,
+    "primaryKey": "id",
+    "isNew": false,
+    "isPersisted": true,
+    "exists": true
+  },
+  "values": {
+    "original": {
+      "id": 42,
+      "name": "Ereignis A",
+      "status": "offen"
+    },
+    "current": {
+      "id": 42,
+      "name": "Ereignis A",
+      "status": "erledigt"
+    },
+    "submitted": {
+      "id": 42,
+      "name": "Ereignis A",
+      "status": "erledigt"
+    },
+    "changed": {
+      "status": {
+        "oldValue": "offen",
+        "newValue": "erledigt"
+      }
+    },
+    "dirtyFields": ["status"]
+  },
+  "relations": {
+    "parent": null,
+    "children": [
+      {
+        "recordsetId": "rs_ed_ev_info",
+        "recordsetName": "ed_ev_info",
+        "parentField": "id",
+        "childField": "to_ev_id",
+        "parentValue": 42
+      }
+    ],
+    "dependencies": []
+  },
+  "state": {
+    "mode": "show",
+    "isDirty": false,
+    "isBusy": false,
+    "hasSelection": true,
+    "isFirstRecord": false,
+    "isLastRecord": false,
+    "canNavigate": true
+  },
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  },
+  "permissions": {
+    "open": true,
+    "create": true,
+    "edit": true,
+    "save": true,
+    "delete": true
+  },
+  "ui": {
+    "focusedField": "status",
+    "triggerActionId": "save",
+    "triggerRecordsetId": "rs_ed_ev",
+    "locale": "de-DE"
+  },
+  "request": {
+    "options": {},
+    "navigation": null,
+    "reason": null
+  },
+  "result": {
+    "success": true,
+    "status": "success",
+    "operation": "update",
+    "recordId": 42,
+    "affectedRows": 1,
+    "message": "Datensatz gespeichert.",
+    "error": null
+  }
+}</code></pre>
+
+<h3>7.2 <code>afterSave</code> nach Insert</h3>
+<pre><code>{
+  "event": {
+    "name": "afterSave",
+    "action": "save",
+    "phase": "after"
+  },
+  "record": {
+    "id": 101,
+    "primaryKey": "id",
+    "isNew": true,
+    "isPersisted": true,
+    "exists": true
+  },
+  "values": {
+    "original": {},
+    "current": {
+      "id": 101,
+      "to_ev_id": 42,
+      "info": "Neue Information"
+    },
+    "submitted": {
+      "to_ev_id": 42,
+      "info": "Neue Information"
+    },
+    "changed": {
+      "to_ev_id": {"oldValue": null, "newValue": 42},
+      "info": {"oldValue": null, "newValue": "Neue Information"}
+    },
+    "dirtyFields": ["to_ev_id", "info"]
+  },
+  "relations": {
+    "parent": {
+      "recordsetId": "rs_ed_ev",
+      "recordsetName": "ed_ev",
+      "keyField": "id",
+      "keyValue": 42,
+      "childField": "to_ev_id"
+    },
+    "children": [],
+    "dependencies": []
+  },
+  "result": {
+    "success": true,
+    "status": "success",
+    "operation": "insert",
+    "recordId": 101,
+    "affectedRows": 1,
+    "message": "Datensatz angelegt.",
+    "error": null
+  }
+}</code></pre>
+
+<h3>7.3 Fehlgeschlagener Save</h3>
+<pre><code>{
+  "event": {
+    "name": "afterSave",
+    "action": "save",
+    "phase": "after"
+  },
+  "validation": {
+    "valid": false,
+    "errors": [
+      {
+        "field": "name",
+        "code": "required",
+        "message": "Das Feld 'name' ist erforderlich."
+      }
+    ],
+    "warnings": []
+  },
+  "result": {
+    "success": false,
+    "status": "failed",
+    "operation": "update",
+    "recordId": 42,
+    "affectedRows": 0,
+    "message": "Datensatz konnte nicht gespeichert werden.",
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "Validierung fehlgeschlagen."
+    }
+  }
+}</code></pre>
+</section>
+
+<section id="regeln">
+<h2>8. Verbindliche Regeln des Vertrags</h2>
+<ol>
+<li><b>Ein Parameter:</b> Custom-Callbacks erhalten genau das benannte Objekt <code>dataformContext</code>.</li>
+<li><b>JSON-kompatibel:</b> Keine Funktionen, DOM-Knoten, zyklischen Referenzen oder Connection-Objekte im serialisierbaren Kontext.</li>
+<li><b>Snapshot statt Live-Objekt:</b> Der Kontext beschreibt den Zustand zum Eventzeitpunkt. Ein späterer UI-Zustand darf einen bereits erzeugten Kontext nicht stillschweigend verändern.</li>
+<li><b>Original und Current getrennt:</b> <code>values.original</code> und <code>values.current</code> dürfen nicht auf dieselbe veränderbare Objektinstanz zeigen.</li>
+<li><b>Nach Save neu synchronisieren:</b> Bei <code>afterSave</code> müssen serverseitig erzeugte Schlüssel bzw. normalisierte Werte in <code>record</code> und <code>values.current</code> enthalten sein.</li>
+<li><b>Result nur als Ergebnis:</b> <code>result.success</code> spiegelt die reale Persistenzoperation wider und darf nicht allein aus dem Rückgabewert eines UI-Callbacks abgeleitet werden.</li>
+<li><b>Keine Geheimnisse:</b> Passwörter, Tokens, Connection-Strings und interne Stacktraces gehören nicht in den Client-Kontext.</li>
+<li><b>Registry statt eval:</b> Callback-Namen werden gegen eine definierte Registry bzw. sichere Namensauflösung ausgeführt.</li>
+<li><b>Abwärtskompatibilität:</b> Erweiterungen innerhalb derselben Major-Version dürfen bestehende Felder nicht umdeuten.</li>
+<li><b>Aktion ≠ Button:</b> Der Kontext transportiert die fachliche Aktions-ID. PNG, Titel und ARIA-Beschriftung bleiben Verantwortung der zentralen Button-Registry.</li>
+</ol>
+</section>
+
+<section id="schema">
+<h2>9. Kompaktes JSON-Schema</h2>
+<p>Das folgende Schema dokumentiert die Kernpflichten des Vertrags. Fachliche Datensatzfelder unter <code>values.*</code> sind absichtlich offen, weil sie von der jeweiligen DataForm abhängen.</p>
+<pre><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "easyit://schema/dataform-context-1.0.0.json",
+  "title": "easyIT DataForm 5 dataformContext",
+  "type": "object",
+  "required": [
+    "contract", "event", "project", "dataform", "recordset",
+    "record", "values", "relations", "state", "validation",
+    "permissions", "ui", "request", "result"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["name", "version", "contextId", "createdAt"],
+      "properties": {
+        "name": {"const": "easyIT.dataformContext"},
+        "version": {"type": "string"},
+        "contextId": {"type": "string", "minLength": 1},
+        "createdAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": ["name", "action", "phase", "timestamp"],
+      "properties": {
+        "name": {"type": "string"},
+        "action": {"type": "string"},
+        "phase": {"enum": ["before", "after"]},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "source": {"type": ["string", "null"]},
+        "actionId": {"type": ["string", "null"]}
+      }
+    },
+    "project": {"type": "object"},
+    "dataform": {"type": "object"},
+    "recordset": {"type": "object"},
+    "record": {
+      "type": "object",
+      "required": ["id", "primaryKey", "isNew", "isPersisted", "exists"]
+    },
+    "values": {
+      "type": "object",
+      "required": ["original", "current", "changed", "dirtyFields"],
+      "properties": {
+        "original": {"type": "object"},
+        "current": {"type": "object"},
+        "submitted": {"type": ["object", "null"]},
+        "changed": {"type": "object"},
+        "dirtyFields": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "relations": {"type": "object"},
+    "state": {"type": "object"},
+    "validation": {"type": "object"},
+    "permissions": {"type": "object"},
+    "ui": {"type": "object"},
+    "request": {"type": "object"},
+    "result": {"type": ["object", "null"]}
+  },
+  "additionalProperties": true
+}</code></pre>
+</section>
+
+<section id="implementation">
+<h2>10. Referenzimplementierung</h2>
+
+<h3>10.1 Kontext erzeugen</h3>
+<pre><code>function buildDataformContext({
+    eventName,
+    action,
+    phase,
+    source = "system",
+    actionId = action,
+    project,
+    dataform,
+    recordset,
+    record,
+    originalValues = {},
+    currentValues = {},
+    submittedValues = null,
+    relations = {},
+    state = {},
+    validation = { valid: true, errors: [], warnings: [] },
+    permissions = {},
+    ui = {},
+    request = { options: {}, navigation: null, reason: null },
+    result = null
+}) {
+    const now = new Date().toISOString();
+
+    return {
+        contract: {
+            name: "easyIT.dataformContext",
+            version: "1.0.0",
+            contextId: crypto.randomUUID
+                ? crypto.randomUUID()
+                : "ctx_" + Date.now(),
+            createdAt: now
+        },
+        event: {
+            name: eventName,
+            action,
+            phase,
+            timestamp: now,
+            source,
+            actionId
+        },
+        project: structuredClone(project ?? {}),
+        dataform: structuredClone(dataform ?? {}),
+        recordset: structuredClone(recordset ?? {}),
+        record: structuredClone(record ?? {}),
+        values: {
+            original: structuredClone(originalValues),
+            current: structuredClone(currentValues),
+            submitted: submittedValues == null
+                ? null
+                : structuredClone(submittedValues),
+            changed: diffValues(originalValues, currentValues),
+            dirtyFields: Object.keys(
+                diffValues(originalValues, currentValues)
+            )
+        },
+        relations: structuredClone(relations),
+        state: structuredClone(state),
+        validation: structuredClone(validation),
+        permissions: structuredClone(permissions),
+        ui: structuredClone(ui),
+        request: structuredClone(request),
+        result: result == null ? null : structuredClone(result)
+    };
+}</code></pre>
+
+<h3>10.2 Änderungen bestimmen</h3>
+<pre><code>function diffValues(original, current) {
+    const result = {};
+    const keys = new Set([
+        ...Object.keys(original ?? {}),
+        ...Object.keys(current ?? {})
+    ]);
+
+    for (const key of keys) {
+        const oldValue = original?.[key] ?? null;
+        const newValue = current?.[key] ?? null;
+
+        if (!Object.is(oldValue, newValue)) {
+            result[key] = { oldValue, newValue };
+        }
+    }
+
+    return result;
+}</code></pre>
+
+<h3>10.3 Sichere Callback-Auflösung</h3>
+<pre><code>const DataFormCallbacks = (() => {
+    const callbacks = new Map();
+
+    return {
+        register(name, fn) {
+            if (!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) {
+                throw new Error("Ungültiger Callback-Name.");
+            }
+            if (typeof fn !== "function") {
+                throw new TypeError("Callback muss eine Funktion sein.");
+            }
+            callbacks.set(name, fn);
+        },
+
+        invoke(configValue, dataformContext) {
+            if (!configValue) return undefined;
+
+            const match = String(configValue).trim().match(
+                /^([A-Za-z_$][A-Za-z0-9_$]*)(?:\(\s*dataformContext\s*\))?$/
+            );
+
+            if (!match) {
+                throw new Error(
+                    "Ungültige Callback-Konfiguration: " + configValue
+                );
+            }
+
+            const fn = callbacks.get(match[1]);
+            if (!fn) {
+                throw new Error(
+                    "Callback nicht registriert: " + match[1]
+                );
+            }
+
+            return fn(dataformContext);
+        }
+    };
+})();</code></pre>
+
+<h3>10.4 Save-Lifecycle</h3>
+<pre><code>async function saveRecord(recordsetRuntime) {
+    const beforeContext = buildContextForRecordset(
+        recordsetRuntime,
+        "beforeSave",
+        "save",
+        "before"
+    );
+
+    const beforeResult = DataFormCallbacks.invoke(
+        recordsetRuntime.callbacks.beforeSave,
+        beforeContext
+    );
+
+    if (
+        beforeResult === false ||
+        beforeResult?.cancel === true
+    ) {
+        return {
+            success: false,
+            status: "cancelled",
+            message: beforeResult?.message ?? null
+        };
+    }
+
+    const saveResult = await recordsetRuntime.persist();
+
+    // Wichtig: Recordset nach der Persistenz synchronisieren.
+    await recordsetRuntime.syncAfterSave(saveResult);
+
+    const afterContext = buildContextForRecordset(
+        recordsetRuntime,
+        "afterSave",
+        "save",
+        "after",
+        saveResult
+    );
+
+    DataFormCallbacks.invoke(
+        recordsetRuntime.callbacks.afterSave,
+        afterContext
+    );
+
+    return saveResult;
+}</code></pre>
+</section>
+
+<section id="tests">
+<h2>11. Mindest-Prüffälle</h2>
+<table>
+<thead><tr><th>Test</th><th>Aktion</th><th>Erwartetes Ergebnis</th></tr></thead>
+<tbody>
+<tr><td>Update</td><td>Bestehenden Datensatz ändern und speichern.</td><td><code>result.operation="update"</code>, ID bleibt erhalten, <code>values.changed</code> enthält nur geänderte Felder.</td></tr>
+<tr><td>Insert</td><td>Neuen Datensatz speichern.</td><td><code>result.operation="insert"</code>, die neue ID steht nach Save in <code>record.id</code> und <code>result.recordId</code>.</td></tr>
+<tr><td>Validierungsfehler</td><td>Pflichtfeld leer speichern.</td><td><code>validation.valid=false</code>, <code>result.success=false</code>, kein fälschlich persistierter Zustand.</td></tr>
+<tr><td>beforeSave-Abbruch</td><td>Callback liefert <code>false</code>.</td><td>Persistenz wird nicht ausgeführt.</td></tr>
+<tr><td>afterSave</td><td>Konfigurationswert <code>afterSave(dataformContext)</code>.</td><td>Registrierte Funktion wird genau einmal mit einem Kontextobjekt aufgerufen.</td></tr>
+<tr><td>Eltern/Kind</td><td>Kinddatensatz speichern.</td><td><code>relations.parent</code> enthält Elternschlüssel und Bindung.</td></tr>
+<tr><td>Navigation</td><td>Erster/letzter Datensatz.</td><td><code>state.isFirstRecord</code>/<code>state.isLastRecord</code> sind korrekt.</td></tr>
+<tr><td>Serialisierung</td><td><code>JSON.stringify(dataformContext)</code>.</td><td>Ohne Fehler möglich; keine zyklischen Referenzen.</td></tr>
+<tr><td>Sicherheit</td><td>Kontext inspizieren.</td><td>Keine Passwörter, Tokens oder DB-Connection-Strings.</td></tr>
+<tr><td>Callback-Sicherheit</td><td>Ungültigen JavaScript-Ausdruck als Callback konfigurieren.</td><td>Konfiguration wird abgelehnt; kein <code>eval()</code>.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="versionierung">
+<h2>12. Versionierung und Erweiterbarkeit</h2>
+<p>Der Vertrag verwendet semantische Versionierung. Neue optionale Felder dürfen in einer Minor-Version ergänzt werden. Das Entfernen, Umbenennen oder Bedeutungsändern bestehender Felder erfordert eine neue Major-Version. Ein Callback sollte unbekannte zusätzliche Felder deshalb tolerieren und ausschließlich auf die Felder zugreifen, die er tatsächlich benötigt.</p>
+
+<table>
+<thead><tr><th>Änderung</th><th>Beispiel</th><th>Version</th></tr></thead>
+<tbody>
+<tr><td>Optionales Feld hinzufügen</td><td><code>ui.timezone</code></td><td>1.1.0</td></tr>
+<tr><td>Neue Action ergänzen</td><td><code>duplicate</code></td><td>1.1.0, sofern bestehende Semantik unverändert bleibt</td></tr>
+<tr><td>Feld umbenennen</td><td><code>record.id</code> → anderer Name</td><td>2.0.0</td></tr>
+<tr><td>Semantik ändern</td><td><code>currentIndex</code> von 0- auf 1-basiert</td><td>2.0.0</td></tr>
+</tbody>
+</table>
+
+<div class="success"><b>Empfohlener Integrationspunkt:</b> <code>dataformContext</code> sollte im DataForm-5-Kern zentral erzeugt werden. Weder einzelne Seiten noch CRUD-Buttons noch Recordsets sollten eigene, abweichende Kontextvarianten konstruieren.</div>
+</section>
+
+
+<section id="praxis-js">
+<h2>13. Anwendungsbeispiele als JavaScript-Code</h2>
+<p>Dieses Kapitel zeigt konkrete, direkt übertragbare Anwendungen des <code>dataformContext</code>. Die Beispiele setzen voraus, dass DataForm 5 den Kontext zentral erzeugt und dem konfigurierten Callback als einziges Argument übergibt.</p>
+
+<h3 id="example-after-save">13.1 Einfacher afterSave-Callback</h3>
+<pre><code>function afterSave(dataformContext) {
+    console.log("Gespeichert:", dataformContext.record.id);
+    console.log("Werte:", dataformContext.values.current);
+}</code></pre>
+<p>Eintrag im Recordset-Feld „Nach Speichern“:</p>
+<pre><code>afterSave(dataformContext)</code></pre>
+
+<h3>13.2 Speichern auf Erfolg prüfen</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result?.success) {
+        console.error(
+            dataformContext.result?.message
+            ?? "Speichern fehlgeschlagen."
+        );
+        return;
+    }
+
+    console.log(
+        "Datensatz erfolgreich gespeichert:",
+        dataformContext.record.id
+    );
+}</code></pre>
+
+<h3>13.3 Insert und Update unterscheiden</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    if (dataformContext.result.operation === "insert") {
+        console.log(
+            "Neuer Datensatz:",
+            dataformContext.result.recordId
+        );
+    }
+
+    if (dataformContext.result.operation === "update") {
+        console.log(
+            "Datensatz aktualisiert:",
+            dataformContext.record.id
+        );
+    }
+}</code></pre>
+
+<h3>13.4 Geänderte Felder ausgeben</h3>
+<pre><code>function afterSave(dataformContext) {
+    const changes = dataformContext.values.changed;
+
+    for (const [field, change] of Object.entries(changes)) {
+        console.log(
+            field,
+            "von",
+            change.oldValue,
+            "nach",
+            change.newValue
+        );
+    }
+}</code></pre>
+
+<h3>13.5 Auf Änderung eines bestimmten Feldes reagieren</h3>
+<pre><code>function afterSave(dataformContext) {
+    const statusChange =
+        dataformContext.values.changed?.status;
+
+    if (!statusChange) return;
+
+    console.log(
+        "Status geändert:",
+        statusChange.oldValue,
+        "->",
+        statusChange.newValue
+    );
+}</code></pre>
+
+<h3>13.6 Aktuellen Wert eines Feldes lesen</h3>
+<pre><code>function afterSave(dataformContext) {
+    const name =
+        dataformContext.values.current.name;
+
+    console.log("Name:", name);
+}</code></pre>
+
+<h3>13.7 Originalwert und neuen Wert vergleichen</h3>
+<pre><code>function afterSave(dataformContext) {
+    const oldValue =
+        dataformContext.values.original.status;
+
+    const newValue =
+        dataformContext.values.current.status;
+
+    console.log("Vorher:", oldValue);
+    console.log("Nachher:", newValue);
+}</code></pre>
+
+<h3>13.8 Neue Datensatz-ID nach Insert verwenden</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (
+        !dataformContext.result?.success ||
+        dataformContext.result.operation !== "insert"
+    ) {
+        return;
+    }
+
+    const newId =
+        dataformContext.result.recordId;
+
+    DataFormRuntime.openRecord(
+        dataformContext.recordset.id,
+        newId
+    );
+}</code></pre>
+
+<h3>13.9 Datensatz nach Save neu laden</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    DataFormRuntime.reloadRecord(
+        dataformContext.recordset.id,
+        dataformContext.record.id
+    );
+}</code></pre>
+
+<h3>13.10 DataForm nach Save in den Show-Modus schalten</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    DataFormRuntime.setMode(
+        dataformContext.dataform.id,
+        "show"
+    );
+}</code></pre>
+
+<h3>13.11 Child-Recordset nach Parent-Save aktualisieren</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    DataFormRuntime.refreshRecordset(
+        "rs_ed_ev_info",
+        {
+            filter: {
+                to_ev_id:
+                    dataformContext.record.id
+            }
+        }
+    );
+}</code></pre>
+
+<h3>13.12 Beispiel ed_ev → ed_ev_info</h3>
+<pre><code>function afterSaveEv(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    const evId =
+        dataformContext.record.id;
+
+    DataFormRuntime.refreshRecordset(
+        "rs_ed_ev_info",
+        {
+            filter: {
+                to_ev_id: evId
+            }
+        }
+    );
+}</code></pre>
+
+<h3>13.13 Kinddatensatz mit Elternkontext</h3>
+<pre><code>function afterSaveEvInfo(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    const parent =
+        dataformContext.relations.parent;
+
+    if (!parent) return;
+
+    console.log(
+        "Kind gespeichert für Eltern-ID:",
+        parent.keyValue
+    );
+
+    DataFormRuntime.refreshRecordset(
+        parent.recordsetId
+    );
+}</code></pre>
+
+<h3 id="example-before-save">13.14 beforeSave – Pflichtfeld prüfen</h3>
+<pre><code>function beforeSave(dataformContext) {
+    const values =
+        dataformContext.values.current;
+
+    if (!values.name || values.name.trim() === "") {
+        return {
+            cancel: true,
+            message: "Das Feld 'name' ist erforderlich."
+        };
+    }
+
+    return true;
+}</code></pre>
+
+<h3>13.15 beforeSave – fachliche Validierung</h3>
+<pre><code>function beforeSave(dataformContext) {
+    const values =
+        dataformContext.values.current;
+
+    if (
+        values.status === "erledigt" &&
+        !values.abgeschlossen_am
+    ) {
+        return {
+            cancel: true,
+            message:
+                "Bei Status 'erledigt' ist ein Abschlussdatum erforderlich."
+        };
+    }
+
+    return true;
+}</code></pre>
+
+<h3 id="example-before-delete">13.16 beforeDelete – Löschbestätigung</h3>
+<pre><code>function beforeDelete(dataformContext) {
+    const id =
+        dataformContext.record.id;
+
+    const name =
+        dataformContext.values.current.name;
+
+    return window.confirm(
+        `Datensatz ${id} (${name}) wirklich löschen?`
+    );
+}</code></pre>
+
+<h3 id="example-after-delete">13.17 afterDelete – Recordset aktualisieren</h3>
+<pre><code>function afterDelete(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    DataFormRuntime.refreshRecordset(
+        dataformContext.recordset.id
+    );
+}</code></pre>
+
+<h3 id="example-after-navigate">13.18 afterNavigate – Datensatzposition ausgeben</h3>
+<pre><code>function afterNavigate(dataformContext) {
+    console.log(
+        "Datensatz",
+        dataformContext.recordset.currentNumber,
+        "von",
+        dataformContext.recordset.totalRecords
+    );
+}</code></pre>
+
+<h3>13.19 Ersten und letzten Datensatz erkennen</h3>
+<pre><code>function afterNavigate(dataformContext) {
+    if (dataformContext.state.isFirstRecord) {
+        console.log("Erster Datensatz");
+    }
+
+    if (dataformContext.state.isLastRecord) {
+        console.log("Letzter Datensatz");
+    }
+}</code></pre>
+
+<h3>13.20 Fehler nach Save anzeigen</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (dataformContext.result?.success) return;
+
+    const message =
+        dataformContext.result?.error?.message
+        ?? dataformContext.result?.message
+        ?? "Unbekannter Fehler.";
+
+    DataFormUI.showError(message);
+}</code></pre>
+
+<h3>13.21 Feldbezogene Validierungsfehler anzeigen</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (dataformContext.validation.valid) return;
+
+    for (const error of dataformContext.validation.errors) {
+        DataFormUI.showFieldError(
+            error.field,
+            error.message
+        );
+    }
+}</code></pre>
+
+<h3>13.22 Aktion über event.action auswerten</h3>
+<pre><code>function handleAction(dataformContext) {
+    switch (dataformContext.event.action) {
+        case "open":
+            console.log("Öffnen");
+            break;
+
+        case "new":
+            console.log("Neu");
+            break;
+
+        case "edit":
+            console.log("Bearbeiten");
+            break;
+
+        case "save":
+            console.log("Speichern");
+            break;
+
+        case "delete":
+            console.log("Löschen");
+            break;
+    }
+}</code></pre>
+
+<h3>13.23 Zentrale Callback-Registry</h3>
+<pre><code>const DataFormCallbacks = (() => {
+    const registry = new Map();
+
+    function register(name, callback) {
+        if (typeof callback !== "function") {
+            throw new TypeError(
+                "Callback muss eine Funktion sein."
+            );
+        }
+
+        registry.set(name, callback);
+    }
+
+    function invoke(
+        callbackDefinition,
+        dataformContext
+    ) {
+        if (!callbackDefinition) return;
+
+        const match =
+            String(callbackDefinition)
+                .trim()
+                .match(
+                    /^([A-Za-z_$][A-Za-z0-9_$]*)(?:\(\s*dataformContext\s*\))?$/
+                );
+
+        if (!match) {
+            throw new Error(
+                "Ungültige Callback-Konfiguration."
+            );
+        }
+
+        const callback =
+            registry.get(match[1]);
+
+        if (!callback) {
+            throw new Error(
+                "Callback nicht registriert: " +
+                match[1]
+            );
+        }
+
+        return callback(dataformContext);
+    }
+
+    return {
+        register,
+        invoke
+    };
+})();</code></pre>
+
+<h3>13.24 Callbacks registrieren</h3>
+<pre><code>DataFormCallbacks.register(
+    "beforeSave",
+    beforeSave
+);
+
+DataFormCallbacks.register(
+    "afterSave",
+    afterSave
+);
+
+DataFormCallbacks.register(
+    "beforeDelete",
+    beforeDelete
+);
+
+DataFormCallbacks.register(
+    "afterDelete",
+    afterDelete
+);</code></pre>
+
+<h3>13.25 Recordset-Konfiguration</h3>
+<pre><code>{
+    "id": "rs_ed_ev",
+    "name": "ed_ev",
+    "table": "ed_ev",
+
+    "callbacks": {
+        "beforeSave":
+            "beforeSave(dataformContext)",
+
+        "afterSave":
+            "afterSave(dataformContext)",
+
+        "beforeDelete":
+            "beforeDelete(dataformContext)",
+
+        "afterDelete":
+            "afterDelete(dataformContext)"
+    }
+}</code></pre>
+
+<h3>13.26 Vollständiger Save-Lifecycle</h3>
+<pre><code>async function executeSave(recordsetRuntime) {
+
+    // Kontext vor Save
+    const beforeContext =
+        buildContextForRecordset(
+            recordsetRuntime,
+            "beforeSave",
+            "save",
+            "before"
+        );
+
+    // beforeSave
+    const beforeResult =
+        DataFormCallbacks.invoke(
+            recordsetRuntime.callbacks.beforeSave,
+            beforeContext
+        );
+
+    // Abbruch
+    if (
+        beforeResult === false ||
+        beforeResult?.cancel === true
+    ) {
+        return {
+            success: false,
+            status: "cancelled",
+            message:
+                beforeResult?.message
+                ?? "Speichern abgebrochen."
+        };
+    }
+
+    // Persistenz
+    const saveResult =
+        await recordsetRuntime.persist();
+
+    // neuen DB-Zustand übernehmen
+    await recordsetRuntime.syncAfterSave(
+        saveResult
+    );
+
+    // Kontext nach Save
+    const afterContext =
+        buildContextForRecordset(
+            recordsetRuntime,
+            "afterSave",
+            "save",
+            "after",
+            saveResult
+        );
+
+    // afterSave
+    DataFormCallbacks.invoke(
+        recordsetRuntime.callbacks.afterSave,
+        afterContext
+    );
+
+    return saveResult;
+}</code></pre>
+
+<h3>13.27 Vollständiges fachliches afterSave-Beispiel</h3>
+<pre><code>function afterSaveEdEv(dataformContext) {
+
+    if (!dataformContext.result?.success) {
+        DataFormUI.showError(
+            dataformContext.result?.message
+            ?? "Speichern fehlgeschlagen."
+        );
+        return;
+    }
+
+    const id =
+        dataformContext.record.id;
+
+    const changed =
+        dataformContext.values.changed;
+
+    // Statusänderung melden
+    if (changed.status) {
+        DataFormUI.showInfo(
+            "Status geändert von '" +
+            changed.status.oldValue +
+            "' auf '" +
+            changed.status.newValue +
+            "'."
+        );
+    }
+
+    // Kinddaten neu laden
+    DataFormRuntime.refreshRecordset(
+        "rs_ed_ev_info",
+        {
+            filter: {
+                to_ev_id: id
+            }
+        }
+    );
+
+    // Anzeigemodus herstellen
+    DataFormRuntime.setMode(
+        dataformContext.dataform.id,
+        "show"
+    );
+
+    // gespeicherten Satz anzeigen
+    DataFormRuntime.openRecord(
+        dataformContext.recordset.id,
+        id
+    );
+}</code></pre>
+
+<p>Recordset-Feld „Nach Speichern“:</p>
+<pre><code>afterSaveEdEv(dataformContext)</code></pre>
+
+<h3>13.28 Parent-Insert und Child-Bindung</h3>
+<pre><code>function afterSaveParent(dataformContext) {
+    if (
+        !dataformContext.result?.success ||
+        dataformContext.result.operation !== "insert"
+    ) {
+        return;
+    }
+
+    const parentId =
+        dataformContext.result.recordId;
+
+    DataFormRuntime.setRelation(
+        "rs_ed_ev_info",
+        {
+            parentRecordsetId:
+                dataformContext.recordset.id,
+
+            parentField: "id",
+            parentValue: parentId,
+            childField: "to_ev_id"
+        }
+    );
+
+    DataFormRuntime.refreshRecordset(
+        "rs_ed_ev_info"
+    );
+}</code></pre>
+
+<h3>13.29 Audit-Objekt aus dem Kontext ableiten</h3>
+<pre><code>function afterSaveAudit(dataformContext) {
+    if (!dataformContext.result?.success) return;
+
+    const audit = {
+        operation:
+            dataformContext.result.operation,
+
+        dataform:
+            dataformContext.dataform.name,
+
+        recordset:
+            dataformContext.recordset.name,
+
+        recordId:
+            dataformContext.record.id,
+
+        changedFields:
+            dataformContext.values.dirtyFields,
+
+        timestamp:
+            dataformContext.event.timestamp
+    };
+
+    console.log("Audit:", audit);
+}</code></pre>
+
+<h3>13.30 Defensive Prüfung des dataformContext</h3>
+<pre><code>function afterSave(dataformContext) {
+    if (
+        !dataformContext ||
+        dataformContext.contract?.name
+            !== "easyIT.dataformContext"
+    ) {
+        throw new Error(
+            "Ungültiger dataformContext."
+        );
+    }
+
+    if (
+        dataformContext.event?.name
+            !== "afterSave"
+    ) {
+        return;
+    }
+
+    if (
+        !dataformContext.result?.success
+    ) {
+        return;
+    }
+
+    // Verarbeitung
+}</code></pre>
+
+<div class="success">
+<b>Empfohlener Standard:</b> Im Recordset steht nur der deklarative Callback-Aufruf wie <code>afterSaveEdEv(dataformContext)</code>. Der DataForm-Kern löst den Funktionsnamen über die zentrale Callback-Registry auf und übergibt den aktuellen <code>dataformContext</code>. Ein direktes <code>eval()</code> ist nicht erforderlich und soll nicht verwendet werden.
+</div>
+</section>
+
+</main>
+</div>
+
+<footer>
+DataForm 5 · Technische Referenz <code>easyIT.dataformContext</code> · mit JavaScript-Anwendungsbeispielen · Stand 2026-09-02
+</footer>
+
+<script>
+document.querySelectorAll("pre").forEach(function(pre){
+  const btn=document.createElement("button");
+  btn.className="copy";
+  btn.type="button";
+  btn.textContent="Kopieren";
+  btn.addEventListener("click",async function(){
+    const code=pre.querySelector("code");
+    try{
+      await navigator.clipboard.writeText(code.innerText);
+      btn.textContent="Kopiert";
+      setTimeout(()=>btn.textContent="Kopieren",1200);
+    }catch(e){
+      btn.textContent="Nicht möglich";
+    }
+  });
+  pre.appendChild(btn);
+});
+</script>
+</body>
+</html>

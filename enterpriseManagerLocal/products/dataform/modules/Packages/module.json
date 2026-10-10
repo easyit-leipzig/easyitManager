@@ -1,0 +1,12 @@
+{
+  "name": "Packages",
+  "version": "1.0.0",
+  "enabled": false,
+  "description": "easyIT DataForm Modul Packages",
+  "key": "packages",
+  "category": "System",
+  "required": false,
+  "dependencies": [
+    "security"
+  ]
+}

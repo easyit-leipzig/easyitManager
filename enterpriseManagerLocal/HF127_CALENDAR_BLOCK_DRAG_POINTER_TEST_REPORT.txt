@@ -1,0 +1,17 @@
+HF127 Calendar Block Drag Pointer Repair – Test Report
+======================================================
+
+PASS  JavaScript-Syntax: products/calendar/assets/js/calendar.js
+PASS  JavaScript-Syntax: products/calendar/assets/js/bootstrap.js
+PASS  PHP-Syntax: products/calendar/index.php
+PASS  PHP-Syntax: system/app/calendar_project.php
+PASS  Pointer-Start ist delegiert an .slot
+PASS  Pointer-Move/Up werden dokumentweit erfasst
+PASS  Pointer-ID verhindert Fremdgesten
+PASS  elementsFromPoint durchsucht überlagerte Elemente nach dem Zeitslot
+PASS  Endslot wird beim pointerup nochmals bestimmt
+PASS  pointercancel und window blur setzen Drag-Zustand zurück
+PASS  Blockierungsmodus unterbindet Textselektion und Touch-Scroll auf Slots
+PASS  Standalone-Export übernimmt products/calendar/assets vollständig
+
+Hinweis: Ein echter Browser-Interaktionstest gegen eine laufende PHP-/DB-Installation ist in diesem statischen Paketlauf nicht enthalten.

@@ -1,0 +1,21 @@
+{
+  "id": "designer",
+  "title": "DataForm-Designer",
+  "short": {
+    "text": "Im DataForm-Designer werden DataForm, Recordsets, Relationen, Aktionen und Lifecycle-Callbacks konfiguriert. Für JavaScript-Ereignisse steht dataformContext als standardisierte Laufzeitschnittstelle zur Verfügung."
+  },
+  "steps": [
+    "DataForm auswählen oder neu anlegen.",
+    "Recordset und Primärschlüssel konfigurieren.",
+    "Relationen zu Eltern- und Kind-Recordsets definieren.",
+    "Lifecycle-Callbacks bei Bedarf hinterlegen.",
+    "DataForm testen und Kontext über die Hilfe nachvollziehen."
+  ],
+  "expert": {
+    "text": "DataForm-Aktionen, Button-Registry und Help-Registry bleiben getrennt. Die Action-ID verweist auf die fachliche Aktion; Button-Titel, aria-label und PNG-Zuordnung stammen weiterhin aus der zentralen Button-Registry."
+  },
+  "document": {
+    "path": "docs/dataform/dataformContext.html",
+    "anchor": "ziel"
+  }
+}

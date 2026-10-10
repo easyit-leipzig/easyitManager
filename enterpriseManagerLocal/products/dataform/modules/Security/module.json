@@ -1,0 +1,10 @@
+{
+  "name": "Security",
+  "version": "1.0.0",
+  "enabled": false,
+  "description": "easyIT DataForm Modul Security",
+  "key": "security",
+  "category": "Kern",
+  "required": true,
+  "dependencies": []
+}

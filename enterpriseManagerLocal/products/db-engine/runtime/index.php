@@ -1,0 +1,2 @@
+<?php
+declare(strict_types=1);require __DIR__.'/bootstrap.php';header('Content-Type: application/json; charset=utf-8');try{$pdo=easyit_db_engine_pdo();echo json_encode(['success'=>true,'product'=>'db-engine','driver'=>(string)(easyit_db_engine_config()['driver']??''),'status'=>'ok'],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);}catch(Throwable $e){http_response_code(503);echo json_encode(['success'=>false,'error'=>$e->getMessage()],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);}

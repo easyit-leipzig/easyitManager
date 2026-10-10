@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=0;
+$check=function(string $name,bool $ok)use(&$fail):void{echo($ok?'PASS ':'FAIL ').$name.PHP_EOL;if(!$ok)$fail++;};
+$file=function(string $rel)use($root):string{$v=@file_get_contents($root.'/'.$rel);return $v===false?'':$v;};
+$ui=$file('app/licensing/index.php');
+$reg=$file('DataForm5-Core/system/licensing/Core/LicenseRegistry.php');
+$provider=$file('DataForm5-Core/system/licensing/Core/PdoLicenseProvider.php');
+$license=$file('DataForm5-Core/system/licensing/Core/License.php');
+$boot=$file('system/app/bootstrap.php');
+$csv=$file('system/app/EnterpriseCsvPdo.php');
+$version=trim($file('VERSION'));
+$check('version HF87 phase2',$version==='RC1.8-FC1-HF87-PHASE2-LICENSE-CUSTOMERKEY'||str_starts_with($version,'RC1.8-FC1-HF87-PHASE3-')||str_starts_with($version,'RC1.8-FC1-HF87-PHASE4-')||str_starts_with($version,'RC1.8-FC1-HF87-PHASE5-'));
+$check('license UI requires customer e-mail',str_contains($ui,'Kunden-E-Mail / Kundenschlüssel')&&str_contains($ui,'name="customer_key"')&&str_contains($ui,'FILTER_VALIDATE_EMAIL'));
+$check('company is display-only',str_contains($ui,'Firma / Organisation (Anzeige)')&&str_contains($ui,'nicht zur Lizenzzuordnung verwendet'));
+$check('registry persists customer_key',str_contains($reg,'customer_key')&&str_contains($reg,'FILTER_VALIDATE_EMAIL')&&str_contains($reg,'mb_strtolower'));
+$check('provider exposes customer_key',str_contains($provider,"'customer_key' => \$customerKey")&&str_contains($provider,"\$metadata['customer_key']"));
+$check('license summary exposes customer_key',str_contains($license,"'customer_key'=>(string)(\$this->metadata['customer_key']??'')"));
+$check('database schema includes customer_key',str_contains($boot,'customer_key VARCHAR(320)')&&str_contains($boot,'idx_license_customer_key'));
+$check('legacy migration does not guess company names',str_contains($boot,'filter_var($legacy,FILTER_VALIDATE_EMAIL)')&&str_contains($boot,'No destructive guess'));
+$check('CSV schema includes customer_key',str_contains($csv,"'columns'=>['license_key','customer_key','holder'"));
+$check('documentation exists',is_file($root.'/docs/HF87_PHASE2_LICENSE_CUSTOMERKEY.md'));
+exit($fail===0?0:1);
