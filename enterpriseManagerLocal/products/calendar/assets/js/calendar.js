@@ -550,7 +550,7 @@
         const blocks = blocksAtSlot(date, time);
         const block = blocks[0] || null;
         const globalBlock = blocks.some(function (item) { return Number(item.person_id || 0) === 0; });
-        const color = block ? blockColor(block.category_id) : '';
+        const color = block ? blockColor(block.category_id, block.category_color) : '';
         const blockSummary = blocks.map(function (item) { return `${item.person_name || 'Alle Personen'}: ${item.category_name}`; }).join('; ');
         const slot = nj.create('div', {
           class: `slot${half ? '' : ' hour'}${blocks.length ? (globalBlock ? ' blocked' : ' person-blocked') : ''}${blocks.length > 1 ? ' multi-blocked' : ''}`, tabindex: 0, role: 'button',
@@ -570,7 +570,7 @@
               title: `${personName} · ${item.category_name}${item.reason ? ' – ' + item.reason : ''}`,
               'aria-label': `Blockierung ${index + 1} von ${blocks.length}: ${personName}, ${item.category_name}`,
               tabindex: 0,
-              style: `--marker-color:${blockColor(item.category_id)}`,
+              style: `--marker-color:${blockColor(item.category_id, item.category_color)}`,
               dataset: { blockId: item.id }
             }));
           });
@@ -895,12 +895,12 @@ function openCreateDialog(date, start) {
   }
 
   function slotKey(date, time) { return `${date}T${time}`; }
-  function normalizeBlock(item) { return { id: Number(item.id), start: normalizeDatetime(item.start), end: normalizeDatetime(item.end), category_id: Number(item.category_id || 0), category_name: String(item.category_name || ('Kategorie #' + item.category_id)), person_id: Number(item.person_id || 0), person_name: String(item.person_name || (Number(item.person_id || 0) > 0 ? ('Person #' + item.person_id) : 'Alle Personen')), reason: String(item.reason || '') }; }
+  function normalizeBlock(item) { return { id: Number(item.id), start: normalizeDatetime(item.start), end: normalizeDatetime(item.end), category_id: Number(item.category_id || 0), category_name: String(item.category_name || ('Kategorie #' + item.category_id)), category_color: /^#[0-9a-f]{6}$/i.test(String(item.category_color || '')) ? String(item.category_color).toLowerCase() : '', person_id: Number(item.person_id || 0), person_name: String(item.person_name || (Number(item.person_id || 0) > 0 ? ('Person #' + item.person_id) : 'Alle Personen')), reason: String(item.reason || '') }; }
   function blocksAtSlot(date, time) { const start = `${date}T${time}:00`; const end = addMinutesToDatetime(start, SLOT_MINUTES); return state.blockedRanges.filter(function (b) { return b.start < end && b.end > start; }); }
   function blockAtSlot(date, time) { return blocksAtSlot(date, time)[0] || null; }
   function isSlotBlocked(date, time) { return blocksAtSlot(date, time).some(function (b) { return Number(b.person_id || 0) === 0; }); }
   function isSlotBlockedForLesson(date, time, lesson) { const persons = lesson ? [Number(lesson.to_tutor || 0), Number(lesson.to_student || 0)] : []; return blocksAtSlot(date, time).some(function (b) { const pid=Number(b.person_id || 0); return pid===0 || persons.includes(pid); }); }
-  function blockColor(categoryId) { const palette = ['#9b3d3d','#7a5b12','#356a3f','#2f648d','#6b4f91','#8a4f73','#3d7272','#6b5d48']; const id=Math.max(1,Number(categoryId)||1); return palette[(id-1)%palette.length]; }
+  function blockColor(categoryId, configuredColor) { const configured=String(configuredColor || '').trim(); if (/^#[0-9a-f]{6}$/i.test(configured)) return configured.toLowerCase(); const palette = ['#9b3d3d','#7a5b12','#356a3f','#2f648d','#6b4f91','#8a4f73','#3d7272','#6b5d48']; const id=Math.max(1,Number(categoryId)||1); return palette[(id-1)%palette.length]; }
   function blockPersonInitials(name) {
     const parts=String(name||'').trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return '?';

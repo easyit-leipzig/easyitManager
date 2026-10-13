@@ -3145,7 +3145,7 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 </head>
 <body class="workspace-page dataform-runtime-page">
 <header class="df-runtime-topbar" data-runtime-shell="topbar">
-  <a class="df-runtime-brand" href="<?= e($url('index.php')) ?>" aria-label="easyIT Enterprise Manager"><img class="df-runtime-enterprise-logo" src="<?= e($url('assets/img/easyit-epManager-logo.png')) ?>" alt="easyIT Enterprise Manager"><small class="df-runtime-enterprise-version"><?= e(trim((string)@file_get_contents(dirname(__DIR__, 2) . '/VERSION'))) ?></small></a>
+  <a class="df-runtime-brand" href="<?= e($url('index.php')) ?>" aria-label="easyIT Enterprise Manager"><img class="df-runtime-enterprise-logo" src="<?= e($url('assets/img/easyit-epManager-logo.png')) ?>" alt="easyIT Enterprise Manager"><small class="df-runtime-enterprise-version"><?= e(trim((string)@file_get_contents(dirname(__DIR__, 2) . '/DISPLAY_VERSION')) ?: 'RC1.8') ?></small></a>
   <nav class="df-runtime-nav" aria-label="Enterprise-Navigation">
     <a href="<?= e($url('app/dashboard.php')) ?>">Dashboard</a>
     <a href="<?= e($url('app/projects/index.php')) ?>">Projekte</a>

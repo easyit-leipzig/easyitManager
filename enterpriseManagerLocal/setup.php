@@ -16,6 +16,9 @@ $csrf=(string)$_SESSION['setup_csrf'];
 $status=$installer->status();
 $message='';$error='';$result=null;
 $licenseServerState=[];
+$projectDbConfirmationRequired=false;
+$projectDbConfirmationToken='';
+$projectDbExistingName='';
 
 /**
  * Liefert ausschließlich die in der aktuellen PHP-Laufzeit tatsächlich
@@ -172,6 +175,62 @@ function setup_configure_local_license_server(?string $requestedUrl=null): array
 }
 
 /** Start the freshly created local superadmin session without asking for the same credentials twice. */
+
+/** HF159: Build the project-store connection metadata used for the existing Demo DB preflight. */
+function setup_project_store_env(array $form): array
+{
+    return [
+        'PROJECT_DB_DRIVER'=>(string)$form['project_driver'],
+        'PROJECT_DB_HOST'=>(string)$form['project_db_host'],
+        'PROJECT_DB_PORT'=>(string)$form['project_db_port'],
+        'PROJECT_DB_MAINTENANCE_DATABASE'=>(string)$form['project_db_maintenance_database'],
+        'PROJECT_DB_DATABASE'=>(string)$form['project_database'],
+        'PROJECT_DB_SCHEMA'=>(string)$form['project_db_schema'],
+        'PROJECT_DB_USERNAME'=>(string)$form['project_db_username'],
+        'PROJECT_DB_PASSWORD'=>(string)$form['project_db_password'],
+        'PROJECT_DB_ORACLE_SERVICE'=>(string)$form['project_oracle_service'],
+        'PROJECT_DB_CHARSET'=>'utf8mb4',
+        'PROJECT_DB_ENCRYPT'=>'true',
+        'PROJECT_DB_TRUST_SERVER_CERTIFICATE'=>'false',
+        // Needed by the PostgreSQL deletion guard when admin/project share a database.
+        'ADMIN_DB_DRIVER'=>(string)$form['admin_driver'],
+        'ADMIN_DB_DATABASE'=>(string)$form['db_database'],
+        'ADMIN_DB_SCHEMA'=>(string)$form['admin_db_schema'],
+    ];
+}
+
+function setup_project_store_fingerprint(array $form): string
+{
+    $parts=[
+        strtolower((string)$form['project_driver']),
+        (string)$form['project_db_host'],
+        (string)$form['project_db_port'],
+        (string)$form['project_database'],
+        (string)$form['project_db_schema'],
+        (string)$form['project_oracle_service'],
+        (string)$form['project_db_username'],
+    ];
+    return hash('sha256',implode('|',$parts));
+}
+
+function setup_project_store_exists(array $form): bool
+{
+    $driver=strtolower((string)$form['project_driver']);
+    if(!in_array($driver,['mysql','pgsql','oracle','mssql'],true))return false;
+    require_once __DIR__.'/system/app/project_store.php';
+    return enterprise_project_store_exists(setup_project_store_env($form),(string)$form['project_database'],$driver);
+}
+
+function setup_project_store_delete(array $form): void
+{
+    $driver=strtolower((string)$form['project_driver']);
+    if(!in_array($driver,['mysql','pgsql','oracle','mssql'],true))throw new RuntimeException('Dieser Projektspeicher unterstützt keine Datenbank-Neuanlage über den Installer.');
+    require_once __DIR__.'/system/app/project_store.php';
+    $name=(string)$form['project_database'];
+    if(!enterprise_project_store_delete(setup_project_store_env($form),$name,$driver))throw new RuntimeException('Die vorhandene Projektdatenbank konnte nicht gelöscht werden: '.$name);
+    if(enterprise_project_store_exists(setup_project_store_env($form),$name,$driver))throw new RuntimeException('Sicherheitsprüfung fehlgeschlagen: Die Projektdatenbank ist nach dem Löschen weiterhin vorhanden: '.$name);
+}
+
 function setup_login_installed_superadmin(int $userId): void
 {
     $pdo=enterprise_pdo();enterprise_upgrade($pdo);
@@ -276,6 +335,36 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         if($form['project_name']==='')throw new RuntimeException('Projektname ist erforderlich.');
         if($form['admin_driver']==='pgsql' && preg_match('/^[A-Za-z][A-Za-z0-9_]{0,62}$/',$form['admin_db_schema'])!==1)throw new RuntimeException('Ungültiges PostgreSQL-Administrationsschema.');
         if($form['project_driver']==='pgsql' && preg_match('/^[A-Za-z][A-Za-z0-9_]{0,62}$/',$form['project_db_schema'])!==1)throw new RuntimeException('Ungültiges PostgreSQL-Projektschema.');
+        // HF159: Existing project databases are never replaced implicitly.
+        // First submission stops here and asks whether the existing DB shall be reused or recreated.
+        $projectDbExists=setup_project_store_exists($form);
+        $projectExistingAction=(string)($_POST['project_existing_action']??'');
+        $projectConfirmToken=(string)($_POST['project_db_confirmation_token']??'');
+        $projectFingerprint=setup_project_store_fingerprint($form);
+        $pending=is_array($_SESSION['setup_project_db_confirmation']??null)?$_SESSION['setup_project_db_confirmation']:[];
+        $confirmed=$projectDbExists
+            && in_array($projectExistingAction,['reuse','recreate'],true)
+            && $projectConfirmToken!==''
+            && hash_equals((string)($pending['token']??''),$projectConfirmToken)
+            && hash_equals((string)($pending['fingerprint']??''),$projectFingerprint)
+            && (int)($pending['created_at']??0) >= time()-900;
+
+        if($projectDbExists && !$confirmed){
+            $projectDbConfirmationRequired=true;
+            $projectDbExistingName=(string)$form['project_database'];
+            $projectDbConfirmationToken=bin2hex(random_bytes(24));
+            $_SESSION['setup_project_db_confirmation']=[
+                'token'=>$projectDbConfirmationToken,
+                'fingerprint'=>$projectFingerprint,
+                'created_at'=>time(),
+            ];
+            $message='Die Projektdatenbank „'.$projectDbExistingName.'“ ist bereits vorhanden. Bitte wählen Sie ausdrücklich, ob sie unverändert verwendet oder gelöscht und vollständig neu angelegt werden soll.';
+        }else{
+            if($projectDbExists && $projectExistingAction==='recreate'){
+                setup_project_store_delete($form);
+                $message='Die vorhandene Projektdatenbank „'.(string)$form['project_database'].'“ wurde nach ausdrücklicher Bestätigung gelöscht und wird neu angelegt.';
+            }
+            unset($_SESSION['setup_project_db_confirmation']);
         $result=$installer->install([
             'environment'=>$form['environment'],
             'timezone'=>$form['timezone'],
@@ -318,6 +407,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         $_SESSION['enterprise_setup_completed_once']=time();
         header('Location: app/dashboard.php?setup=complete');
         exit;
+        } // HF159 existing project database decision
         }
     }catch(Throwable $e){$error=$e->getMessage();}
 }
@@ -404,6 +494,9 @@ $statusLabel=$ok?'<strong>OK</strong>':($required?'Fehler':'Optional');?>
 <input type="hidden" name="csrf_token" value="<?=e($csrf)?>">
 <input type="hidden" name="setup_action" value="install">
 <input type="hidden" name="license_server_url" value="<?=e($licenseServerUrl)?>">
+<?php if($projectDbConfirmationRequired):?>
+<input type="hidden" name="project_db_confirmation_token" value="<?=e($projectDbConfirmationToken)?>">
+<?php endif;?>
 <section class="card"><h2>2. Administrations- und Projektspeicher</h2>
 <p>Administrationsspeicher und Projektdatenspeicher werden unabhängig gewählt. In dieser PHP-Laufzeit verfügbar: <?=e(implode(', ', array_values($driverOptions)))?>. Datenbanktypen mit fehlendem PDO-Treiber werden nicht angeboten.</p>
 <h3>Administrationsspeicher</h3>
@@ -436,7 +529,7 @@ $statusLabel=$ok?'<strong>OK</strong>':($required?'Fehler':'Optional');?>
 <label>Treiber<select name="project_driver" id="project_driver">
 <?php foreach($driverOptions as $driver=>$label):?><option value="<?=e($driver)?>" <?=$form['project_driver']===$driver?'selected':''?>><?=e($label)?></option><?php endforeach;?>
 </select></label>
-<label>Projekt-Datenbank-/Speichername<input name="project_database" value="<?=e($form['project_database'])?>" required pattern="[A-Za-z][A-Za-z0-9_]{1,62}"></label>
+<label>Projekt-Datenbank-/Speichername<input name="project_database" value="<?=e($form['project_database'])?>" required pattern="[A-Za-z][A-Za-z0-9_]{1,62}"><small>Existiert dieser SQL-Projektspeicher bereits, hält der Installer vor Änderungen an und fragt ausdrücklich: vorhandene Datenbank verwenden oder löschen und neu anlegen.</small></label>
 <label data-project-pgsql>PostgreSQL-Schema<input name="project_db_schema" value="<?=e($form['project_db_schema'])?>" required pattern="[A-Za-z][A-Za-z0-9_]{0,62}"></label>
 </div>
 <div class="form-grid" data-project-sql>
@@ -481,10 +574,37 @@ $statusLabel=$ok?'<strong>OK</strong>':($required?'Fehler':'Optional');?>
 </div>
 <p>Nach READY des Lizenzservers werden mit diesem Abschluss Datenbanken und Superadministrator eingerichtet, der lokale Lizenzserver kryptografisch gekoppelt, die Installation automatisch aktiviert und die Superadmin-Sitzung geöffnet.</p>
 <?php if(($licenseServerState['ready']??false)===true):?>
-<button class="button" <?= easyit_button_attributes('bestaetigen', 'install') ?> type="submit">Installation vollständig abschließen</button>
-<?php else:?><button class="button" type="button" disabled>Abschluss gesperrt – Lizenzserver meldet noch SETUP_REQUIRED</button><?php endif;?>
+<?php if($projectDbConfirmationRequired):?>
+<div class="notice error setup-db-decision">
+<strong>Vorhandene Projektdatenbank erkannt: <?=e($projectDbExistingName)?></strong><br>
+Die Installation wurde vor jeder Änderung angehalten. Sie können die vorhandene Demo-/Projektdatenbank unverändert weiterverwenden oder sie nach einer zusätzlichen Sicherheitsabfrage vollständig löschen und neu aufbauen.
+</div>
+<div class="actions setup-install-actions">
+<button class="button setup-install-submit" data-button-skip type="submit" name="project_existing_action" value="reuse">Vorhandene Demo-DB verwenden</button>
+<button class="button secondary setup-install-submit setup-danger-submit" data-button-skip type="submit" name="project_existing_action" value="recreate" data-project-db-name="<?=e($projectDbExistingName)?>">Demo-DB löschen und neu anlegen</button>
+</div>
+<?php else:?>
+<div class="actions setup-install-actions">
+<button class="button setup-install-submit" data-button-skip type="submit">Installation vollständig abschließen</button>
+</div>
+<?php endif;?>
+<?php else:?>
+<div class="actions setup-install-actions">
+<button class="button secondary setup-install-submit" data-button-skip type="button" disabled>Abschluss gesperrt – Lizenzserver meldet noch SETUP_REQUIRED</button>
+</div>
+<?php endif;?>
 </section>
 </form>
+<style>
+/* HF157: Der Installationsabschluss ist eine kritische Workflow-Aktion und bleibt
+   bewusst als beschrifteter Textbutton sichtbar. Er darf nicht vom globalen
+   Bildbutton-Adapter in ein reines Symbol umgewandelt werden. */
+.setup-install-actions{margin-top:1rem}
+button.setup-install-submit{display:inline-flex;align-items:center;justify-content:center;min-width:280px;min-height:46px;padding:.75rem 1.1rem;font-size:1rem;line-height:1.2;color:#fff;background:var(--brand);border:1px solid var(--brand);border-radius:8px;font-weight:700;cursor:pointer}
+button.setup-install-submit.secondary,button.setup-install-submit:disabled{color:var(--brand);background:#fff;border-color:var(--line)}
+button.setup-install-submit:disabled{opacity:.7;cursor:not-allowed}
+button.setup-danger-submit{color:#8b1e1e!important;border-color:#b53a3a!important;background:#fff5f5!important}
+</style>
 <script>
 (function(){
  var admin=document.getElementById('admin_driver'), project=document.getElementById('project_driver');
@@ -509,6 +629,14 @@ $statusLabel=$ok?'<strong>OK</strong>':($required?'Fehler':'Optional');?>
  }
  if(admin)admin.addEventListener('change',syncStores);if(project)project.addEventListener('change',syncStores);syncStores();
 })();;
+document.querySelectorAll('button.setup-danger-submit').forEach(function(button){
+ button.addEventListener('click',function(event){
+  var name=button.getAttribute('data-project-db-name')||'die vorhandene Projektdatenbank';
+  var ok=window.confirm('SICHERHEITSABFRAGE\n\nDie Datenbank „'+name+'“ wird vollständig gelöscht. Alle darin vorhandenen Daten gehen unwiderruflich verloren.\n\nSoll die Datenbank wirklich gelöscht und neu angelegt werden?');
+  if(!ok)event.preventDefault();
+ });
+});
+
 document.querySelectorAll('input[data-password-field]').forEach(function(input){
  var b=document.createElement('button'); b.type='button'; b.className='password-toggle';
  b.setAttribute('data-button','anzeigen'); b.setAttribute('data-button-context','password_show');

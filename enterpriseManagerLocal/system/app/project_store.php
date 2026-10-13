@@ -332,10 +332,17 @@ function enterprise_project_store_create(array $env, string $database, ?string $
     if (in_array($driver, ['mysql','mariadb'], true)) {
         $server = enterprise_project_store_mysql_server($env);
         $q='`'.str_replace('`','``',$database).'`';
-        try { $server->exec("CREATE DATABASE {$q} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"); }
-        catch (PDOException $e) {
-            if (str_contains(strtolower($e->getMessage()), 'collation')) $server->exec("CREATE DATABASE {$q} CHARACTER SET utf8mb4");
-            else throw $e;
+        // HF159: Existing project databases are a supported reuse path. The
+        // setup workflow decides explicitly whether an existing DB is reused
+        // or deleted. Creation therefore occurs only when the DB is absent.
+        $exists=$server->prepare('SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=?');
+        $exists->execute([$database]);
+        if($exists->fetchColumn()===false){
+            try { $server->exec("CREATE DATABASE {$q} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"); }
+            catch (PDOException $e) {
+                if (str_contains(strtolower($e->getMessage()), 'collation')) $server->exec("CREATE DATABASE {$q} CHARACTER SET utf8mb4");
+                else throw $e;
+            }
         }
         return enterprise_project_store_mysql_pdo($env, $database);
     }

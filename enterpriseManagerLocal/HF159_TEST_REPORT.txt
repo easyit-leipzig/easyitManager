@@ -1,0 +1,14 @@
+HF159 – Demo-/Projektdatenbank Wiederverwendung oder Neuaufbau
+
+PHP_LINT_SETUP PASS
+PHP_LINT_PROJECT_STORE PASS
+HF159_GATE PASS 9/9
+
+Geprüfte Regeln:
+- Existierende SQL-Projektdatenbank wird vor Installer-Ausführung erkannt.
+- Ohne explizite Entscheidung wird die Installation angehalten.
+- Vorhandene Datenbank kann unverändert wiederverwendet werden.
+- Neuaufbau erfordert serverseitigen Session-Token und sichtbare Sicherheitsabfrage.
+- Nach Löschen wird geprüft, dass die Datenbank tatsächlich nicht mehr existiert.
+- MariaDB/MySQL-Erzeugung akzeptiert den Wiederverwendungsfall und führt CREATE nur bei fehlender DB aus.
+- Sichtbare Produktversion bleibt RC1.8.

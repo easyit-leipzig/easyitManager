@@ -40,8 +40,9 @@ function dataform_runtime_render(array $page): void
     $help = is_array($page['help'] ?? null) ? $page['help'] : [];
 
     $projectRoot = dirname(__DIR__, 3);
-    $versionFile = $projectRoot . '/VERSION';
-    $version = is_file($versionFile) ? trim((string)file_get_contents($versionFile)) : 'RC1.8';
+    // HF158: sichtbare Version bewusst von der technischen Build-Historie trennen.
+    $displayVersionFile = $projectRoot . '/DISPLAY_VERSION';
+    $version = is_file($displayVersionFile) ? trim((string)file_get_contents($displayVersionFile)) : 'RC1.8';
     $enterpriseCssFile = $projectRoot . '/assets/css/enterprise.css';
     $workspaceCssFile = dirname(__DIR__) . '/assets/workspace.css';
     $crudCssFile = $projectRoot . '/assets/css/easyit-crud-3d-buttons.css';

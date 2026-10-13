@@ -30,8 +30,10 @@ function render_page(array $page): void
     $active = (string)($page['active'] ?? 'home');
     $content = (string)($page['content'] ?? '');
     $help = is_array($page['help'] ?? null) ? $page['help'] : [];
-    $versionFile = dirname(__DIR__, 2) . '/VERSION';
-    $version = is_file($versionFile) ? trim((string)file_get_contents($versionFile)) : 'RC1.2.0-dev';
+    // HF158: Die technische VERSION bleibt für Gates/Lizenzierung vollständig erhalten.
+    // In der Oberfläche wird ausschließlich die kompakte Produktversion angezeigt.
+    $displayVersionFile = dirname(__DIR__, 2) . '/DISPLAY_VERSION';
+    $version = is_file($displayVersionFile) ? trim((string)file_get_contents($displayVersionFile)) : 'RC1.8';
     $bodyClass = trim((string)($page['body_class'] ?? ''));
     $base = (string)($page['base'] ?? '');
     $scriptName = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
