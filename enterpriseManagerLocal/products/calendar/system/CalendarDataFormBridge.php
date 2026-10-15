@@ -9,11 +9,46 @@ require_once dirname(__DIR__,2).'/dataform/system/DataFormManager.php';
 require_once dirname(__DIR__,2).'/dataform/system/RelationManager.php';
 require_once dirname(__DIR__,2).'/dataform/system/DataFormRecordStore.php';
 
+/** HF164: A dedicated read-only tutor lookup source. The Calendar keeps
+ * persons normalized; "Calendar – Tutoren" is therefore a filtered projection
+ * of persons instead of a second, duplicated master-data table.
+ */
+function easyit_calendar_ensure_tutors_view(PDO $pdo,array $ctx): string {
+    $driver=easyit_calendar_driver($ctx);
+    $persons=easyit_calendar_table($ctx,'persons');
+    $view='calendar_tutors';
+    if($driver!=='mysql') return $view; // current Enterprise/XAMPP path; other engines remain unchanged
+    $q=static fn(string $n): string=>'`'.str_replace('`','``',$n).'`';
+    $hasPersonRoles=false;$hasRoles=false;
+    try{
+        $st=$pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name=?");
+        $st->execute(['person_roles']);$hasPersonRoles=(int)$st->fetchColumn()>0;
+        $st->execute(['roles']);$hasRoles=(int)$st->fetchColumn()>0;
+    }catch(Throwable){}
+    if($hasPersonRoles&&$hasRoles){
+        $sql='CREATE OR REPLACE VIEW '.$q($view).' AS '
+            .'SELECT DISTINCT p.id,p.display_name,p.email,p.calendar_color,p.activ,p.created_at,p.updated_at '
+            .'FROM '.$q($persons).' p '
+            .'JOIN '.$q('person_roles').' pr ON pr.person_id=p.id AND COALESCE(pr.activ,1)=1 '
+            .'JOIN '.$q('roles').' r ON r.id=pr.role_id '
+            ."WHERE r.role_key='tutor' AND COALESCE(p.activ,1)=1";
+    }else{
+        // Compatibility fallback for reduced Calendar schemas without person_roles:
+        // every active person is selectable until role assignment is available.
+        $sql='CREATE OR REPLACE VIEW '.$q($view).' AS '
+            .'SELECT p.id,p.display_name,p.email,p.calendar_color,p.activ,p.created_at,p.updated_at '
+            .'FROM '.$q($persons).' p WHERE COALESCE(p.activ,1)=1';
+    }
+    $pdo->exec($sql);
+    return $view;
+}
+
 function easyit_calendar_dataform_specs(array $ctx): array {
     return [
         'events'=>['table'=>easyit_calendar_table($ctx,'events'),'name'=>'Calendar – Termine','view'=>'dialog'],
         'participants'=>['table'=>easyit_calendar_table($ctx,'participants'),'name'=>'Calendar – Teilnehmer','view'=>'table'],
         'persons'=>['table'=>easyit_calendar_table($ctx,'persons'),'name'=>'Calendar – Personen','view'=>'table'],
+        'tutors'=>['table'=>'calendar_tutors','name'=>'Calendar – Tutoren','view'=>'table','readonly'=>true],
         'places'=>['table'=>easyit_calendar_table($ctx,'places'),'name'=>'Calendar – Orte','view'=>'table'],
         'resources'=>['table'=>easyit_calendar_table($ctx,'resources'),'name'=>'Calendar – Ressourcen','view'=>'table'],
         'categories'=>['table'=>easyit_calendar_table($ctx,'categories'),'name'=>'Calendar – Kategorien','view'=>'table'],
@@ -38,6 +73,40 @@ function easyit_calendar_df_field_profile(PDO $pdo,int $dataformId,string $name,
 function easyit_calendar_df_relation_exists(PDO $pdo,string $name): bool {try{$st=$pdo->prepare('SELECT COUNT(*) FROM dataform_relations WHERE name=?');$st->execute([$name]);return (int)$st->fetchColumn()>0;}catch(Throwable){return false;}}
 function easyit_calendar_df_relation_by_name(PDO $pdo,string $name): ?array {
     try{$st=$pdo->prepare('SELECT * FROM dataform_relations WHERE name=? LIMIT 1');$st->execute([$name]);$r=$st->fetch(PDO::FETCH_ASSOC);return $r?:null;}catch(Throwable){return null;}
+}
+
+/** HF163: Core calendar lookups must remain valid even after a database/dataform
+ * rebuild. Relation names alone are not sufficient because their old IDs can
+ * point to former DataForms/fields. Rebind every core n:1 lookup to the current
+ * field IDs and persist the same target information in the field configuration
+ * as a runtime fallback.
+ */
+function easyit_calendar_force_lookup(PDO $pdo,string $relationName,int $sourceDf,int $targetDf,int $sourceFieldId,int $displayFieldId,bool $required=false): void {
+    if($sourceDf<1||$targetDf<1||$sourceFieldId<1||$displayFieldId<1)return;
+    $existing=easyit_calendar_df_relation_by_name($pdo,$relationName);
+    if($existing) RelationManager::updateManyToOne($pdo,(int)$existing['id'],$relationName,$sourceDf,$targetDf,$sourceFieldId,$displayFieldId,$required,0,true);
+    else RelationManager::createManyToOne($pdo,$relationName,$sourceDf,$targetDf,$sourceFieldId,$displayFieldId,$required,0,true);
+    $st=$pdo->prepare('SELECT configuration_json FROM dataform_fields WHERE id=? AND dataform_id=? LIMIT 1');
+    $st->execute([$sourceFieldId,$sourceDf]);
+    $cfg=json_decode((string)($st->fetchColumn()?:'{}'),true); if(!is_array($cfg))$cfg=[];
+    $cfg['lookup_target_dataform_id']=$targetDf;
+    $cfg['lookup_target_key_field_id']=0;
+    $cfg['lookup_target_display_field_id']=$displayFieldId;
+    $pdo->prepare("UPDATE dataform_fields SET field_type='lookup',configuration_json=? WHERE id=? AND dataform_id=?")
+        ->execute([json_encode($cfg,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),$sourceFieldId,$sourceDf]);
+}
+function easyit_calendar_rebind_core_lookups(PDO $pdo,array $ctx,array $bindings): void {
+    $events=(int)($bindings['events']['id']??0); $places=(int)($bindings['places']['id']??0); $resources=(int)($bindings['resources']['id']??0); $categories=(int)($bindings['categories']['id']??0);
+    if($events<1)return;
+    $location=easyit_calendar_df_field_id($pdo,$events,easyit_calendar_field_name($ctx,'location','location'));
+    $resource=easyit_calendar_df_field_id($pdo,$events,easyit_calendar_field_name($ctx,'resource','resource_id'));
+    $category=easyit_calendar_df_field_id($pdo,$events,easyit_calendar_field_name($ctx,'category','category_id'));
+    $placeDisplay=easyit_calendar_df_field_id($pdo,$places,'name');
+    $resourceDisplay=easyit_calendar_df_field_id($pdo,$resources,'name');
+    $categoryDisplay=easyit_calendar_df_field_id($pdo,$categories,'name');
+    easyit_calendar_force_lookup($pdo,'calendar_event_place',$events,$places,$location,$placeDisplay,false);
+    easyit_calendar_force_lookup($pdo,'calendar_event_resource',$events,$resources,$resource,$resourceDisplay,false);
+    easyit_calendar_force_lookup($pdo,'calendar_event_category',$events,$categories,$category,$categoryDisplay,false);
 }
 function easyit_calendar_df_for_table(PDO $pdo,string $table): int {
     try{
@@ -167,10 +236,11 @@ function easyit_calendar_migrate_event_locations(PDO $pdo,array $ctx,array $bind
 function easyit_calendar_dataform_install(PDO $pdo,array $ctx): array {
     $root=dirname(__DIR__,3);$schema=enterprise_project_store_install_schema($pdo,$root.'/installer/schema/project');$calendarSchema=easyit_calendar_schema_install($pdo,$ctx);
     TableWorkspaceManager::ensureRegistry($pdo);DataFormManager::ensureTableBindingSchema($pdo);RelationManager::ensureSchema($pdo);$created=[];$warnings=[];
+    try{easyit_calendar_ensure_tutors_view($pdo,$ctx);}catch(Throwable $e){$warnings[]='Tutoren-Ansicht: '.$e->getMessage();}
     foreach(easyit_calendar_dataform_specs($ctx) as $logical=>$spec){$table=(string)$spec['table'];
         try{$chk=$pdo->prepare('SELECT COUNT(*) FROM dataform_managed_tables WHERE table_name=?');$chk->execute([$table]);if((int)$chk->fetchColumn()===0)$pdo->prepare('INSERT INTO dataform_managed_tables(table_name) VALUES(?)')->execute([$table]);}catch(Throwable $e){$warnings[]='Registry '.$table.': '.$e->getMessage();}
         if($logical==='events')$warnings=array_merge($warnings,easyit_calendar_ensure_event_extensions($pdo,$ctx));
-        try{$r=DataFormManager::createFromManagedTable($pdo,$table,(string)$spec['name']);$created[$logical]=$r;$id=(int)$r['dataform_id'];$pdo->prepare('UPDATE dataforms SET status=?,view_mode=?,allow_create=1,allow_edit=1,allow_delete=1,show_search=1,show_pagination=1 WHERE id=?')->execute(['active',(string)$spec['view'],$id]);}catch(Throwable $e){$warnings[]='DataForm '.$table.': '.$e->getMessage();}
+        try{$r=DataFormManager::createFromManagedTable($pdo,$table,(string)$spec['name']);$created[$logical]=$r;$id=(int)$r['dataform_id'];$ro=!empty($spec['readonly']);$pdo->prepare('UPDATE dataforms SET status=?,view_mode=?,allow_create=?,allow_edit=?,allow_delete=?,show_search=1,show_pagination=1 WHERE id=?')->execute(['active',(string)$spec['view'],$ro?0:1,$ro?0:1,$ro?0:1,$id]);}catch(Throwable $e){$warnings[]='DataForm '.$table.': '.$e->getMessage();}
     }
     try{DataFormManager::synchronizeAllBoundTableFields($pdo);}catch(Throwable $e){$warnings[]='Feldsynchronisierung: '.$e->getMessage();}
     $bindings=easyit_calendar_dataform_bindings($pdo,$ctx);
@@ -193,6 +263,7 @@ function easyit_calendar_dataform_install(PDO $pdo,array $ctx): array {
       'events'=>$eventProfiles,
       'places'=>['name'=>['label'=>'Ort','type'=>'text','position'=>10,'required'=>true],'street'=>['label'=>'Straße / Hausnummer','type'=>'text','position'=>20],'postal_code'=>['label'=>'PLZ','type'=>'text','position'=>30],'city'=>['label'=>'Ort / Stadt','type'=>'text','position'=>40],'room'=>['label'=>'Raum','type'=>'text','position'=>50],'description'=>['label'=>'Beschreibung','type'=>'textarea','position'=>60],'activ'=>['label'=>'Aktiv','type'=>'checkbox','position'=>70],'created_at'=>['label'=>'Erstellt am','type'=>'datetime','position'=>80,'config'=>['readonly'=>true]],'updated_at'=>['label'=>'Geändert am','type'=>'datetime','position'=>90,'config'=>['readonly'=>true]]],
       'persons'=>['display_name'=>['label'=>'Name','type'=>'text','position'=>10,'required'=>true],'email'=>['label'=>'E-Mail','type'=>'email','position'=>20],'calendar_color'=>['label'=>'Terminfarbe','type'=>'color','position'=>30,'config'=>['help_text'=>'Färbt die rechte untere Ecke der Termine dieses Schülers.']],'activ'=>['label'=>'Aktiv','type'=>'checkbox','position'=>40],'created_at'=>['label'=>'Erstellt am','type'=>'datetime','position'=>50,'config'=>['readonly'=>true]],'updated_at'=>['label'=>'Geändert am','type'=>'datetime','position'=>60,'config'=>['readonly'=>true]]],
+      'tutors'=>['display_name'=>['label'=>'Tutor','type'=>'text','position'=>10,'required'=>true,'config'=>['readonly'=>true]],'email'=>['label'=>'E-Mail','type'=>'email','position'=>20,'config'=>['readonly'=>true]],'calendar_color'=>['label'=>'Terminfarbe','type'=>'color','position'=>30,'config'=>['readonly'=>true]],'activ'=>['label'=>'Aktiv','type'=>'checkbox','position'=>40,'config'=>['readonly'=>true]]],
       'resources'=>['name'=>['label'=>'Ressource','type'=>'text','position'=>10,'required'=>true],'activ'=>['label'=>'Aktiv','type'=>'checkbox','position'=>20]],
       'categories'=>['name'=>['label'=>'Kategorie','type'=>'text','position'=>10,'required'=>true],'category_color'=>['label'=>'Terminbalkenfarbe','type'=>'color','position'=>20,'config'=>['help_text'=>'Färbt den linken Balken aller Termine dieser Kategorie.']],'activ'=>['label'=>'Aktiv','type'=>'checkbox','position'=>30]],
       'roles'=>['name'=>['label'=>'Interner Name','type'=>'text','position'=>10,'required'=>true],'label'=>['label'=>'Bezeichnung','type'=>'text','position'=>20,'required'=>true],'role_key'=>['label'=>'Rollenschlüssel','type'=>'text','position'=>30,'required'=>true]],
@@ -223,9 +294,9 @@ function easyit_calendar_dataform_install(PDO $pdo,array $ctx): array {
         if($parts&&$persons&&$partPerson&&$personDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_participant_person'))RelationManager::createManyToOne($pdo,'calendar_participant_person',$parts,$persons,$partPerson,$personDisplay,true);
         if($parts&&$roles&&$partRole&&$roleDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_participant_role'))RelationManager::createManyToOne($pdo,'calendar_participant_role',$parts,$roles,$partRole,$roleDisplay,true);
         easyit_calendar_migrate_event_locations($pdo,$ctx,$bindings);
-        if($events&&$places&&$eventLocation&&$placeDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_event_place'))RelationManager::createManyToOne($pdo,'calendar_event_place',$events,$places,$eventLocation,$placeDisplay,false);
-        if($events&&$resources&&$eventResource&&$resourceDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_event_resource'))RelationManager::createManyToOne($pdo,'calendar_event_resource',$events,$resources,$eventResource,$resourceDisplay,false);
-        if($events&&$categories&&$eventCategory&&$categoryDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_event_category'))RelationManager::createManyToOne($pdo,'calendar_event_category',$events,$categories,$eventCategory,$categoryDisplay,false);
+        easyit_calendar_force_lookup($pdo,'calendar_event_place',$events,$places,$eventLocation,$placeDisplay,false);
+        easyit_calendar_force_lookup($pdo,'calendar_event_resource',$events,$resources,$eventResource,$resourceDisplay,false);
+        easyit_calendar_force_lookup($pdo,'calendar_event_category',$events,$categories,$eventCategory,$categoryDisplay,false);
         if($blocks&&$categories&&$blockCategory&&$categoryDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_block_category'))RelationManager::createManyToOne($pdo,'calendar_block_category',$blocks,$categories,$blockCategory,$categoryDisplay,true);
         if($blocks&&$persons&&$blockPerson&&$personDisplay&&!easyit_calendar_df_relation_exists($pdo,'calendar_block_person'))RelationManager::createManyToOne($pdo,'calendar_block_person',$blocks,$persons,$blockPerson,$personDisplay,false);
     }catch(Throwable $e){$warnings[]='Basisrelationen: '.$e->getMessage();}
@@ -237,12 +308,16 @@ function easyit_calendar_dataform_install(PDO $pdo,array $ctx): array {
 /** Fast path for normal runtime requests; full installer runs only when bindings are missing. */
 function easyit_calendar_dataform_ensure(PDO $pdo,array $ctx): array {
     try{
+        easyit_calendar_ensure_tutors_view($pdo,$ctx);
         $bindings=easyit_calendar_dataform_bindings($pdo,$ctx);
         if($bindings && count(array_filter($bindings,static fn(array $b):bool=>(int)($b['id']??0)>0))===count(easyit_calendar_dataform_specs($ctx))){
             $events=(int)($bindings['events']['id']??0);
             $persons=(int)($bindings['persons']['id']??0);$categories=(int)($bindings['categories']['id']??0);$blocks=(int)($bindings['blocks']['id']??0);$extended=$events>0 && easyit_calendar_df_field_id($pdo,$events,'all_day')>0 && easyit_calendar_df_field_id($pdo,$events,'location')>0 && easyit_calendar_df_field_id($pdo,$events,'resource_id')>0 && easyit_calendar_df_field_id($pdo,$events,'category_id')>0 && $persons>0 && easyit_calendar_df_field_id($pdo,$persons,'calendar_color')>0 && $categories>0 && easyit_calendar_df_field_id($pdo,$categories,'category_color')>0 && $blocks>0 && easyit_calendar_df_field_id($pdo,$blocks,'person_id')>0;
             $relationsReady=easyit_calendar_df_relation_exists($pdo,'calendar_event_participants')&&easyit_calendar_df_relation_exists($pdo,'calendar_event_attachments')&&easyit_calendar_df_relation_exists($pdo,'calendar_participant_person')&&easyit_calendar_df_relation_exists($pdo,'calendar_participant_role')&&easyit_calendar_df_relation_exists($pdo,'calendar_event_place')&&easyit_calendar_df_relation_exists($pdo,'calendar_event_resource')&&easyit_calendar_df_relation_exists($pdo,'calendar_event_category')&&easyit_calendar_df_relation_exists($pdo,'calendar_block_category')&&easyit_calendar_df_relation_exists($pdo,'calendar_block_person');
             if($extended&&$relationsReady){
+                // HF163: IDs may have changed after a reused/recreated project DB.
+                // Rebind the three term-dialog lookups before records.php is opened.
+                easyit_calendar_rebind_core_lookups($pdo,$ctx,$bindings);
                 $lookupSync=easyit_calendar_sync_mapping_lookup_relations($pdo,$ctx);
                 easyit_calendar_dataform_mark_embedded($pdo,$ctx);
                 return ['schema'=>[],'calendar_schema'=>['driver'=>easyit_calendar_driver($ctx),'created'=>[]],'created'=>[],'bindings'=>easyit_calendar_dataform_bindings($pdo,$ctx),'warnings'=>(array)($lookupSync['warnings']??[])];
